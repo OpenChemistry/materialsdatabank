@@ -1,0 +1,6 @@
+{
+    "name": "Materials Data Bank",
+    "description": "Server side plugin for Materials Data Bank",
+    "url": "https://github.com/OpenChemistry/materialsdatabank/server/materialsdatabank",
+    "version": "0.1.0"
+}
