@@ -1,0 +1,29 @@
+version: '2'
+services:
+  mongodb:
+    image: mongo:3.4
+    volumes:
+        - mongodb:/data/db
+  girder:
+    build:
+      context: ../../
+      dockerfile: devops/docker/girder/Dockerfile
+    command: -d mongodb://mongodb:27017/girder
+    ports:
+          - 8081:8080
+    volumes:
+     - assetstore:/assetstore
+
+  nginx:
+      build:
+       context: ../../
+       dockerfile: devops/docker/nginx/Dockerfile
+      ports:
+          - 8080:80
+      depends_on:
+        - 'girder'
+
+volumes:
+    assetstore:
+    mongodb:
+
