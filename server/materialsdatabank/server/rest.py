@@ -12,6 +12,7 @@ class Tomo(Resource):
         self.resourceName = 'tomo'
 
         self.route('POST', (), self.create_tomo)
+        self.route('GET', ('search',), self.search_tomo)
         self.route('GET', (':id', 'structures',), self.fetch_structures)
         self.route('GET', (':id', 'reconstructions',), self.fetch_reconstructions)
         self.route('GET', (':id', 'projections',), self.fetch_projections)
@@ -104,4 +105,21 @@ class Tomo(Resource):
     )
     def fetch_projections(self, tomo):
         return tomo
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @autoDescribeRoute(
+        Description('Get the projections.')
+        .jsonParam('terms', 'A JSON list of search terms', required=False,
+                   requireArray=True)
+        .pagingParams(defaultSort=None)
+    )
+    def search_tomo(self, terms, limit, offset, sort=None):
+        return list(self.model('tomo', 'materialsdatabank').search(terms, offset=offset,
+                                                              limit=limit, sort=sort,
+                                                              user=self.getCurrentUser()))
+
+
+
+
+
 
