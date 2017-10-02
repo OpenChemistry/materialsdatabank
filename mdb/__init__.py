@@ -74,8 +74,11 @@ def cli(ctx, username, password, api_key, api_url):
 @click.option('--cjson-file', default=None,
               help='path to cjson file containing structure',
               type=click.Path(exists=True, dir_okay=False, readable=True))
+@click.option('--image-file', default=None,
+              help='path to an image to display with document',
+              type=click.Path(exists=True, dir_okay=False, readable=True))
 @click.pass_obj
-def _import(gc, bibtex_file=None, emd_file=None, cjson_file=None):
+def _import(gc, bibtex_file=None, emd_file=None, cjson_file=None, image_file=None):
     with open(bibtex_file) as bibtex_file:
         bibtex_database = bibtexparser.load(bibtex_file)
         entry = bibtex_database.entries[0]
@@ -83,16 +86,22 @@ def _import(gc, bibtex_file=None, emd_file=None, cjson_file=None):
         authors.remove('others')
         paper = entry['title']
 
-    tomo = {
-        'authors': authors,
-        'paper': paper
-    }
-
-    tomo = gc.post('tomo', json=tomo)
-
     me = gc.get('/user/me')
     private_folder = next(gc.listFolder(me['_id'], 'user', 'Private'))
     folder = gc.loadOrCreateFolder('mdb', private_folder['_id'], 'folder')
+
+    if image_file is not None:
+        image_file = gc.uploadFileToFolder(folder['_id'], image_file)
+
+    tomo = {
+        'authors': authors,
+        'paper': paper,
+    }
+
+    if image_file is not None:
+        tomo['imageFileId'] = image_file['_id']
+
+    tomo = gc.post('tomo', json=tomo)
 
     # Upload reconstructions
     recon_file = gc.uploadFileToFolder(folder['_id'], emd_file)

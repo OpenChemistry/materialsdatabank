@@ -19,13 +19,16 @@ class Tomo(AccessControlledModel):
     def validate(self, tomo):
         return tomo
 
-    def create(self, authors, paper=None, microscope=None,
+    def create(self, authors, paper=None, microscope=None, image_file_id=None,
                    user=None, public=True):
 
         tomo = {
             'authors': authors,
             'paper': paper
         }
+
+        if image_file_id is not None:
+            tomo['imageFileId'] = image_file_id
 
         self.setPublic(tomo, public=public)
 
@@ -90,4 +93,3 @@ class Tomo(AccessControlledModel):
                                                 level=AccessType.READ,
                                                 limit=limit, offset=offset):
             yield r
-

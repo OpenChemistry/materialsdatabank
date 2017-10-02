@@ -25,14 +25,17 @@ class Tomo(Resource):
         .jsonParam('tomo', 'Tomo document', required=True, paramType='body')
     )
     def create_tomo(self, tomo):
-        self.requireParams(tomo, ['authors', 'paper'])
+        print(tomo)
+        self.requireParams(['authors', 'paper'], tomo)
+        print('after')
         authors = tomo.get('authors')
         paper = tomo.get('paper')
         microscope = tomo.get('microscope')
+        image_file_id = tomo.get('imageFileId')
 
         return self.model('tomo', 'materialsdatabank').create(
-                authors, paper=paper, microscope=microscope, public=True,
-                user=self.getCurrentUser())
+                authors, paper=paper, microscope=microscope, image_file_id=image_file_id,
+                public=True, user=self.getCurrentUser())
 
     @access.public(scope=TokenScope.DATA_WRITE)
     @autoDescribeRoute(
@@ -117,9 +120,3 @@ class Tomo(Resource):
         return list(self.model('tomo', 'materialsdatabank').search(terms, offset=offset,
                                                               limit=limit, sort=sort,
                                                               user=self.getCurrentUser()))
-
-
-
-
-
-
