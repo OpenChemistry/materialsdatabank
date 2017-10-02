@@ -6,6 +6,7 @@ import argparse
 def import_matlab(inputName, outputName):
     w = spio.loadmat(inputName)
     a = w['Rdenoisen']
+    #a = w['ESTvol']
 
     f = h5.File(outputName, "w")
     f.attrs.create('version_major', 0, dtype = np.int32)
@@ -16,11 +17,11 @@ def import_matlab(inputName, outputName):
     tomo.attrs.create('emd_group_type', 1, dtype = np.int32)
 
     # Rescale the array, and then convert to a smaller type.
-    minimum = np.amin(a)
-    maximum = np.amax(a)
-    a = a - minimum
-    a = (255.0 / (maximum - minimum)) * a
-    tomo.create_dataset('data', data = a.astype(np.uint8))
+    #minimum = np.amin(a)
+    #maximum = np.amax(a)
+    #a = a - minimum
+    #a = (255.0 / (maximum - minimum)) * a
+    tomo.create_dataset('data', data = a.astype(np.float32))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Translate MatLab files')
