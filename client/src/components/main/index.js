@@ -1,10 +1,27 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
 import SearchBar from 'material-ui-search-bar'
+import _ from 'lodash'
 
 import './index.css'
 import SearchResults from '../searchresults'
+import { searchTomos } from '../../redux/ducks/tomos'
 
-export default class Main extends Component {
+class Main extends Component {
+
+  onChange = (searchText) => {
+    this.setState({
+      searchText
+    })
+  }
+
+  onRequestSearch = () => {
+    const text = this.state.searchText;
+    if (_.isString(text) && !_.isEmpty(text)) {
+      this.props.dispatch(searchTomos(this.state.searchText.split(/\s/)))
+    }
+  }
+
   render = () => {
 
     const searchBarStyle = {
@@ -16,8 +33,8 @@ export default class Main extends Component {
       <div>
         <SearchBar
           hintText={'Search by author, paper, microscope, atomic species'}
-          onChange={() => console.log('onChange')}
-          onRequestSearch={() => console.log('onRequestSearch')}
+          onChange={this.onChange}
+          onRequestSearch={this.onRequestSearch}
           style={searchBarStyle}
         />
         <SearchResults/>
@@ -25,3 +42,10 @@ export default class Main extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {};
+}
+
+export default connect(mapStateToProps)(Main)
+

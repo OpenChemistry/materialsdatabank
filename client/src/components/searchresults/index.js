@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import {GridList, GridTile} from 'material-ui/GridList';
+import { connect } from 'react-redux'
 
 import TomoRecord from '../tomo'
+import selectors from '../../redux/selectors';
 
 const styles = {
   root: {
@@ -16,50 +18,7 @@ const styles = {
   },
 };
 
-const data = [
-  { _id: 1,
-    name: 'Tomo1',
-    author: 'jill111',
-  },
-  {
-    _id: 2,
-    name: 'Tomo2',
-    author: 'pashminu',
-  },
-  {
-    _id: 3,
-    name: 'Tomo3',
-    author: 'Danson67',
-  },
-  {
-    _id: 4,
-    name: 'Tomo4',
-    author: 'fancycrave1',
-  },
-  {
-    _id: 5,
-    name: 'Tomo5',
-    author: 'Hans',
-  },
-  {
-    _id: 6,
-    name: 'Tomo6',
-    author: 'fancycravel',
-  },
-  {
-    _id: 7,
-    name: 'Tomo7',
-    author: 'jill111',
-  },
-  {
-    _id: 8,
-    name: 'Tomo8',
-    author: 'BkrmadtyaKarki',
-  },
-];
-
-
-export default class SearchResults extends Component {
+class SearchResults extends Component {
   render = () => {
     return (
       <div style={styles.root}>
@@ -68,11 +27,11 @@ export default class SearchResults extends Component {
           style={styles.gridList}
           cols={4}
         >
-          {data.map((tomo) => (
+          {this.props.results.map((tomo) => (
             <GridTile
               key={tomo._id}
             >
-              <TomoRecord name={tomo.name}/>
+              <TomoRecord name={tomo.paper}/>
             </GridTile>
           ))}
         </GridList>
@@ -80,3 +39,18 @@ export default class SearchResults extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  let props = {
+    results: selectors.tomos.getSearchResults(state),
+  }
+
+  let error = selectors.tomos.getSearchError(state);
+  if (error != null) {
+    console.error(error);
+  }
+
+  return props;
+}
+
+export default connect(mapStateToProps)(SearchResults)
