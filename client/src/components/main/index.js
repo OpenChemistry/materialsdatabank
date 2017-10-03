@@ -9,6 +9,18 @@ import { searchTomos } from '../../redux/ducks/tomos'
 
 class Main extends Component {
 
+  constructor(props)
+  {
+    super(props)
+    this.state = {
+      searchText: null
+    }
+  }
+
+  componentWillMount = () => {
+    this.props.dispatch(searchTomos());
+  }
+
   onChange = (searchText) => {
     this.setState({
       searchText
@@ -16,11 +28,17 @@ class Main extends Component {
   }
 
   onRequestSearch = () => {
-    const text = this.state.searchText.toLowerCase();
-    if (_.isString(text) && !_.isEmpty(text)) {
+
+    if (_.isString(this.state.searchText) && !_.isEmpty(this.state.searchText)) {
+      const text = this.state.searchText.toLowerCase();
       this.props.dispatch(searchTomos(text.split(/\s/)))
     }
+    else {
+      this.props.dispatch(searchTomos());
+    }
   }
+
+
 
   render = () => {
 
