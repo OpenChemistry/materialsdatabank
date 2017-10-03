@@ -34,7 +34,7 @@ class Structure(BaseAccessControlledModel):
             raise ValidationException('%s doesn\'t exist.' % path)
 
         species = species
-        structure['atomicSpecies'] = species
+        structure['atomicSpecies'] = list(set(species))
         structure['cjson'] = cjson
 
         # Update the species at the tomo level
