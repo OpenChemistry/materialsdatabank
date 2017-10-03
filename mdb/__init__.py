@@ -3,7 +3,7 @@ import click
 import types
 import bibtexparser
 from girder_client import GirderClient
-
+import six
 
 class MDBCli(GirderClient):
 
@@ -71,14 +71,24 @@ def cli(ctx, username, password, api_key, api_url):
 @click.option('--emd-file', default=None,
               help='path to emd file containing the reconstruction',
               type=click.Path(exists=True, dir_okay=False, readable=True))
+@click.option('--tiff-file', default=None,
+              help='path to tiff file containing the reconstruction',
+              type=click.Path(exists=True, dir_okay=False, readable=True))
 @click.option('--cjson-file', default=None,
               help='path to cjson file containing structure',
+              type=click.Path(exists=True, dir_okay=False, readable=True))
+@click.option('--xyz-file', default=None,
+              help='path to xyz file containing structure',
+              type=click.Path(exists=True, dir_okay=False, readable=True))
+@click.option('--cml-file', default=None,
+              help='path to cml file containing structure',
               type=click.Path(exists=True, dir_okay=False, readable=True))
 @click.option('--image-file', default=None,
               help='path to an image to display with document',
               type=click.Path(exists=True, dir_okay=False, readable=True))
 @click.pass_obj
-def _import(gc, bibtex_file=None, emd_file=None, cjson_file=None, image_file=None):
+def _import(gc, bibtex_file=None, emd_file=None, tiff_file=None, cjson_file=None,
+            xyz_file=None, cml_file=None, image_file=None):
     with open(bibtex_file) as bibtex_file:
         bibtex_database = bibtexparser.load(bibtex_file)
         entry = bibtex_database.entries[0]
@@ -88,7 +98,13 @@ def _import(gc, bibtex_file=None, emd_file=None, cjson_file=None, image_file=Non
 
     me = gc.get('/user/me')
     private_folder = next(gc.listFolder(me['_id'], 'user', 'Private'))
-    folder = gc.loadOrCreateFolder('mdb', private_folder['_id'], 'folder')
+
+    folder = gc.listFolder(private_folder['_id'], 'folder', name='mdb')
+    try:
+        folder = six.next(folder)
+    except StopIteration:
+        folder = gc.createFolder(private_folder['_id'], 'mdb', parentType='folder',
+                                 public=True)
 
     if image_file is not None:
         image_file = gc.uploadFileToFolder(folder['_id'], image_file)
@@ -104,19 +120,25 @@ def _import(gc, bibtex_file=None, emd_file=None, cjson_file=None, image_file=Non
     tomo = gc.post('tomo', json=tomo)
 
     # Upload reconstructions
-    recon_file = gc.uploadFileToFolder(folder['_id'], emd_file)
+    emd_file = gc.uploadFileToFolder(folder['_id'], emd_file)
+    tiff_file = gc.uploadFileToFolder(folder['_id'], tiff_file)
     print('Creating reconstruction ...')
     recon  = {
-        'fileId': recon_file['_id']
+        'emdFileId': emd_file['_id'],
+        'tiffFileId': tiff_file['_id']
     }
 
     gc.post('tomo/%s/reconstructions' % tomo['_id'], json=recon)
 
     # Upload structure
-    struc_file = gc.uploadFileToFolder(folder['_id'], cjson_file)
+    cjson_file = gc.uploadFileToFolder(folder['_id'], cjson_file)
+    xyz_file = gc.uploadFileToFolder(folder['_id'], xyz_file)
+    cml_file = gc.uploadFileToFolder(folder['_id'], cml_file)
     print('Creating structure ...')
     struc  = {
-        'fileId': struc_file['_id']
+        'cjsonFileId': cjson_file['_id'],
+        'xyzFileId': xyz_file['_id'],
+        'cmlFileId': cml_file['_id']
     }
 
     gc.post('tomo/%s/structures' % tomo['_id'], json=struc)

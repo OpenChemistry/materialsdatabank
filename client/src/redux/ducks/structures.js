@@ -26,8 +26,9 @@ const reducer = handleActions({
     const tomoId = action.payload.tomoId;
     const byTomoId = {
       ...state.byTomId,
-      tomoId: structures,
+      [tomoId]: structures
     }
+
     return {...state,  byTomoId };
   },
 }, initialState);

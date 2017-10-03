@@ -30,4 +30,9 @@ export function fetchStructures(id) {
           .then(response => response.data )
 }
 
+export function fetchReconstructions(id) {
+  return get(`tomo/${id}/reconstructions`)
+          .then(response => response.data )
+}
+
 

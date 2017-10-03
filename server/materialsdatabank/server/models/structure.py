@@ -16,13 +16,15 @@ class Structure(BaseAccessControlledModel):
     def validate(self, structure):
         return structure
 
-    def create(self, tomo, file_id, user=None, public=None):
+    def create(self, tomo, cjson_file_id, xyz_file_id, cml_file_id, user=None, public=None):
         structure = {
             'tomoId': tomo['_id'],
-            'fileId': file_id
+            'cjsonFileId': cjson_file_id,
+            'xyzFileId': xyz_file_id,
+            'cmlFileId': cml_file_id
         }
 
-        file = self.model('file').load(file_id, user=user)
+        file = self.model('file').load(cjson_file_id, user=user)
         with self.model('file').open(file) as fp:
             cjson = json.loads(fp.read().decode())
 

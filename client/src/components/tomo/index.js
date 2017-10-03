@@ -1,11 +1,26 @@
 import React, { Component } from 'react';
 import {GridList, GridTile} from 'material-ui/GridList';
 import {Card, CardHeader, CardMedia} from 'material-ui/Card';
+import FlatButton from 'material-ui/FlatButton';
+import IconMenu from 'material-ui/IconMenu';
+import MenuItem from 'material-ui/MenuItem';
+import IconButton from 'material-ui/IconButton';
+import FileFileDownload from 'material-ui/svg-icons/file/file-download';
 import PropTypes from 'prop-types';
+import {
+  Table,
+  TableBody,
+  TableRow,
+  TableRowColumn,
+  TableHeaderColumn
+} from 'material-ui/Table';
+import { connect } from 'react-redux'
+import _ from 'lodash'
 
 import SearchResult from '../searchresult'
 import selectors from '../../redux/selectors';
 import { symbols } from '../../elements'
+import StructureContainer from '../../containers/structure'
 
 const style = {
   //height: '100%',
@@ -16,24 +31,140 @@ const style = {
 };
 
 const cardHeaderStyle = {
-  textAlign: 'left',
-  'text-overflow': 'ellipsis'
+  textAlign: 'left'
 }
 
-export default class Tomo extends Component {
+const cardMediaStyle = {
+  textAlign: 'right',
+  display: 'inline-block',
+  margin: 20,
+  width: '100%'
+}
+
+const infoStyle = {
+    textAlign: 'left'
+}
+
+const titleStyle = {
+    fontSize: '25px'
+}
+
+const subtitleStyle = {
+    fontSize: '15px'
+}
+
+const tableStyle = {
+  fontSize: '18px'
+}
+
+class Tomo extends Component {
+
   render = () => {
     const species = this.props.atomicSpecies.map((an) => symbols[an]).join(', ');
     const authors = this.props.authors.join(' and ');
-    const speciesText = `Atomic Species: ${species}`;
     return (
         <Card style={style} zDepth={2} >
           <CardHeader
             style={cardHeaderStyle}
             title={this.props.paper}
+            titleStyle={titleStyle}
+            subtitleStyle={subtitleStyle}
             subtitle={authors}
           />
-          <CardMedia>
-
+          <CardMedia style={cardMediaStyle}>
+            <GridList
+              cellHeight={'auto'}
+              cols={3}
+            >
+              <GridTile
+                key={'info'}
+                cols={1}
+                style={infoStyle}
+              >
+                <Table
+                  selectable={false}
+                >
+                  <TableBody
+                    displayRowCheckbox={false}
+                  >
+                    <TableRow>
+                      <TableRowColumn>
+                        <TableHeaderColumn style={{...tableStyle}}>
+                          Atomic Species
+                        </TableHeaderColumn>
+                      </TableRowColumn>
+                      <TableRowColumn style={{...tableStyle}}>
+                        {species}
+                      </TableRowColumn>
+                    </TableRow>
+                    <TableRow>
+                      <TableRowColumn>
+                        <TableHeaderColumn style={{...tableStyle}}>
+                          License
+                        </TableHeaderColumn>
+                      </TableRowColumn>
+                      <TableRowColumn style={{...tableStyle}}>
+                        <a href={"https://creativecommons.org/licenses/by/4.0/"}>
+                          <FlatButton label="CC BY 4" labelStyle={{...tableStyle}}/>
+                        </a>
+                      </TableRowColumn>
+                    </TableRow>
+                    <TableRow>
+                      <TableRowColumn>
+                        <TableHeaderColumn style={{...tableStyle}}>
+                          Reconstruction
+                        </TableHeaderColumn>
+                      </TableRowColumn>
+                      <TableRowColumn style={{...tableStyle}}>
+                        <IconMenu
+                          iconButtonElement={<IconButton><FileFileDownload /></IconButton>}
+                        >
+                          <MenuItem
+                            value="emd"
+                            primaryText="EMD"
+                            href={`${window.location.origin}/api/v1/file/${this.props.emdFileId}/download`} />
+                          <MenuItem
+                            value="tiff"
+                              primaryText="TIFF"
+                                href={`${window.location.origin}/api/v1/file/${this.props.tiffFileId}/download`} />
+                        </IconMenu>
+                      </TableRowColumn>
+                    </TableRow>
+                    <TableRow>
+                      <TableRowColumn>
+                        <TableHeaderColumn style={{...tableStyle}}>
+                          Structure
+                        </TableHeaderColumn>
+                      </TableRowColumn>
+                      <TableRowColumn style={{...tableStyle}}>
+                        <IconMenu
+                          iconButtonElement={<IconButton><FileFileDownload /></IconButton>}
+                        >
+                          <MenuItem
+                            value="cjson"
+                            primaryText="CJSON"
+                            href={`${window.location.origin}/api/v1/file/${this.props.cjsonFileId}/download`} />
+                          <MenuItem
+                            value="xyz"
+                            primaryText="XYZ"
+                            href={`${window.location.origin}/api/v1/file/${this.props.xyzFileId}/download`} />
+                          <MenuItem
+                            value="cml"
+                            primaryText="CML"
+                            href={`${window.location.origin}/api/v1/file/${this.props.cmlFileId}/download`} />
+                        </IconMenu>
+                      </TableRowColumn>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </GridTile>
+              <GridTile
+                key={'structure'}
+                cols={2}
+              >
+                <StructureContainer _id={this.props._id}/>
+              </GridTile>
+            </GridList>
           </CardMedia>
         </Card>
 
@@ -55,3 +186,34 @@ Tomo.defaultProps = {
   atomicSpecies: []
 }
 
+
+function mapStateToProps(state, ownProps) {
+  let props = {};
+  if (!_.isNull(ownProps._id)) {
+    let structures = selectors.structures.getStructuresById(state);
+    if (_.has(structures, ownProps._id)) {
+      // For now we only have a single structure, so just pick the first.
+      const structure = structures[ownProps._id][0];
+      props = {
+        cjsonFileId: structure.cjsonFileId,
+        xyzFileId: structure.xyzFileId,
+        cmlFileId: structure.cmlFileId,
+      }
+    }
+
+    let reconstructions = selectors.reconstructions.getReconstructionsById(state);
+    if (_.has(reconstructions, ownProps._id)) {
+      // For now we only have a single reconstruction, so just pick the first.
+      const reconstruction = reconstructions[ownProps._id][0];
+      props = {
+        ...props,
+        emdFileId: reconstruction.emdFileId,
+        tiffFileId: reconstruction.tiffFileId
+      }
+    }
+  }
+
+  return props;
+}
+
+export default connect(mapStateToProps)(Tomo)

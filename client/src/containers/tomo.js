@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux'
 
 import { loadTomoById } from '../redux/ducks/tomos'
-import { loadStructures } from '../redux/ducks/structures'
+import { loadReconstructions } from '../redux/ducks/reconstructions'
 import Tomo from '../components/tomo'
 import selectors from '../redux/selectors'
 
@@ -12,7 +12,7 @@ class TomoContainer extends Component {
   componentDidMount() {
     if (this.props._id != null) {
       this.props.dispatch(loadTomoById(this.props._id));
-      this.props.dispatch(loadStructures(this.props._id));
+      this.props.dispatch(loadReconstructions(this.props._id));
     }
   }
 
@@ -27,8 +27,7 @@ TomoContainer.propTypes = {
 }
 
 TomoContainer.defaultProps = {
-  id: null,
-  inchikey: null
+  id: null
 }
 
 function mapStateToProps(state, ownProps) {

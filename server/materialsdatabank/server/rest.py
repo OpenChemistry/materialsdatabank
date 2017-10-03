@@ -26,9 +26,7 @@ class Tomo(Resource):
         .jsonParam('tomo', 'Tomo document', required=True, paramType='body')
     )
     def create_tomo(self, tomo):
-        print(tomo)
         self.requireParams(['authors', 'paper'], tomo)
-        print('after')
         authors = tomo.get('authors')
         paper = tomo.get('paper')
         microscope = tomo.get('microscope')
@@ -47,11 +45,13 @@ class Tomo(Resource):
         .jsonParam('structure', 'Tomo document', required=True, paramType='body')
     )
     def create_structure(self, tomo, structure):
-        self.requireParams(structure, ['fileId'])
-        file_id = structure.get('fileId')
+        self.requireParams(['cjsonFileId', 'xyzFileId', 'cmlFileId'], structure)
+        cjson_file_id = structure.get('cjsonFileId')
+        xyz_file_id = structure.get('xyzFileId')
+        cml_file_id = structure.get('cmlFileId')
 
         return self.model('structure', 'materialsdatabank').create(
-            tomo, file_id, public=True, user=self.getCurrentUser())
+            tomo, cjson_file_id, xyz_file_id, cml_file_id, public=True, user=self.getCurrentUser())
 
     @access.public(scope=TokenScope.DATA_WRITE)
     @autoDescribeRoute(
@@ -62,11 +62,12 @@ class Tomo(Resource):
         .jsonParam('reconstruction', 'Tomo document', required=True, paramType='body')
     )
     def create_reconstruction(self, tomo, reconstruction):
-        self.requireParams(reconstruction, ['fileId'])
-        file_id = reconstruction.get('fileId')
+        self.requireParams(['emdFileId', 'tiffFileId'], reconstruction)
+        emd_file_id = reconstruction.get('emdFileId')
+        tiff_file_id = reconstruction.get('tiffFileId')
 
         return self.model('reconstruction', 'materialsdatabank').create(
-            tomo, file_id, public=True, user=self.getCurrentUser())
+            tomo, emd_file_id, tiff_file_id, public=True, user=self.getCurrentUser())
 
     @access.public(scope=TokenScope.DATA_READ)
     @autoDescribeRoute(
@@ -87,12 +88,12 @@ class Tomo(Resource):
                                                     level=AccessType.READ,
                                                     limit=limit, offset=offset))
 
-
     @access.public(scope=TokenScope.DATA_READ)
     @autoDescribeRoute(
         Description('Get the reconstructions.')
         .modelParam('id', 'The experiment id',
-                    model='tomo', level=AccessType.READ, paramType='path')
+                    model='tomo', plugin='materialsdatabank',
+                    level=AccessType.READ, paramType='path')
         .pagingParams(defaultSort=None)
         .errorResponse('ID was invalid.')
         .errorResponse('Read permission denied on the item.', 403)
@@ -140,4 +141,3 @@ class Tomo(Resource):
     )
     def fetch_tomo(self, tomo):
         return tomo
-
