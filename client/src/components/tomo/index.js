@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {GridList, GridTile} from 'material-ui/GridList';
 import {Card, CardHeader, CardMedia} from 'material-ui/Card';
-import FlatButton from 'material-ui/FlatButton';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
@@ -17,7 +16,6 @@ import {
 import { connect } from 'react-redux'
 import _ from 'lodash'
 
-import SearchResult from '../searchresult'
 import selectors from '../../redux/selectors';
 import { symbols } from '../../elements'
 import StructureContainer from '../../containers/structure'

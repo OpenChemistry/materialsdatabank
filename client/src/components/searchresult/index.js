@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
+import {Card, CardHeader, CardMedia} from 'material-ui/Card';
 import { push } from 'react-router-redux'
 import { connect } from 'react-redux'
 
@@ -17,7 +17,6 @@ const style = {
 
 const cardHeaderStyle = {
   textAlign: 'left',
-  'text-overflow': 'ellipsis'
 }
 
 const cardMediaStyle = {

@@ -51,11 +51,6 @@ var cjsonToModelData = (cjson) => {
 
 class Structure extends Component {
 
-  constructor(props) {
-    super(props)
-
-  }
-
   render() {
     return (
       <div>
