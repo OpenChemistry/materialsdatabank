@@ -11,6 +11,7 @@ import './index.css';
 import configureStore from './store/configureStore'
 import rootSaga from './sagas'
 import Header from './components/header';
+import Footer from './components/footer';
 import Main from './components/main';
 import TomoContainer from './containers/tomo'
 
@@ -34,6 +35,7 @@ ReactDOM.render(
               <Route exact path='/' component={Main}/>
               <Route exact path='/tomo/:id' component={TomoContainer}/>
             </div>
+           <Footer />
           </div>
         </ConnectedRouter>
       </Provider>
