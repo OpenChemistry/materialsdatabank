@@ -12,6 +12,7 @@ import configureStore from './store/configureStore'
 import rootSaga from './sagas'
 import Header from './components/header';
 import Main from './components/main';
+import TomoContainer from './containers/tomo'
 
 
 const store = configureStore()
@@ -31,6 +32,7 @@ ReactDOM.render(
            <Header />
             <div>
               <Route exact path='/' component={Main}/>
+              <Route exact path='/tomo/:id' component={TomoContainer}/>
             </div>
           </div>
         </ConnectedRouter>

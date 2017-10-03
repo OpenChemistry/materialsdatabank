@@ -20,3 +20,14 @@ export function search(terms) {
           .then(response => response.data )
 }
 
+export function fetchTomoById(id) {
+  return get(`tomo/${id}`)
+          .then(response => response.data )
+}
+
+export function fetchStructures(id) {
+  return get(`tomo/${id}/structures`)
+          .then(response => response.data )
+}
+
+

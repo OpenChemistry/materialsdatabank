@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {GridList, GridTile} from 'material-ui/GridList';
 import { connect } from 'react-redux'
 
-import TomoRecord from '../tomo'
+import SearchResult from '../searchresult'
 import selectors from '../../redux/selectors';
 
 const styles = {
@@ -12,9 +13,7 @@ const styles = {
     justifyContent: 'space-around',
   },
   gridList: {
-//    width: 500,
-//    height: 450,
-    overflowY: 'auto',
+    overflowY: 'auto'
   },
 };
 
@@ -25,13 +24,19 @@ class SearchResults extends Component {
         <GridList
           cellHeight={'auto'}
           style={styles.gridList}
-          cols={4}
+          cols={3}
         >
           {this.props.results.map((tomo) => (
             <GridTile
               key={tomo._id}
             >
-              <TomoRecord name={tomo.paper}/>
+              <SearchResult
+                _id={tomo._id}
+                paper={tomo.paper}
+                authors={tomo.authors}
+                imageFileId={tomo.imageFileId}
+                atomicSpecies={tomo.atomicSpecies}
+              />
             </GridTile>
           ))}
         </GridList>

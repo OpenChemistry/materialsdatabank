@@ -13,6 +13,7 @@ class Tomo(Resource):
 
         self.route('POST', (), self.create_tomo)
         self.route('GET', ('search',), self.search_tomo)
+        self.route('GET', (':id',), self.fetch_tomo)
         self.route('GET', (':id', 'structures',), self.fetch_structures)
         self.route('GET', (':id', 'reconstructions',), self.fetch_reconstructions)
         self.route('GET', (':id', 'projections',), self.fetch_projections)
@@ -73,11 +74,19 @@ class Tomo(Resource):
         .modelParam('id', 'The experiment id',
                     model='tomo', plugin='materialsdatabank',
                     level=AccessType.READ, paramType='path')
+                       .pagingParams(defaultSort=None)
         .errorResponse('ID was invalid.')
         .errorResponse('Read permission denied on the item.', 403)
     )
-    def fetch_structures(self, tomo):
-        return tomo
+    def fetch_structures(self, tomo, limit, offset, sort=None):
+        model = self.model('structure', 'materialsdatabank')
+        # Note: This is potentially very costly if we get alot of records!
+        cursor = model.find(tomo['_id'], sort=sort)
+        user = self.getCurrentUser()
+        return list(model.filterResultsByPermission(cursor=cursor, user=user,
+                                                    level=AccessType.READ,
+                                                    limit=limit, offset=offset))
+
 
     @access.public(scope=TokenScope.DATA_READ)
     @autoDescribeRoute(
@@ -88,14 +97,13 @@ class Tomo(Resource):
         .errorResponse('ID was invalid.')
         .errorResponse('Read permission denied on the item.', 403)
     )
-    def fetch_reconstructions(self, tomo, limit, offset, sort):
-
-        cursor = self.model('reconstructions').find(tomo['_id'])
+    def fetch_reconstructions(self, tomo, limit, offset, sort=None):
+        model = self.model('reconstruction', 'materialsdatabank')
+        cursor = model.find(tomo['_id'], sort=sort)
         user = self.getCurrentUser()
-        return self.filterResultsByPermission(cursor=cursor, user=user,
-                                                level=AccessType.READ,
-                                                limit=limit, offset=offset,
-                                                sort=sort)
+        return list(model.filterResultsByPermission(cursor=cursor, user=user,
+                                                    level=AccessType.READ,
+                                                    limit=limit, offset=offset))
 
     @access.public(scope=TokenScope.DATA_READ)
     @autoDescribeRoute(
@@ -120,3 +128,16 @@ class Tomo(Resource):
         return list(self.model('tomo', 'materialsdatabank').search(terms, offset=offset,
                                                               limit=limit, sort=sort,
                                                               user=self.getCurrentUser()))
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @autoDescribeRoute(
+        Description('Get the projections.')
+        .modelParam('id', 'The experiment id',
+                    model='tomo', plugin='materialsdatabank',
+                    level=AccessType.READ, paramType='path')
+        .errorResponse('ID was invalid.')
+        .errorResponse('Read permission denied on the item.', 403)
+    )
+    def fetch_tomo(self, tomo):
+        return tomo
+

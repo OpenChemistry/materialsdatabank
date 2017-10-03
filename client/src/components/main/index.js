@@ -16,9 +16,9 @@ class Main extends Component {
   }
 
   onRequestSearch = () => {
-    const text = this.state.searchText;
+    const text = this.state.searchText.toLowerCase();
     if (_.isString(text) && !_.isEmpty(text)) {
-      this.props.dispatch(searchTomos(this.state.searchText.split(/\s/)))
+      this.props.dispatch(searchTomos(text.split(/\s/)))
     }
   }
 
