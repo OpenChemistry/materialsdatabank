@@ -10,8 +10,7 @@ import {
   Table,
   TableBody,
   TableRow,
-  TableRowColumn,
-  TableHeaderColumn
+  TableRowColumn
 } from 'material-ui/Table';
 import { connect } from 'react-redux'
 import _ from 'lodash'
@@ -55,6 +54,10 @@ const subtitleStyle = {
 const tableStyle = {
   fontSize: '18px'
 }
+const tableLabelStyle = {
+  fontSize: '18px',
+  color: '#9E9E9E'
+}
 
 class Tomo extends Component {
 
@@ -87,20 +90,16 @@ class Tomo extends Component {
                     displayRowCheckbox={false}
                   >
                     <TableRow>
-                      <TableRowColumn>
-                        <TableHeaderColumn style={{...tableStyle}}>
-                          Atomic Species
-                        </TableHeaderColumn>
+                      <TableRowColumn style={{...tableLabelStyle}}>
+                        Atomic Species
                       </TableRowColumn>
                       <TableRowColumn style={{...tableStyle}}>
                         {species}
                       </TableRowColumn>
                     </TableRow>
                     <TableRow>
-                      <TableRowColumn>
-                        <TableHeaderColumn style={{...tableStyle}}>
-                          License
-                        </TableHeaderColumn>
+                      <TableRowColumn style={{...tableLabelStyle}}>
+                        License
                       </TableRowColumn>
                       <TableRowColumn style={{...tableStyle}}>
                         <a href={"https://creativecommons.org/licenses/by/4.0/"}>
@@ -109,10 +108,8 @@ class Tomo extends Component {
                       </TableRowColumn>
                     </TableRow>
                     <TableRow>
-                      <TableRowColumn>
-                        <TableHeaderColumn style={{...tableStyle}}>
-                          Paper
-                        </TableHeaderColumn>
+                      <TableRowColumn style={{...tableLabelStyle}}>
+                        Paper
                       </TableRowColumn>
                       <TableRowColumn style={{...tableStyle}}>
                         <a href={this.props.url}>
@@ -121,10 +118,8 @@ class Tomo extends Component {
                       </TableRowColumn>
                     </TableRow>
                     <TableRow>
-                      <TableRowColumn>
-                        <TableHeaderColumn style={{...tableStyle}}>
-                          Reconstruction
-                        </TableHeaderColumn>
+                      <TableRowColumn style={{...tableLabelStyle}}>
+                        Reconstruction
                       </TableRowColumn>
                       <TableRowColumn style={{...tableStyle}}>
                         <IconMenu
@@ -144,10 +139,8 @@ class Tomo extends Component {
                       </TableRowColumn>
                     </TableRow>
                     <TableRow>
-                      <TableRowColumn>
-                        <TableHeaderColumn style={{...tableStyle}}>
-                          Structure
-                        </TableHeaderColumn>
+                      <TableRowColumn style={{...tableLabelStyle}}>
+                        Structure
                       </TableRowColumn>
                       <TableRowColumn style={{...tableStyle}}>
                         <IconMenu
