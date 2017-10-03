@@ -22,6 +22,7 @@ import selectors from '../../redux/selectors';
 import { symbols } from '../../elements'
 import StructureContainer from '../../containers/structure'
 
+
 const style = {
   //height: '100%',
   width: '90%',
@@ -66,7 +67,7 @@ class Tomo extends Component {
         <Card style={style} zDepth={2} >
           <CardHeader
             style={cardHeaderStyle}
-            title={this.props.paper}
+            title={this.props.title}
             titleStyle={titleStyle}
             subtitleStyle={subtitleStyle}
             subtitle={authors}
@@ -105,7 +106,19 @@ class Tomo extends Component {
                       </TableRowColumn>
                       <TableRowColumn style={{...tableStyle}}>
                         <a href={"https://creativecommons.org/licenses/by/4.0/"}>
-                          <FlatButton label="CC BY 4" labelStyle={{...tableStyle}}/>
+                          CC BY 4
+                        </a>
+                      </TableRowColumn>
+                    </TableRow>
+                    <TableRow>
+                      <TableRowColumn>
+                        <TableHeaderColumn style={{...tableStyle}}>
+                          Paper
+                        </TableHeaderColumn>
+                      </TableRowColumn>
+                      <TableRowColumn style={{...tableStyle}}>
+                        <a href={this.props.url}>
+                          {this.props.url}
                         </a>
                       </TableRowColumn>
                     </TableRow>
@@ -120,13 +133,15 @@ class Tomo extends Component {
                           iconButtonElement={<IconButton><FileFileDownload /></IconButton>}
                         >
                           <MenuItem
+                            value="tiff"
+                            primaryText="TIFF"
+                            href={`${window.location.origin}/api/v1/file/${this.props.tiffFileId}/download`}
+                          />
+                          <MenuItem
                             value="emd"
                             primaryText="EMD"
-                            href={`${window.location.origin}/api/v1/file/${this.props.emdFileId}/download`} />
-                          <MenuItem
-                            value="tiff"
-                              primaryText="TIFF"
-                                href={`${window.location.origin}/api/v1/file/${this.props.tiffFileId}/download`} />
+                            href={`${window.location.origin}/api/v1/file/${this.props.emdFileId}/download`}
+                          />
                         </IconMenu>
                       </TableRowColumn>
                     </TableRow>
@@ -141,17 +156,20 @@ class Tomo extends Component {
                           iconButtonElement={<IconButton><FileFileDownload /></IconButton>}
                         >
                           <MenuItem
-                            value="cjson"
-                            primaryText="CJSON"
-                            href={`${window.location.origin}/api/v1/file/${this.props.cjsonFileId}/download`} />
-                          <MenuItem
                             value="xyz"
                             primaryText="XYZ"
-                            href={`${window.location.origin}/api/v1/file/${this.props.xyzFileId}/download`} />
+                            href={`${window.location.origin}/api/v1/file/${this.props.xyzFileId}/download`}
+                          />
+                          <MenuItem
+                            value="cjson"
+                            primaryText="CJSON"
+                            href={`${window.location.origin}/api/v1/file/${this.props.cjsonFileId}/download`}
+                          />
                           <MenuItem
                             value="cml"
                             primaryText="CML"
-                            href={`${window.location.origin}/api/v1/file/${this.props.cmlFileId}/download`} />
+                            href={`${window.location.origin}/api/v1/file/${this.props.cmlFileId}/download`}
+                          />
                         </IconMenu>
                       </TableRowColumn>
                     </TableRow>
@@ -174,16 +192,18 @@ class Tomo extends Component {
 
 Tomo.propTypes = {
   _id: PropTypes.string,
-  paper: PropTypes.string,
+  title: PropTypes.string,
   authors: PropTypes.array,
   imageFileId:  PropTypes.string,
+  url:  PropTypes.string,
 }
 
 Tomo.defaultProps = {
-  paper: '',
+  title: '',
   authors: [],
   imageFileId:  null,
-  atomicSpecies: []
+  atomicSpecies: [],
+  url: null
 }
 
 

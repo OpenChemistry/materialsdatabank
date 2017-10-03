@@ -9,22 +9,23 @@ class Tomo(AccessControlledModel):
         self.ensureIndices(('authors', 'paper', 'atomicSpecies'))
         self.ensureTextIndex({
             'authors': 1,
-            'paper': 1
+            'title': 1
         })
 
         self.exposeFields(level=AccessType.READ, fields=(
-            '_id', 'authors', 'paper', 'atomicSpecies'))
+            '_id', 'authors', 'title', 'atomicSpecies', 'url'))
 
 
     def validate(self, tomo):
         return tomo
 
-    def create(self, authors, paper=None, microscope=None, image_file_id=None,
+    def create(self, authors, title=None, url=None, microscope=None, image_file_id=None,
                    user=None, public=True):
 
         tomo = {
             'authors': authors,
-            'paper': paper
+            'title': title,
+            'url': url
         }
 
         if image_file_id is not None:

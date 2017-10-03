@@ -32,7 +32,7 @@ class SearchResults extends Component {
             >
               <SearchResult
                 _id={tomo._id}
-                paper={tomo.paper}
+                title={tomo.title}
                 authors={tomo.authors}
                 imageFileId={tomo.imageFileId}
                 atomicSpecies={tomo.atomicSpecies}

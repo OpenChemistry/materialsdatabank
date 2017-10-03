@@ -86,15 +86,17 @@ def cli(ctx, username, password, api_key, api_url):
 @click.option('--image-file', default=None,
               help='path to an image to display with document',
               type=click.Path(exists=True, dir_okay=False, readable=True))
+@click.option('--url', default=None,
+              help='the url for the dataset', type=str)
 @click.pass_obj
 def _import(gc, bibtex_file=None, emd_file=None, tiff_file=None, cjson_file=None,
-            xyz_file=None, cml_file=None, image_file=None):
+            xyz_file=None, cml_file=None, image_file=None, url=None):
     with open(bibtex_file) as bibtex_file:
         bibtex_database = bibtexparser.load(bibtex_file)
         entry = bibtex_database.entries[0]
         authors = entry['author'].split(' and ')
         authors.remove('others')
-        paper = entry['title']
+        title = entry['title']
 
     me = gc.get('/user/me')
     private_folder = next(gc.listFolder(me['_id'], 'user', 'Private'))
@@ -111,7 +113,8 @@ def _import(gc, bibtex_file=None, emd_file=None, tiff_file=None, cjson_file=None
 
     tomo = {
         'authors': authors,
-        'paper': paper,
+        'title': title,
+        'url': url
     }
 
     if image_file is not None:

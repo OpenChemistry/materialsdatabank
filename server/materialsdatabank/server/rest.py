@@ -26,14 +26,15 @@ class Tomo(Resource):
         .jsonParam('tomo', 'Tomo document', required=True, paramType='body')
     )
     def create_tomo(self, tomo):
-        self.requireParams(['authors', 'paper'], tomo)
+        self.requireParams(['authors', 'title', 'url'], tomo)
         authors = tomo.get('authors')
-        paper = tomo.get('paper')
+        title = tomo.get('title')
+        url = tomo.get('url')
         microscope = tomo.get('microscope')
         image_file_id = tomo.get('imageFileId')
 
         return self.model('tomo', 'materialsdatabank').create(
-                authors, paper=paper, microscope=microscope, image_file_id=image_file_id,
+                authors, title=title, url=url, microscope=microscope, image_file_id=image_file_id,
                 public=True, user=self.getCurrentUser())
 
     @access.public(scope=TokenScope.DATA_WRITE)

@@ -40,7 +40,7 @@ class SearchResult extends Component {
       <Card style={style} zDepth={2} onTouchTap={this.onTouchTap}>
         <CardHeader
           style={cardHeaderStyle}
-          title={this.props.paper}
+          title={this.props.title}
           subtitle={speciesText}
         />
         <CardMedia style={cardMediaStyle}>
@@ -53,7 +53,7 @@ class SearchResult extends Component {
 
 SearchResult.propTypes = {
   _id: PropTypes.string,
-  paper: PropTypes.string,
+  title: PropTypes.string,
   authors: PropTypes.array,
   imageFileId:  PropTypes.string,
 }
