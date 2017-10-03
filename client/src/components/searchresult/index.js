@@ -8,7 +8,7 @@ import './index.css'
 import { symbols } from '../../elements'
 
 const style = {
-  //height: '100%',
+  height: '90%',
   width: '90%',
   margin: 20,
   textAlign: 'center',
