@@ -23,8 +23,6 @@ store.runSaga(rootSaga)
 // http://stackoverflow.com/a/34015469/988941
 injectTapEventPlugin();
 
-console.log(ConnectedRouter)
-
 ReactDOM.render(
     <MuiThemeProvider >
       <Provider store={store}>
