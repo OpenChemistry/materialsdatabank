@@ -12,10 +12,14 @@ export { reducers };
 
 export default function configureStore() {
   const sagaMiddleware = createSagaMiddleware();
+  const middleware = [sagaMiddleware, reduxRouterMiddleware]
+  if (process.env.NODE_ENV === `development`) {
+    middleware.push(logger);
+  }
 
   const store = createStore(
       reducers,
-      applyMiddleware(sagaMiddleware, logger, reduxRouterMiddleware));
+      applyMiddleware(...middleware));
 
   return {
     ...store,
