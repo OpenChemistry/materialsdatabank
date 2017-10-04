@@ -16,7 +16,11 @@ const style = {
 };
 
 const cardHeaderStyle = {
-  textAlign: 'left',
+  textAlign: 'left'
+}
+
+const textStyle = {
+  paddingRight: '0px'
 }
 
 const cardMediaStyle = {
@@ -39,6 +43,7 @@ class SearchResult extends Component {
       <Card style={style} zDepth={2} onTouchTap={this.onTouchTap}>
         <CardHeader
           style={cardHeaderStyle}
+          textStyle={textStyle}
           title={this.props.title}
           subtitle={speciesText}
         />
