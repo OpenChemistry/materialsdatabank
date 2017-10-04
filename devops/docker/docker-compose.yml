@@ -5,6 +5,7 @@ services:
     volumes:
         - mongodb:/data/db
   girder:
+    image: openchemistry/girder:mdb
     build:
       context: ../../
       dockerfile: devops/docker/girder/Dockerfile
@@ -17,6 +18,7 @@ services:
         - 'mongodb'
 
   nginx:
+      image: openchemistry/nginx:mdb
       build:
        context: ../../
        dockerfile: devops/docker/nginx/Dockerfile
