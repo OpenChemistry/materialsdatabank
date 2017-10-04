@@ -6,9 +6,16 @@
     - fail: msg="Playbook requires ansible >= {{required_ansible_version}}"
       when: ansible_version.string|version_compare(required_ansible_version, '<')
 
+    - name: Set some facts
+      set_fact:
+        girder_host: "{{girder_host|default('localhost')}}"
+        girder_port: "{{girder_port|default(8080)}}"
+    - name:
+      debug: msg="{{girder_host}}"
     - name: Create Girder mdb user
       girder:
-        port: 8080
+        host: "{{girder_host}}"
+        port: "{{girder_port}}"
         user:
           firstName: "mdb"
           lastName: "mdb"
@@ -20,7 +27,8 @@
 
     - name: Enable MDB plugins
       girder:
-        port: 8080
+        host: "{{girder_host}}"
+        port: "{{girder_port}}"
         username: "mdbadmin"
         password: "{{ mdb_password }}"
         plugins:
@@ -29,7 +37,8 @@
 
     - name: Create filesystem assetstore
       girder:
-        port: 8080
+        host: "{{girder_host}}"
+        port: "{{girder_port}}"
         username: "mdbadmin"
         password: "{{ mdb_password }}"
         assetstore:
@@ -41,7 +50,8 @@
 
     - name: Restart the server
       girder:
-        port: 8080
+        host: "{{girder_host}}"
+        port: "{{girder_port}}"
         username: "mdbadmin"
         password: "{{ mdb_password }}"
         put:
@@ -49,5 +59,6 @@
 
     - name: Wait until server restarts
       wait_for:
-        port=8080
+        host="{{girder_host}}"
+        port="{{girder_port}}"
         delay=5
