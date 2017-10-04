@@ -19,7 +19,7 @@ const styles = {
 class SearchResults extends Component {
   render = () => {
     return (
-      <div style={styles.root}>
+
         <GridList
           cellHeight={'auto'}
           style={styles.gridList}
@@ -39,7 +39,6 @@ class SearchResults extends Component {
             </GridTile>
           ))}
         </GridList>
-      </div>
     );
   }
 }
