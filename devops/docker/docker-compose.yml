@@ -3,7 +3,8 @@ services:
   mongodb:
     image: mongo:3.4
     volumes:
-        - mongodb:/data/db
+        - /mongodb:/data/db
+
   girder:
     image: openchemistry/girder:mdb
     build:
@@ -13,19 +14,23 @@ services:
     ports:
           - 8081:8080
     volumes:
-     - assetstore:/assetstore
+      - /assetstore:/assetstore
+    links:
+      - mongodb
     depends_on:
-        - 'mongodb'
+      - mongodb
 
   nginx:
-      image: openchemistry/nginx:mdb
-      build:
-       context: ../../
-       dockerfile: devops/docker/nginx/Dockerfile
-      ports:
-          - 8080:80
-      depends_on:
-        - 'girder'
+    image: openchemistry/nginx:mdb
+    build:
+      context: ../../
+      dockerfile: devops/docker/nginx/Dockerfile
+    ports:
+      - 80:80
+    links:
+      - girder
+    depends_on:
+      - girder
 
 volumes:
     assetstore:
