@@ -1,3 +1,5 @@
+import cherrypy
+
 from girder.api import access
 from girder.api.describe import Description, autoDescribeRoute
 from girder.api.rest import Resource
@@ -33,9 +35,14 @@ class Tomo(Resource):
         microscope = tomo.get('microscope')
         image_file_id = tomo.get('imageFileId')
 
-        return self.model('tomo', 'materialsdatabank').create(
-                authors, title=title, url=url, microscope=microscope, image_file_id=image_file_id,
-                public=True, user=self.getCurrentUser())
+        tomo = self.model('tomo', 'materialsdatabank').create(
+            authors, title=title, url=url, microscope=microscope, image_file_id=image_file_id,
+            public=True, user=self.getCurrentUser())
+
+        cherrypy.response.status = 201
+        cherrypy.response.headers['Location'] = '/tomo/%s' % tomo['_id']
+
+        return tomo
 
     @access.public(scope=TokenScope.DATA_WRITE)
     @autoDescribeRoute(
@@ -51,8 +58,13 @@ class Tomo(Resource):
         xyz_file_id = structure.get('xyzFileId')
         cml_file_id = structure.get('cmlFileId')
 
-        return self.model('structure', 'materialsdatabank').create(
+        structure = self.model('structure', 'materialsdatabank').create(
             tomo, cjson_file_id, xyz_file_id, cml_file_id, public=True, user=self.getCurrentUser())
+
+        cherrypy.response.status = 201
+        cherrypy.response.headers['Location'] = '/tomo/%s/structures/%s' % (tomo['_id'], structure['_id'])
+
+        return structure
 
     @access.public(scope=TokenScope.DATA_WRITE)
     @autoDescribeRoute(
@@ -67,9 +79,13 @@ class Tomo(Resource):
         emd_file_id = reconstruction.get('emdFileId')
         tiff_file_id = reconstruction.get('tiffFileId')
 
-        return self.model('reconstruction', 'materialsdatabank').create(
+        reconstruction = self.model('reconstruction', 'materialsdatabank').create(
             tomo, emd_file_id, tiff_file_id, public=True, user=self.getCurrentUser())
 
+        cherrypy.response.status = 201
+        cherrypy.response.headers['Location'] = '/tomo/%s/reconstructions/%s' % (tomo['_id'], reconstruction['_id'])
+
+        return reconstruction
     @access.public(scope=TokenScope.DATA_READ)
     @autoDescribeRoute(
         Description('Get the structures.')
