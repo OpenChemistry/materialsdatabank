@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import SearchBar from 'material-ui-search-bar'
 import { connect } from 'react-redux'
 import _ from 'lodash'
+import { push } from 'react-router-redux'
 
 import './index.css'
 import logo from './OpenChemistry_Logo.svg';
@@ -52,7 +53,7 @@ class RightElement extends Component {
   }
 
   onRequestSearch = () => {
-
+    this.props.dispatch(push('/'))
     if (_.isString(this.state.searchText) && !_.isEmpty(this.state.searchText)) {
       const text = this.state.searchText.toLowerCase();
       this.props.dispatch(searchTomos(text.split(/\s/)))
