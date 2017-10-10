@@ -95,7 +95,8 @@ def _import(gc, bibtex_file=None, emd_file=None, tiff_file=None, cjson_file=None
         bibtex_database = bibtexparser.load(bibtex_file)
         entry = bibtex_database.entries[0]
         authors = entry['author'].split(' and ')
-        authors.remove('others')
+        if 'others' in authors:
+            authors.remove('others')
         title = entry['title']
 
     me = gc.get('/user/me')
