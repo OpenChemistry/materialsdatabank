@@ -1,12 +1,15 @@
+import re
+
 from girder.models.model_base import AccessControlledModel
 from girder.constants import AccessType
 from ..constants import ELEMENT_SYMBOLS_LOWER
+
 
 class Tomo(AccessControlledModel):
 
     def initialize(self):
         self.name = 'tomos'
-        self.ensureIndices(('authors', 'paper', 'atomicSpecies'))
+        self.ensureIndices(('authors', 'title', 'atomicSpecies'))
         self.ensureTextIndex({
             'authors': 1,
             'title': 1
@@ -55,6 +58,17 @@ class Tomo(AccessControlledModel):
         if updates:
             super(Tomo, self).update(query, update=updates, multi=False)
 
+
+    def _normalize_element(self, element):
+        # Try looking up element
+        try:
+            atomic_number = ELEMENT_SYMBOLS_LOWER.index(element)
+        except ValueError:
+            # Try convert to int
+            atomic_number = int(element)
+
+        return atomic_number
+
     def search(self, search_terms=None, atomic_species=None, offset=0, limit=None,
                sort=None, user=None):
         query = {}
@@ -69,12 +83,7 @@ class Tomo(AccessControlledModel):
                 })
 
                 try:
-                    # Try looking up element
-                    try:
-                        atomic_number = ELEMENT_SYMBOLS_LOWER.index(search)
-                    except ValueError:
-                        # Try convert to int
-                        atomic_number = int(search)
+                    atomic_number = self._normalize_element(search)
 
                     filters.append({
                         'atomicSpecies': {
@@ -87,8 +96,52 @@ class Tomo(AccessControlledModel):
 
             query['$or'] = filters
 
-        cursor = super(Tomo, self).find(query=query, offset=offset, limit=limit,
-                                        timeout=None, sort=sort, user=user)
+        cursor = super(Tomo, self).find(query=query, sort=sort, user=user)
+
+        for r in self.filterResultsByPermission(cursor=cursor, user=user,
+                                                level=AccessType.READ,
+                                                limit=limit, offset=offset):
+            yield r
+
+    def find(self, authors=None, title=None, atomic_species=None, offset=0, limit=None,
+             sort=None, user=None):
+        query = {}
+
+        if authors is not None:
+            if not isinstance(authors, (list, tuple)):
+                authors = [authors]
+
+            author_regexs = []
+            for author in authors:
+                author_regexs.append(re.compile('.*%s.*' % author, re.IGNORECASE))
+
+            query['authors'] = {
+                '$in': author_regexs
+            }
+
+        if title is not None:
+            regex = re.compile('.*%s.*' % title, re.IGNORECASE)
+            query['title'] = {
+                '$regex': regex
+            }
+
+
+        if atomic_species:
+            species = []
+
+            for s in atomic_species:
+                try:
+                    atomic_number = self._normalize_element(s)
+                    species.append(atomic_number)
+                except ValueError:
+                    # The search term can't be an atomic number
+                    pass
+
+            query['atomicSpecies'] = {
+                '$in': species
+            }
+
+        cursor = super(Tomo, self).find(query=query, sort=sort, user=user)
 
         for r in self.filterResultsByPermission(cursor=cursor, user=user,
                                                 level=AccessType.READ,

@@ -15,6 +15,7 @@ class Tomo(Resource):
 
         self.route('POST', (), self.create_tomo)
         self.route('GET', ('search',), self.search_tomo)
+        self.route('GET', (), self.find_tomo)
         self.route('GET', (':id',), self.fetch_tomo)
         self.route('GET', (':id', 'structures',), self.fetch_structures)
         self.route('GET', (':id', 'reconstructions',), self.fetch_reconstructions)
@@ -92,7 +93,7 @@ class Tomo(Resource):
         .modelParam('id', 'The experiment id',
                     model='tomo', plugin='materialsdatabank',
                     level=AccessType.READ, paramType='path')
-                       .pagingParams(defaultSort=None)
+        .pagingParams(defaultSort=None)
         .errorResponse('ID was invalid.')
         .errorResponse('Read permission denied on the item.', 403)
     )
@@ -158,3 +159,20 @@ class Tomo(Resource):
     )
     def fetch_tomo(self, tomo):
         return tomo
+
+    @access.public(scope=TokenScope.DATA_READ)
+    @autoDescribeRoute(
+        Description('Get the projections.')
+        .jsonParam('authors', 'A JSON list of author search terms', required=False,
+                   requireArray=True)
+        .param('title', 'A title search terms', required=False)
+        .jsonParam('atomicSpecies', 'A JSON list of atomic species search terms', required=False,
+                   requireArray=True)
+        .pagingParams(defaultSort=None)
+    )
+    def find_tomo(self, authors=None, title=None, atomicSpecies=None, offset=0, limit=None,
+                  sort=None, user=None):
+        model = self.model('tomo', 'materialsdatabank')
+        return list(model.find(
+            authors=authors, title=title, atomic_species=atomicSpecies,
+            offset=offset, limit=limit, sort=sort, user=self.getCurrentUser()))
