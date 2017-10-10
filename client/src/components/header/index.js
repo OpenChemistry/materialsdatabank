@@ -1,8 +1,12 @@
 import AppBar from 'material-ui/AppBar';
 import React, { Component } from 'react';
+import SearchBar from 'material-ui-search-bar'
+import { connect } from 'react-redux'
+import _ from 'lodash'
 
 import './index.css'
 import logo from './OpenChemistry_Logo.svg';
+import { searchTomos } from '../../redux/ducks/tomos'
 
 
 const style = {
@@ -18,6 +22,64 @@ const titleStyle = {
   color: '#424242',
 }
 
+const searchBarStyle = {
+  margin: '15px 50px',
+  maxWidth: 800
+};
+
+const iconStyleRight = {
+  width: '50%'
+}
+
+class RightElement extends Component {
+
+  constructor(props)
+  {
+    super(props)
+    this.state = {
+      searchText: null
+    }
+  }
+
+  componentWillMount = () => {
+    this.props.dispatch(searchTomos());
+  }
+
+  onChange = (searchText) => {
+    this.setState({
+      searchText
+    })
+  }
+
+  onRequestSearch = () => {
+
+    if (_.isString(this.state.searchText) && !_.isEmpty(this.state.searchText)) {
+      const text = this.state.searchText.toLowerCase();
+      this.props.dispatch(searchTomos(text.split(/\s/)))
+    }
+    else {
+      this.props.dispatch(searchTomos());
+    }
+  }
+
+  render = () => {
+    return (
+      <SearchBar
+        hintText={'Search by author, paper, microscope, atomic species'}
+        onChange={this.onChange}
+        onRequestSearch={this.onRequestSearch}
+        style={searchBarStyle}
+        className={'mdb-searchbar'}
+      />);
+  }
+}
+
+function mapStateToProps(state) {
+  return {};
+}
+
+RightElement = connect(mapStateToProps)(RightElement)
+
 export default class Header extends Component {
   render = () => {
   return (
@@ -30,7 +92,9 @@ export default class Header extends Component {
       }
       titleStyle={titleStyle}
       style={style}
-      iconElementLeft={<img className='mdb-logo' src={logo} alt="logo" />} />
+      iconElementLeft={<img className='mdb-logo' src={logo} alt="logo" />}
+      iconElementRight={<RightElement/>}
+      iconStyleRight={iconStyleRight} />
   );
   }
 }
