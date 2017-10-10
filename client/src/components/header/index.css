@@ -11,3 +11,10 @@ pre {
 .mdb-logo {
   width: 80px;
 }
+
+.mdb-searchbar > div {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+}
