@@ -1,5 +1,6 @@
 import axios, { CancelToken } from 'axios';
 import { CANCEL } from 'redux-saga'
+import _ from 'lodash'
 
 var girderClient = axios.create({
   baseURL: `${window.location.origin}/api/v1`
@@ -12,12 +13,12 @@ function get(url, params) {
   return request
 }
 
-export function search(terms) {
+export function searchByText(terms) {
   terms = JSON.stringify(terms)
   return get('tomo/search', {
     terms
   })
-          .then(response => response.data )
+  .then(response => response.data )
 }
 
 export function fetchTomoById(id) {
@@ -33,6 +34,18 @@ export function fetchStructures(id) {
 export function fetchReconstructions(id) {
   return get(`tomo/${id}/reconstructions`)
           .then(response => response.data )
+}
+
+export function searchByFields(title, authors, atomicSpecies) {
+  authors = _.isNil(authors) ? null : JSON.stringify(authors);
+  atomicSpecies = _.isNil(atomicSpecies) ? null : JSON.stringify(atomicSpecies);
+
+  return get('tomo', {
+    title,
+    authors,
+    atomicSpecies,
+  })
+  .then(response => response.data )
 }
 
 

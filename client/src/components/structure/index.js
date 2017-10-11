@@ -63,6 +63,7 @@ class Structure extends Component {
             },
           }}
           backgroundColor='#ffffff'
+          rotate={true}
         />
       </div>
     );

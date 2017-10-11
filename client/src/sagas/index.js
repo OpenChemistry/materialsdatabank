@@ -1,8 +1,9 @@
 import { fork } from 'redux-saga/effects'
 
 import {
-  watchSearchTomos,
-  watchLoadTomoById
+  watchSearchTomosByText,
+  watchLoadTomoById,
+  watchSearchTomosByFields
 } from './tomos'
 
 import {
@@ -14,7 +15,8 @@ import {
 } from './reconstructions'
 
 export default function* root() {
-  yield fork(watchSearchTomos)
+  yield fork(watchSearchTomosByText)
+  yield fork(watchSearchTomosByFields)
   yield fork(watchLoadTomoById)
   yield fork(watchLoadStructures)
   yield fork(watchLoadReconstructions)
