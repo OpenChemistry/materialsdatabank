@@ -16,6 +16,7 @@ import Main from './components/main';
 import SideBar from './components/sidebar';
 import TomoContainer from './containers/tomo'
 import Welcome from './components/welcome'
+import Search from './components/search'
 
 
 const store = configureStore()
@@ -40,6 +41,7 @@ ReactDOM.render(
               <Route exact path='/' component={Main}/>
               <Route exact path='/tomo/:id' component={TomoContainer}/>
               <Route exact path='/welcome' component={Welcome}/>
+              <Route exact path='/search' component={Search}/>
             </div>
            <Footer />
           </div>
