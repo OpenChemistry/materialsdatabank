@@ -56,9 +56,15 @@ class Search extends Component {
     this.props.dispatch(reset('search'));
   }
 
+  onKeyDown = e => {
+    if(e.keyCode === 13 && e.shiftKey === false) {
+      this.search();
+    }
+  }
+
   render = () => {
     return (
-      <form style={style}>
+      <form style={style} onKeyDown={this.onKeyDown}>
         <Field
           name="title"
           component={TextField}
