@@ -1,8 +1,10 @@
 import { createAction, handleActions } from 'redux-actions';
 
 // Actions
-export const SEARCH_TOMOS   = 'SEARCH_TOMOS';
-export const REQUEST_TOMOS   = 'REQUEST_TOMOS';
+export const SEARCH_TOMOS_BY_TEXT   = 'SEARCH_TOMOS__BY_TEXT';
+export const SEARCH_TOMOS_BY_FIELDS   = 'SEARCH_TOMOS__BY_FIELDS';
+export const REQUEST_TOMOS_BY_FIELDS   = 'REQUEST_TOMOS_BY_FIELDS';
+export const REQUEST_TOMOS_BY_TEXT   = 'REQUEST_TOMOS_BY_TEXT';
 export const RECEIVE_TOMOS   = 'RECEIVE_TOMOS';
 
 export const SELECT_MOLECULE = 'SELECT_TOMO';
@@ -23,7 +25,15 @@ export const initialState = {
 
 // Reducer
 const reducer = handleActions({
-  REQUEST_TOMOS: (state, action) => {
+  REQUEST_TOMOS_BY_TEXT: (state, action) => {
+    if (action.error) {
+      return {...state, error: action.payload.error};
+    }
+    else {
+      return {...state,  error:null };
+    }
+  },
+  REQUEST_TOMOS_BY_FIELDS: (state, action) => {
     if (action.error) {
       return {...state, error: action.payload.error};
     }
@@ -55,9 +65,12 @@ const reducer = handleActions({
 // Action Creators
 
 // Fetch tomos
-export const searchTomos = createAction(SEARCH_TOMOS, (terms) => ({terms}));
+export const searchTomosByText = createAction(SEARCH_TOMOS_BY_TEXT, (terms) => ({terms}));
+export const searchTomosByFields = createAction(SEARCH_TOMOS_BY_FIELDS,
+    (title, authors, atomicSpecies) => ({title, authors, atomicSpecies}));
 
-export const requestTomos = createAction(REQUEST_TOMOS);
+export const requestTomosByText = createAction(REQUEST_TOMOS_BY_TEXT);
+export const requestTomosByFields = createAction(REQUEST_TOMOS_BY_FIELDS);
 
 export const receiveTomos = createAction(RECEIVE_TOMOS, (results) => ({
   search: {results}

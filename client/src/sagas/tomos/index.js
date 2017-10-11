@@ -1,22 +1,29 @@
 import { put, call, takeLatest} from 'redux-saga/effects'
-
 import * as rest from '../../rest'
-import { receiveTomos,  requestTomos, requestTomoById, receiveTomo,
-  SEARCH_TOMOS, LOAD_TOMO_BY_ID} from '../../redux/ducks/tomos.js'
+import {
+  receiveTomos,
+  requestTomosByText,
+  requestTomosByFields,
+  requestTomoById,
+  receiveTomo,
+  SEARCH_TOMOS_BY_TEXT,
+  SEARCH_TOMOS_BY_FIELDS,
+  LOAD_TOMO_BY_ID
+} from '../../redux/ducks/tomos.js'
 
-export function* searchTomos(action) {
+export function* searchTomosByText(action) {
   try {
-    yield put( requestTomos() )
-    const searchResult = yield call(rest.search, action.payload.terms)
+    yield put( requestTomosByText() )
+    const searchResult = yield call(rest.searchByText, action.payload.terms)
     yield put( receiveTomos(searchResult) )
   }
   catch(error) {
-    yield put( requestTomos(error) )
+    yield put( requestTomosByText(error) )
   }
 }
 
-export function* watchSearchTomos() {
-  yield takeLatest(SEARCH_TOMOS, searchTomos)
+export function* watchSearchTomosByText() {
+  yield takeLatest(SEARCH_TOMOS_BY_TEXT, searchTomosByText)
 }
 
 
@@ -33,4 +40,20 @@ export function* fetchTomoById(action) {
 
 export function* watchLoadTomoById() {
   yield takeLatest(LOAD_TOMO_BY_ID, fetchTomoById)
+}
+
+export function* searchTomosByFields(action) {
+  try {
+    yield put( requestTomosByFields() )
+    const searchResult = yield call(rest.searchByFields,
+        action.payload.title, action.payload.authors, action.payload.atomicSpecies)
+    yield put( receiveTomos(searchResult) )
+  }
+  catch(error) {
+    yield put( requestTomosByFields(error) )
+  }
+}
+
+export function* watchSearchTomosByFields() {
+  yield takeLatest(SEARCH_TOMOS_BY_FIELDS, searchTomosByFields)
 }

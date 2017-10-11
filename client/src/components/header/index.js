@@ -7,7 +7,7 @@ import { push } from 'react-router-redux'
 
 import './index.css'
 import logo from './OpenChemistry_Logo.svg';
-import { searchTomos } from '../../redux/ducks/tomos'
+import { searchTomosByText } from '../../redux/ducks/tomos'
 
 
 const style = {
@@ -43,7 +43,7 @@ class RightElement extends Component {
   }
 
   componentWillMount = () => {
-    this.props.dispatch(searchTomos());
+    this.props.dispatch(searchTomosByText());
   }
 
   onChange = (searchText) => {
@@ -56,10 +56,10 @@ class RightElement extends Component {
     this.props.dispatch(push('/'))
     if (_.isString(this.state.searchText) && !_.isEmpty(this.state.searchText)) {
       const text = this.state.searchText.toLowerCase();
-      this.props.dispatch(searchTomos(text.split(/\s/)))
+      this.props.dispatch(searchTomosByText(text.split(/\s/)))
     }
     else {
-      this.props.dispatch(searchTomos());
+      this.props.dispatch(searchTomosByText());
     }
   }
 
