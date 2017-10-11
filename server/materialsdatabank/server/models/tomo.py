@@ -62,7 +62,7 @@ class Tomo(AccessControlledModel):
     def _normalize_element(self, element):
         # Try looking up element
         try:
-            atomic_number = ELEMENT_SYMBOLS_LOWER.index(element)
+            atomic_number = ELEMENT_SYMBOLS_LOWER.index(element.lower())
         except ValueError:
             # Try convert to int
             atomic_number = int(element)
