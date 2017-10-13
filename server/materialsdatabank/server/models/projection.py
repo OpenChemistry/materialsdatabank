@@ -1,6 +1,7 @@
 from .base import BaseAccessControlledModel
 from girder.constants import AccessType
 
+
 class Projection(BaseAccessControlledModel):
 
     def initialize(self):

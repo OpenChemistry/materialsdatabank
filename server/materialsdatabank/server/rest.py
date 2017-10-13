@@ -5,7 +5,11 @@ from girder.api.describe import Description, autoDescribeRoute
 from girder.api.rest import Resource
 from girder.constants import AccessType, TokenScope
 
-from girder.plugins.materialsdatabank.models.dataset import Dataset
+from girder.plugins.materialsdatabank.models.dataset import Dataset as DatasetModel
+from girder.plugins.materialsdatabank.models.reconstruction import Reconstruction as ReconstructionModel
+from girder.plugins.materialsdatabank.models.structure import Structure as StructureModel
+from girder.plugins.materialsdatabank.models.projection import Projection as ProjectionModel
+
 
 class Dataset(Resource):
 
@@ -34,20 +38,20 @@ class Dataset(Resource):
         microscope = dataset.get('microscope')
         image_file_id = dataset.get('imageFileId')
 
-        dataset = self.model('dataset', 'materialsdatabank').create(
+        dataset = DatasetModel().create(
             authors, title=title, url=url, microscope=microscope, image_file_id=image_file_id,
             public=True, user=self.getCurrentUser())
 
         cherrypy.response.status = 201
-        cherrypy.response.headers['Location'] = '/dataset/%s' % dataset['_id']
+        cherrypy.response.headers['Location'] = '/datasets/%s' % dataset['_id']
 
         return dataset
 
     @access.public(scope=TokenScope.DATA_WRITE)
     @autoDescribeRoute(
         Description('Create a structure.')
-        .modelParam('id', 'The experiment id',
-                    model='dataset', plugin='materialsdatabank',
+        .modelParam('id', 'The dataset id',
+                    model=DatasetModel, destName='dataset',
                     level=AccessType.READ, paramType='path')
         .jsonParam('structure', 'Dataset document', required=True, paramType='body')
     )
@@ -57,19 +61,19 @@ class Dataset(Resource):
         xyz_file_id = structure.get('xyzFileId')
         cml_file_id = structure.get('cmlFileId')
 
-        structure = self.model('structure', 'materialsdatabank').create(
+        structure = StructureModel().create(
             dataset, cjson_file_id, xyz_file_id, cml_file_id, public=True, user=self.getCurrentUser())
 
         cherrypy.response.status = 201
-        cherrypy.response.headers['Location'] = '/dataset/%s/structures/%s' % (dataset['_id'], structure['_id'])
+        cherrypy.response.headers['Location'] = '/datasets/%s/structures/%s' % (dataset['_id'], structure['_id'])
 
         return structure
 
     @access.public(scope=TokenScope.DATA_WRITE)
     @autoDescribeRoute(
         Description('Create a reconstruction.')
-        .modelParam('id', 'The experiment id',
-                    model='dataset', plugin='materialsdatabank',
+        .modelParam('id', 'The dataset id',
+                    model=DatasetModel, destName='dataset',
                     level=AccessType.READ, paramType='path')
         .jsonParam('reconstruction', 'Dataset document', required=True, paramType='body')
     )
@@ -78,25 +82,25 @@ class Dataset(Resource):
         emd_file_id = reconstruction.get('emdFileId')
         tiff_file_id = reconstruction.get('tiffFileId')
 
-        reconstruction = self.model('reconstruction', 'materialsdatabank').create(
+        reconstruction = ReconstructionModel().create(
             dataset, emd_file_id, tiff_file_id, public=True, user=self.getCurrentUser())
 
         cherrypy.response.status = 201
-        cherrypy.response.headers['Location'] = '/dataset/%s/reconstructions/%s' % (dataset['_id'], reconstruction['_id'])
+        cherrypy.response.headers['Location'] = '/datasets/%s/reconstructions/%s' % (dataset['_id'], reconstruction['_id'])
 
         return reconstruction
     @access.public(scope=TokenScope.DATA_READ)
     @autoDescribeRoute(
         Description('Get the structures.')
-        .modelParam('id', 'The experiment id',
-                    model='dataset', plugin='materialsdatabank',
+        .modelParam('id', 'The dataset id',
+                    model=DatasetModel, destName='dataset',
                     level=AccessType.READ, paramType='path')
         .pagingParams(defaultSort=None)
         .errorResponse('ID was invalid.')
         .errorResponse('Read permission denied on the item.', 403)
     )
     def fetch_structures(self, dataset, limit, offset, sort=None):
-        model = self.model('structure', 'materialsdatabank')
+        model = StructureModel()
         # Note: This is potentially very costly if we get alot of records!
         cursor = model.find(dataset['_id'], sort=sort)
         user = self.getCurrentUser()
@@ -107,15 +111,15 @@ class Dataset(Resource):
     @access.public(scope=TokenScope.DATA_READ)
     @autoDescribeRoute(
         Description('Get the reconstructions.')
-        .modelParam('id', 'The experiment id',
-                    model='dataset', plugin='materialsdatabank',
+        .modelParam('id', 'The dataset id',
+                    model=DatasetModel, destName='dataset',
                     level=AccessType.READ, paramType='path')
         .pagingParams(defaultSort=None)
         .errorResponse('ID was invalid.')
         .errorResponse('Read permission denied on the item.', 403)
     )
     def fetch_reconstructions(self, dataset, limit, offset, sort=None):
-        model = self.model('reconstruction', 'materialsdatabank')
+        model = ReconstructionModel()
         cursor = model.find(dataset['_id'], sort=sort)
         user = self.getCurrentUser()
         return list(model.filterResultsByPermission(cursor=cursor, user=user,
@@ -125,8 +129,8 @@ class Dataset(Resource):
     @access.public(scope=TokenScope.DATA_READ)
     @autoDescribeRoute(
         Description('Get the projections.')
-        .modelParam('id', 'The experiment id',
-                    model='dataset', plugin='materialsdatabank',
+        .modelParam('id', 'The dataset id',
+                    model=DatasetModel, destName='dataset',
                     level=AccessType.READ, paramType='path')
         .errorResponse('ID was invalid.')
         .errorResponse('Read permission denied on the item.', 403)
@@ -142,15 +146,15 @@ class Dataset(Resource):
         .pagingParams(defaultSort=None)
     )
     def search_dataset(self, terms, limit, offset, sort=None):
-        return list(self.model('dataset', 'materialsdatabank').search(terms, offset=offset,
-                                                              limit=limit, sort=sort,
-                                                              user=self.getCurrentUser()))
+        return list(DatasetModel().search(terms, offset=offset,
+                                          limit=limit, sort=sort,
+                                          user=self.getCurrentUser()))
 
     @access.public(scope=TokenScope.DATA_READ)
     @autoDescribeRoute(
-        Description('Get the projections.')
-        .modelParam('id', 'The experiment id',
-                    model='dataset', plugin='materialsdatabank',
+        Description('Get the dataset.')
+        .modelParam('id', destName='dataset',
+                    model=DatasetModel,
                     level=AccessType.READ, paramType='path')
         .errorResponse('ID was invalid.')
         .errorResponse('Read permission denied on the item.', 403)
@@ -170,7 +174,7 @@ class Dataset(Resource):
     )
     def find_dataset(self, authors=None, title=None, atomicSpecies=None, offset=0, limit=None,
                   sort=None, user=None):
-        model = self.model('dataset', 'materialsdatabank')
+        model = DatasetModel()
         return list(model.find(
             authors=authors, title=title, atomic_species=atomicSpecies,
             offset=offset, limit=limit, sort=sort, user=self.getCurrentUser()))
