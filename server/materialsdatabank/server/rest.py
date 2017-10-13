@@ -11,8 +11,6 @@ class Tomo(Resource):
 
     def __init__(self):
         super(Tomo, self).__init__()
-        self.resourceName = 'tomo'
-
         self.route('POST', (), self.create_tomo)
         self.route('GET', ('search',), self.search_tomo)
         self.route('GET', (), self.find_tomo)
