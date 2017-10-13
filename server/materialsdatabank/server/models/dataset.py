@@ -8,7 +8,7 @@ from ..constants import ELEMENT_SYMBOLS_LOWER
 class Dataset(AccessControlledModel):
 
     def initialize(self):
-        self.name = 'datasets'
+        self.name = 'mdb.datasets'
         self.ensureIndices(('authors', 'title', 'atomicSpecies'))
         self.ensureTextIndex({
             'authors': 1,

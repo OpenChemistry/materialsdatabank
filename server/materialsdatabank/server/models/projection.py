@@ -4,7 +4,7 @@ from girder.constants import AccessType
 class Projection(BaseAccessControlledModel):
 
     def initialize(self):
-        self.name = 'projections'
+        self.name = 'mdb.projections'
         self.ensureIndices(['datasetId'])
 
     def validate(self, projection):

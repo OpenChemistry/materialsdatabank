@@ -4,7 +4,7 @@ from girder.constants import AccessType
 class Reconstruction(BaseAccessControlledModel):
 
     def initialize(self):
-        self.name = 'reconstructions'
+        self.name = 'mdb.reconstructions'
         self.ensureIndices(['datasetId'])
 
     def validate(self, reconstruction):

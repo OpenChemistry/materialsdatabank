@@ -10,7 +10,7 @@ from .base import BaseAccessControlledModel
 class Structure(BaseAccessControlledModel):
 
     def initialize(self):
-        self.name = 'structures'
+        self.name = 'mdb.datasets.structures'
         self.ensureIndices(['datasetId'])
 
     def validate(self, structure):
