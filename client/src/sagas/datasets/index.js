@@ -6,9 +6,9 @@ import {
   requestDatasetsByFields,
   requestDatasetById,
   receiveDataset,
-  SEARCH_TOMOS_BY_TEXT,
-  SEARCH_TOMOS_BY_FIELDS,
-  LOAD_TOMO_BY_ID
+  SEARCH_DATASETS_BY_TEXT,
+  SEARCH_DATASETS_BY_FIELDS,
+  LOAD_DATASET_BY_ID
 } from '../../redux/ducks/datasets.js'
 
 export function* searchDatasetsByText(action) {
@@ -23,7 +23,7 @@ export function* searchDatasetsByText(action) {
 }
 
 export function* watchSearchDatasetsByText() {
-  yield takeLatest(SEARCH_TOMOS_BY_TEXT, searchDatasetsByText)
+  yield takeLatest(SEARCH_DATASETS_BY_TEXT, searchDatasetsByText)
 }
 
 
@@ -39,7 +39,7 @@ export function* fetchDatasetById(action) {
 }
 
 export function* watchLoadDatasetById() {
-  yield takeLatest(LOAD_TOMO_BY_ID, fetchDatasetById)
+  yield takeLatest(LOAD_DATASET_BY_ID, fetchDatasetById)
 }
 
 export function* searchDatasetsByFields(action) {
@@ -55,5 +55,5 @@ export function* searchDatasetsByFields(action) {
 }
 
 export function* watchSearchDatasetsByFields() {
-  yield takeLatest(SEARCH_TOMOS_BY_FIELDS, searchDatasetsByFields)
+  yield takeLatest(SEARCH_DATASETS_BY_FIELDS, searchDatasetsByFields)
 }
