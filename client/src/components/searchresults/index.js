@@ -25,16 +25,16 @@ class SearchResults extends Component {
           style={styles.gridList}
           cols={3}
         >
-          {this.props.results.map((tomo) => (
+          {this.props.results.map((dataset) => (
             <GridTile
-              key={tomo._id}
+              key={dataset._id}
             >
               <SearchResult
-                _id={tomo._id}
-                title={tomo.title}
-                authors={tomo.authors}
-                imageFileId={tomo.imageFileId}
-                atomicSpecies={tomo.atomicSpecies}
+                _id={dataset._id}
+                title={dataset.title}
+                authors={dataset.authors}
+                imageFileId={dataset.imageFileId}
+                atomicSpecies={dataset.atomicSpecies}
               />
             </GridTile>
           ))}
@@ -45,10 +45,10 @@ class SearchResults extends Component {
 
 function mapStateToProps(state) {
   let props = {
-    results: selectors.tomos.getSearchResults(state),
+    results: selectors.datasets.getSearchResults(state),
   }
 
-  let error = selectors.tomos.getSearchError(state);
+  let error = selectors.datasets.getSearchError(state);
   if (error != null) {
     console.error(error);
   }

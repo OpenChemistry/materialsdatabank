@@ -1,10 +1,10 @@
-import * as tomos from './tomos'
+import * as datasets from './datasets'
 import * as structures from './structures'
 import * as reconstructions from './reconstructions'
 import * as search from './search'
 
 export default {
-  tomos,
+  datasets,
   structures,
   reconstructions,
   search

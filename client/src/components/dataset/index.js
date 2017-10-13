@@ -59,7 +59,7 @@ const tableLabelStyle = {
   color: '#9E9E9E'
 }
 
-class Tomo extends Component {
+class Dataset extends Component {
 
   render = () => {
     const species = this.props.atomicSpecies.map((an) => symbols[an]).join(', ');
@@ -181,7 +181,7 @@ class Tomo extends Component {
   }
 }
 
-Tomo.propTypes = {
+Dataset.propTypes = {
   _id: PropTypes.string,
   title: PropTypes.string,
   authors: PropTypes.array,
@@ -189,7 +189,7 @@ Tomo.propTypes = {
   url:  PropTypes.string,
 }
 
-Tomo.defaultProps = {
+Dataset.defaultProps = {
   title: '',
   authors: [],
   imageFileId:  null,
@@ -227,4 +227,4 @@ function mapStateToProps(state, ownProps) {
   return props;
 }
 
-export default connect(mapStateToProps)(Tomo)
+export default connect(mapStateToProps)(Dataset)

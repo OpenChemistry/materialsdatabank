@@ -1,1 +1,1 @@
-export const getReconstructionsById = state => state.reconstructions.byTomoId;
+export const getReconstructionsById = state => state.reconstructions.byDatasetId;

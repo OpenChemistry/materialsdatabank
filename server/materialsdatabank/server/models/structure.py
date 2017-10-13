@@ -10,15 +10,15 @@ from .base import BaseAccessControlledModel
 class Structure(BaseAccessControlledModel):
 
     def initialize(self):
-        self.name = 'structures'
-        self.ensureIndices(['tomoId'])
+        self.name = 'mdb.structures'
+        self.ensureIndices(['datasetId'])
 
     def validate(self, structure):
         return structure
 
-    def create(self, tomo, cjson_file_id, xyz_file_id, cml_file_id, user=None, public=None):
+    def create(self, dataset, cjson_file_id, xyz_file_id, cml_file_id, user=None, public=None):
         structure = {
-            'tomoId': tomo['_id'],
+            'datasetId': dataset['_id'],
             'cjsonFileId': cjson_file_id,
             'xyzFileId': xyz_file_id,
             'cmlFileId': cml_file_id
@@ -39,8 +39,8 @@ class Structure(BaseAccessControlledModel):
         structure['atomicSpecies'] = list(set(species))
         structure['cjson'] = cjson
 
-        # Update the species at the tomo level
-        self.model('tomo', 'materialsdatabank').update(tomo, species)
+        # Update the species at the dataset level
+        self.model('dataset', 'materialsdatabank').update(dataset, species)
 
 
         self.setPublic(structure, public=public)

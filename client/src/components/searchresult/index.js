@@ -32,7 +32,7 @@ const cardMediaStyle = {
 class SearchResult extends Component {
 
   onTouchTap = () => {
-    this.props.dispatch(push(`/tomo/${this.props._id}`))
+    this.props.dispatch(push(`/dataset/${this.props._id}`))
   }
 
   render = () => {

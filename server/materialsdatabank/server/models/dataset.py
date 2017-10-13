@@ -5,10 +5,10 @@ from girder.constants import AccessType
 from ..constants import ELEMENT_SYMBOLS_LOWER
 
 
-class Tomo(AccessControlledModel):
+class Dataset(AccessControlledModel):
 
     def initialize(self):
-        self.name = 'tomos'
+        self.name = 'mdb.datasets'
         self.ensureIndices(('authors', 'title', 'atomicSpecies'))
         self.ensureTextIndex({
             'authors': 1,
@@ -19,44 +19,44 @@ class Tomo(AccessControlledModel):
             '_id', 'authors', 'title', 'atomicSpecies', 'url'))
 
 
-    def validate(self, tomo):
-        return tomo
+    def validate(self, dataset):
+        return dataset
 
     def create(self, authors, title=None, url=None, microscope=None, image_file_id=None,
                    user=None, public=True):
 
-        tomo = {
+        dataset = {
             'authors': authors,
             'title': title,
             'url': url
         }
 
         if image_file_id is not None:
-            tomo['imageFileId'] = image_file_id
+            dataset['imageFileId'] = image_file_id
 
-        self.setPublic(tomo, public=public)
+        self.setPublic(dataset, public=public)
 
         if user:
-            tomo['userId'] = user['_id']
-            self.setUserAccess(tomo, user=user, level=AccessType.ADMIN)
+            dataset['userId'] = user['_id']
+            self.setUserAccess(dataset, user=user, level=AccessType.ADMIN)
         else:
-            tomo['userId'] = None
+            dataset['userId'] = None
 
-        return self.save(tomo)
+        return self.save(dataset)
 
-    def update(self, tomo, atomic_species=None):
+    def update(self, dataset, atomic_species=None):
         query = {
-            '_id': tomo['_id']
+            '_id': dataset['_id']
         }
         updates = {}
 
-        new_atomic_species = set(tomo.get('atomicSpecies', {}))
+        new_atomic_species = set(dataset.get('atomicSpecies', {}))
         new_atomic_species.update(atomic_species)
         if atomic_species is not None:
             updates.setdefault('$set', {})['atomicSpecies'] = list(new_atomic_species)
 
         if updates:
-            super(Tomo, self).update(query, update=updates, multi=False)
+            super(Dataset, self).update(query, update=updates, multi=False)
 
 
     def _normalize_element(self, element):
@@ -96,7 +96,7 @@ class Tomo(AccessControlledModel):
 
             query['$or'] = filters
 
-        cursor = super(Tomo, self).find(query=query, sort=sort, user=user)
+        cursor = super(Dataset, self).find(query=query, sort=sort, user=user)
 
         for r in self.filterResultsByPermission(cursor=cursor, user=user,
                                                 level=AccessType.READ,
@@ -141,7 +141,7 @@ class Tomo(AccessControlledModel):
                 '$in': species
             }
 
-        cursor = super(Tomo, self).find(query=query, sort=sort, user=user)
+        cursor = super(Dataset, self).find(query=query, sort=sort, user=user)
 
         for r in self.filterResultsByPermission(cursor=cursor, user=user,
                                                 level=AccessType.READ,

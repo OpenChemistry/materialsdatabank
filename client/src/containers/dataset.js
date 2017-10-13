@@ -2,31 +2,31 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux'
 
-import { loadTomoById } from '../redux/ducks/tomos'
+import { loadDatasetById } from '../redux/ducks/datasets'
 import { loadReconstructions } from '../redux/ducks/reconstructions'
-import Tomo from '../components/tomo'
+import Dataset from '../components/dataset'
 import selectors from '../redux/selectors'
 
-class TomoContainer extends Component {
+class DatasetContainer extends Component {
 
   componentDidMount() {
     if (this.props._id != null) {
-      this.props.dispatch(loadTomoById(this.props._id));
+      this.props.dispatch(loadDatasetById(this.props._id));
       this.props.dispatch(loadReconstructions(this.props._id));
     }
   }
 
   render() {
-    return <Tomo {...this.props} />;
+    return <Dataset {...this.props} />;
   }
 }
 
-TomoContainer.propTypes = {
+DatasetContainer.propTypes = {
   id: PropTypes.string,
   inchikey: PropTypes.string
 }
 
-TomoContainer.defaultProps = {
+DatasetContainer.defaultProps = {
   id: null
 }
 
@@ -36,13 +36,13 @@ function mapStateToProps(state, ownProps) {
       _id: id
   }
 
-  let tomos = selectors.tomos.getTomosById(state);
-  if (id != null && id in tomos) {
-    const tomo = tomos[id];
-    props = {...tomo}
+  let datasets = selectors.datasets.getDatasetsById(state);
+  if (id != null && id in datasets) {
+    const dataset = datasets[id];
+    props = {...dataset}
   }
 
   return props;
 }
 
-export default connect(mapStateToProps)(TomoContainer)
+export default connect(mapStateToProps)(DatasetContainer)

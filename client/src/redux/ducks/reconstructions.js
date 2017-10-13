@@ -7,7 +7,7 @@ export const RECEIVE_RECONSTRUCTIONS   = 'RECEIVE_RECONSTRUCTIONS';
 
 
 export const initialState = {
-    byTomoId: {},
+    byDatasetId: {},
     error: null,
   };
 
@@ -23,13 +23,13 @@ const reducer = handleActions({
   },
   RECEIVE_RECONSTRUCTIONS: (state, action) => {
     const reconstructions = action.payload.reconstructions;
-    const tomoId = action.payload.tomoId;
-    const byTomoId = {
+    const datasetId = action.payload.datasetId;
+    const byDatasetId = {
       ...state.byTomId,
-      [tomoId]: reconstructions
+      [datasetId]: reconstructions
     }
 
-    return {...state,  byTomoId };
+    return {...state,  byDatasetId };
   },
 }, initialState);
 
@@ -41,7 +41,7 @@ export const loadReconstructions = createAction(LOAD_RECONSTRUCTIONS, (id) => ({
 export const requestReconstructions = createAction(REQUEST_RECONSTRUCTIONS, (id) => ({ id }));
 
 export const receiveReconstructions = createAction(RECEIVE_RECONSTRUCTIONS,
-    (tomoId, reconstructions) => ({tomoId, reconstructions }));
+    (datasetId, reconstructions) => ({datasetId, reconstructions }));
 
 
 export default reducer;
