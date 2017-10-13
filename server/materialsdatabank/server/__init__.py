@@ -3,4 +3,4 @@ from .rest import Dataset
 
 def load(info):
     info['apiRoot'].mdb = Prefix()
-    info['apiRoot'].mdb.dataset = Dataset()
+    info['apiRoot'].mdb.datasets = Dataset()
