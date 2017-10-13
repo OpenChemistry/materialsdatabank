@@ -55,8 +55,8 @@ const reducer = handleActions({
     }
   },
   RECEIVE_TOMO: (state, action) => {
-    const tomo = action.payload.tomo;
-    const byId = {...state.byId, [tomo._id]: tomo };
+    const dataset = action.payload.dataset;
+    const byId = {...state.byId, [dataset._id]: dataset };
 
     return {...state, byId};
   }
@@ -64,23 +64,23 @@ const reducer = handleActions({
 
 // Action Creators
 
-// Fetch tomos
-export const searchTomosByText = createAction(SEARCH_TOMOS_BY_TEXT, (terms) => ({terms}));
-export const searchTomosByFields = createAction(SEARCH_TOMOS_BY_FIELDS,
+// Fetch datasets
+export const searchDatasetsByText = createAction(SEARCH_TOMOS_BY_TEXT, (terms) => ({terms}));
+export const searchDatasetsByFields = createAction(SEARCH_TOMOS_BY_FIELDS,
     (title, authors, atomicSpecies) => ({title, authors, atomicSpecies}));
 
-export const requestTomosByText = createAction(REQUEST_TOMOS_BY_TEXT);
-export const requestTomosByFields = createAction(REQUEST_TOMOS_BY_FIELDS);
+export const requestDatasetsByText = createAction(REQUEST_TOMOS_BY_TEXT);
+export const requestDatasetsByFields = createAction(REQUEST_TOMOS_BY_FIELDS);
 
-export const receiveTomos = createAction(RECEIVE_TOMOS, (results) => ({
+export const receiveDatasets = createAction(RECEIVE_TOMOS, (results) => ({
   search: {results}
 }));
 
-export const loadTomoById = createAction(LOAD_TOMO_BY_ID, (id) => ({ id }));
+export const loadDatasetById = createAction(LOAD_TOMO_BY_ID, (id) => ({ id }));
 
-export const requestTomoById = createAction(REQUEST_TOMO_BY_ID, (id) => ({ id }));
+export const requestDatasetById = createAction(REQUEST_TOMO_BY_ID, (id) => ({ id }));
 
-export const receiveTomo = createAction(RECEIVE_TOMO, (tomo) => ({ tomo }));
+export const receiveDataset = createAction(RECEIVE_TOMO, (dataset) => ({ dataset }));
 
 
 export default reducer;

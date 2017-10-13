@@ -112,16 +112,16 @@ def _import(gc, bibtex_file=None, emd_file=None, tiff_file=None, cjson_file=None
     if image_file is not None:
         image_file = gc.uploadFileToFolder(folder['_id'], image_file)
 
-    tomo = {
+    dataset = {
         'authors': authors,
         'title': title,
         'url': url
     }
 
     if image_file is not None:
-        tomo['imageFileId'] = image_file['_id']
+        dataset['imageFileId'] = image_file['_id']
 
-    tomo = gc.post('mdb/tomo', json=tomo)
+    dataset = gc.post('mdb/dataset', json=dataset)
 
     # Upload reconstructions
     emd_file = gc.uploadFileToFolder(folder['_id'], emd_file)
@@ -132,7 +132,7 @@ def _import(gc, bibtex_file=None, emd_file=None, tiff_file=None, cjson_file=None
         'tiffFileId': tiff_file['_id']
     }
 
-    gc.post('mdb/tomo/%s/reconstructions' % tomo['_id'], json=recon)
+    gc.post('mdb/dataset/%s/reconstructions' % dataset['_id'], json=recon)
 
     # Upload structure
     cjson_file = gc.uploadFileToFolder(folder['_id'], cjson_file)
@@ -145,6 +145,6 @@ def _import(gc, bibtex_file=None, emd_file=None, tiff_file=None, cjson_file=None
         'cmlFileId': cml_file['_id']
     }
 
-    gc.post('mdb/tomo/%s/structures' % tomo['_id'], json=struc)
+    gc.post('mdb/dataset/%s/structures' % dataset['_id'], json=struc)
 
 

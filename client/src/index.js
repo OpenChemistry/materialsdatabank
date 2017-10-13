@@ -14,7 +14,7 @@ import Header from './components/header';
 import Footer from './components/footer';
 import Main from './components/main';
 import SideBar from './components/sidebar';
-import TomoContainer from './containers/tomo'
+import DatasetContainer from './containers/dataset'
 import Welcome from './components/welcome'
 import Search from './components/search'
 
@@ -39,7 +39,7 @@ ReactDOM.render(
            <SideBar />
             <div style={style}>
               <Route exact path='/' component={Main}/>
-              <Route exact path='/tomo/:id' component={TomoContainer}/>
+              <Route exact path='/dataset/:id' component={DatasetContainer}/>
               <Route exact path='/welcome' component={Welcome}/>
               <Route exact path='/search' component={Search}/>
             </div>

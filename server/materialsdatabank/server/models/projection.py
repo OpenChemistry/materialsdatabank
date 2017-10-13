@@ -5,14 +5,14 @@ class Projection(BaseAccessControlledModel):
 
     def initialize(self):
         self.name = 'projections'
-        self.ensureIndices(['tomoId'])
+        self.ensureIndices(['datasetId'])
 
     def validate(self, projection):
         return projection
 
-    def create(self, tomo,  user=None, public=True):
+    def create(self, dataset,  user=None, public=True):
         projection = {
-            'tomoId': tomo['_id']
+            'datasetId': dataset['_id']
         }
 
         self.setPublic(projection, public=public)

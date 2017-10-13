@@ -12,10 +12,10 @@ import PropTypes from 'prop-types';
 import _ from 'lodash'
 
 import './index.css'
-import { searchTomosByFields } from '../../redux/ducks/tomos'
+import { searchDatasetsByFields } from '../../redux/ducks/datasets'
 import selectors from  '../../redux/selectors'
 
-console.log(searchTomosByFields)
+console.log(searchDatasetsByFields)
 
 const style = {
   width: '256px',
@@ -42,7 +42,7 @@ class Search extends Component {
     }
 
     this.props.dispatch(
-        searchTomosByFields(
+        searchDatasetsByFields(
             this.props.title,
             authors,
             atomicSpecies

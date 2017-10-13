@@ -15,24 +15,24 @@ function get(url, params) {
 
 export function searchByText(terms) {
   terms = JSON.stringify(terms)
-  return get('mdb/tomo/search', {
+  return get('mdb/dataset/search', {
     terms
   })
   .then(response => response.data )
 }
 
-export function fetchTomoById(id) {
-  return get(`mdb/tomo/${id}`)
+export function fetchDatasetById(id) {
+  return get(`mdb/dataset/${id}`)
           .then(response => response.data )
 }
 
 export function fetchStructures(id) {
-  return get(`mdb/tomo/${id}/structures`)
+  return get(`mdb/dataset/${id}/structures`)
           .then(response => response.data )
 }
 
 export function fetchReconstructions(id) {
-  return get(`mdb/tomo/${id}/reconstructions`)
+  return get(`mdb/dataset/${id}/reconstructions`)
           .then(response => response.data )
 }
 
@@ -40,7 +40,7 @@ export function searchByFields(title, authors, atomicSpecies) {
   authors = _.isNil(authors) ? null : JSON.stringify(authors);
   atomicSpecies = _.isNil(atomicSpecies) ? null : JSON.stringify(atomicSpecies);
 
-  return get('mdb/tomo', {
+  return get('mdb/dataset', {
     title,
     authors,
     atomicSpecies,
