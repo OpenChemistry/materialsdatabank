@@ -22,6 +22,13 @@ import {
   watchFetchMe
 } from './auth'
 
+import {
+  watchUpload,
+  watchRequestMdbFolder,
+  watchLoadCuratorGroup,
+  watchApproveDataSet
+} from './upload'
+
 export default function* root() {
   yield fork(watchSearchDatasetsByText)
   yield fork(watchSearchDatasetsByFields)
@@ -33,4 +40,8 @@ export default function* root() {
   yield fork(watchNewToken)
   yield fork(watchAuthenticate)
   yield fork(watchFetchMe)
+  yield fork(watchUpload)
+  yield fork(watchRequestMdbFolder)
+  yield fork(watchLoadCuratorGroup)
+  yield fork(watchApproveDataSet)
 }

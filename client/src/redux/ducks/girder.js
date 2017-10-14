@@ -12,6 +12,10 @@ export const REQUEST_ME = 'REQUEST_ME'
 export const RECEIVE_ME = 'RECEIVE_ME'
 export const LOAD_ME = 'LOAD_ME'
 
+export const REQUEST_CURATOR_GROUP = 'REQUEST_CURATOR_GROUP'
+export const RECEIVE_CURATOR_GROUP = 'RECEIVE_CURATOR_GROUP'
+export const LOAD_CURATOR_GROUP = 'LOAD_CURATOR_GROUP'
+
 export const LOAD_OAUTH_PROVIDERS = 'LOAD_OAUTH_PROVIDERS';
 export const REQUEST_OAUTH_PROVIDERS = 'REQUEST_OAUTH_PROVIDERS';
 export const RECEIVE_OAUTH_PROVIDERS = 'RECEIVE_OAUTH_PROVIDERS';
@@ -80,6 +84,18 @@ const reducer = handleActions({
 
     return {...state, me};
   },
+  REQUEST_CURATOR_GROUP: (state, action) => {
+    if (action.error) {
+      return {...state, error: action.payload.error};
+    }
+    else {
+      return {...state,  error:null };
+    }
+  },
+  RECEIVE_CURATOR_GROUP: (state, action) => {
+    const curatorGroup = action.payload.curatorGroup;
+    return {...state,  error:null, curatorGroup };
+  },
 
 }, initialState);
 
@@ -92,6 +108,10 @@ export const setMe = createAction(SET_ME);
 export const requestMe = createAction(REQUEST_ME);
 export const receiveMe = createAction(RECEIVE_ME);
 export const loadMe = createAction(LOAD_ME);
+
+export const requestCuratorGroup = createAction(REQUEST_CURATOR_GROUP);
+export const receiveCuratorGroup = createAction(RECEIVE_CURATOR_GROUP, (curatorGroup) => ({curatorGroup}))
+export const loadCuratorGroup = createAction(LOAD_CURATOR_GROUP);
 
 // Auth
 export const authenticate = createAction(AUTHENTICATE, (token, redirect = true) => ({ token, redirect }));

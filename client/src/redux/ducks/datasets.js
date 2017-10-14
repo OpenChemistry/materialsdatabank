@@ -1,4 +1,5 @@
 import { createAction, handleActions } from 'redux-actions';
+import _ from 'lodash'
 
 // Actions
 export const SEARCH_DATASETS_BY_TEXT   = 'SEARCH_DATASETS__BY_TEXT';
@@ -20,6 +21,7 @@ export const initialState = {
       results: [],
     },
     byId: {},
+    slugToId: {},
     error: null,
   };
 
@@ -57,8 +59,12 @@ const reducer = handleActions({
   RECEIVE_DATASET: (state, action) => {
     const dataset = action.payload.dataset;
     const byId = {...state.byId, [dataset._id]: dataset };
+    let slugToId = state.slugToId;
+    if (!_.isNil(dataset.slug)) {
+      slugToId = {...slugToId, [dataset.slug]: dataset._id };
+    }
 
-    return {...state, byId};
+    return {...state, byId, slugToId};
   }
 }, initialState);
 

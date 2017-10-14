@@ -6,7 +6,7 @@ import { oauth, user, token } from '../../rest/girder'
 import * as rest from '../../rest'
 import { requestOauthProviders, receiveOauthProviders, setAuthenticating,
   newToken, setMe, loadOauthProviders, requestTokenInvalidation, requestMe,
-  receiveMe, AUTHENTICATE, INVALIDATE_TOKEN, LOAD_ME,
+  receiveMe, authenticated, AUTHENTICATE, INVALIDATE_TOKEN, LOAD_ME,
   LOAD_OAUTH_PROVIDERS, NEW_TOKEN} from '../../redux/ducks/girder.js'
 
 export function* fetchOauthProviders(action) {
@@ -53,6 +53,7 @@ export function* authenticate(action) {
       yield put(newToken(token));
       yield put(setMe(me))
       yield put(setAuthenticating(false))
+      yield put(authenticated())
       auth = true;
     }
   }
@@ -78,6 +79,7 @@ export function* invalidateToken(action) {
     yield put( requestTokenInvalidation() )
     yield call(token.invalidate)
     yield put( newToken(null) )
+    yield put( setMe(null) )
   }
   catch(error) {
     yield put( requestTokenInvalidation(error) )

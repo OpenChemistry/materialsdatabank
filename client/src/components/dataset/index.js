@@ -14,29 +14,20 @@ import {
 } from 'material-ui/Table';
 import { connect } from 'react-redux'
 import _ from 'lodash'
+import RaisedButton from 'material-ui/RaisedButton';
+import Done from 'material-ui/svg-icons/action/done';
 
 import selectors from '../../redux/selectors';
 import { symbols } from '../../elements'
 import StructureContainer from '../../containers/structure'
+import { approveDataSet } from '../../redux/ducks/upload';
 
+import './index.css'
 
-const style = {
-  //height: '100%',
-  width: '90%',
-  margin: 20,
-  textAlign: 'center',
-  //display: 'inline-block',
-};
+const privateColor = '#FFEBEE'
 
 const cardHeaderStyle = {
   textAlign: 'left'
-}
-
-const cardMediaStyle = {
-  textAlign: 'right',
-  display: 'inline-block',
-  margin: 20,
-  width: '100%'
 }
 
 const infoStyle = {
@@ -51,19 +42,70 @@ const subtitleStyle = {
     fontSize: '15px'
 }
 
-const tableStyle = {
-  fontSize: '18px'
-}
+
 const tableLabelStyle = {
   fontSize: '18px',
   color: '#9E9E9E'
 }
 
+const approveButtonStyle = {
+  float: 'right',
+  margin: '20px'
+}
+
+const cardMediaStyle = {
+    textAlign: 'right',
+    display: 'inline-block',
+    margin: 20,
+    width: '100%'
+  }
+
+const style = {
+    //height: '100%',
+    width: '90%',
+    margin: 20,
+    textAlign: 'center',
+    //display: 'inline-block',
+  };
+
+const tableStyle = {
+    fontSize: '18px'
+  }
+
+const approvalDivStyle = {
+  display: 'inline'
+}
+
+const textDivStyle = {
+  width: '300px',
+  margin: '20px',
+  float: 'left'
+}
+
 class Dataset extends Component {
+
+  approve = () => {
+    this.props.dispatch(approveDataSet(this.props._id));
+  }
+
 
   render = () => {
     const species = this.props.atomicSpecies.map((an) => symbols[an]).join(', ');
     const authors = this.props.authors.join(' and ');
+
+
+    let structureUrl =  '';
+    if (!_.isNil(this.props.structure)) {
+        structureUrl = `${window.location.origin}/api/v1/mdb/datasets/_/structures/${this.props.structure._id}`
+    }
+
+    let emdUrl = '';
+    let tiffUrl = '';
+    if (!_.isNil(this.props.reconstruction)) {
+      emdUrl = `${window.location.origin}/api/v1/mdb/datasets/_/reconstructions/${this.props.reconstruction._id}/emd`
+      tiffUrl = `${window.location.origin}/api/v1/mdb/datasets/_/reconstructions/${this.props.reconstruction._id}/tiff`
+    }
+
     return (
         <Card style={style} zDepth={2} >
           <CardHeader
@@ -117,6 +159,7 @@ class Dataset extends Component {
                         </a>
                       </TableRowColumn>
                     </TableRow>
+                    { !_.isNil(this.props.tiffFileId) || !_.isNil(this.props.emdFileId) &&
                     <TableRow>
                       <TableRowColumn style={{...tableLabelStyle}}>
                         Reconstruction
@@ -125,19 +168,24 @@ class Dataset extends Component {
                         <IconMenu
                           iconButtonElement={<IconButton><FileFileDownload /></IconButton>}
                         >
+                          { !_.isNil(this.props.tiffFileId) &&
                           <MenuItem
                             value="tiff"
                             primaryText="TIFF"
-                            href={`${window.location.origin}/api/v1/file/${this.props.tiffFileId}/download`}
+                            href={tiffUrl}
                           />
+                          }
+                          { !_.isNil(this.props.emdFileId) &&
                           <MenuItem
                             value="emd"
                             primaryText="EMD"
-                            href={`${window.location.origin}/api/v1/file/${this.props.emdFileId}/download`}
+                            href={emdUrl}
                           />
+                          }
                         </IconMenu>
                       </TableRowColumn>
                     </TableRow>
+                    }
                     <TableRow>
                       <TableRowColumn style={{...tableLabelStyle}}>
                         Structure
@@ -149,17 +197,17 @@ class Dataset extends Component {
                           <MenuItem
                             value="xyz"
                             primaryText="XYZ"
-                            href={`${window.location.origin}/api/v1/file/${this.props.xyzFileId}/download`}
+                            href={`${structureUrl}/xyz`}
                           />
                           <MenuItem
                             value="cjson"
                             primaryText="CJSON"
-                            href={`${window.location.origin}/api/v1/file/${this.props.cjsonFileId}/download`}
+                            href={`${structureUrl}/cjson`}
                           />
                           <MenuItem
                             value="cml"
                             primaryText="CML"
-                            href={`${window.location.origin}/api/v1/file/${this.props.cmlFileId}/download`}
+                            href={`${structureUrl}/cml`}
                           />
                         </IconMenu>
                       </TableRowColumn>
@@ -175,6 +223,22 @@ class Dataset extends Component {
               </GridTile>
             </GridList>
           </CardMedia>
+          { !this.props.public &&
+          <div style={approvalDivStyle}>
+            <div style={textDivStyle} className={'mdb-text'}>This dataset is awaiting approval.</div>
+            { this.props.isCurator &&
+            <RaisedButton
+
+              style={approveButtonStyle}
+              label="Approve"
+              labelPosition="after"
+              primary={true}
+              icon={<Done />}
+              onClick={() => this.approve()}
+            />
+            }
+          </div>
+          }
         </Card>
 
     );
@@ -187,6 +251,8 @@ Dataset.propTypes = {
   authors: PropTypes.array,
   imageFileId:  PropTypes.string,
   url:  PropTypes.string,
+  isCurator: PropTypes.bool,
+  public: PropTypes.bool
 }
 
 Dataset.defaultProps = {
@@ -194,21 +260,24 @@ Dataset.defaultProps = {
   authors: [],
   imageFileId:  null,
   atomicSpecies: [],
-  url: null
+  url: null,
+  isCurator: false,
+  public: false
 }
 
 
 function mapStateToProps(state, ownProps) {
   let props = {};
+
   if (!_.isNull(ownProps._id)) {
+    console.log('dataset: ' + ownProps._id)
     let structures = selectors.structures.getStructuresById(state);
     if (_.has(structures, ownProps._id)) {
       // For now we only have a single structure, so just pick the first.
       const structure = structures[ownProps._id][0];
       props = {
-        cjsonFileId: structure.cjsonFileId,
-        xyzFileId: structure.xyzFileId,
-        cmlFileId: structure.cmlFileId,
+        structure,
+        public: structure.public
       }
     }
 
@@ -216,11 +285,25 @@ function mapStateToProps(state, ownProps) {
     if (_.has(reconstructions, ownProps._id)) {
       // For now we only have a single reconstruction, so just pick the first.
       const reconstruction = reconstructions[ownProps._id][0];
-      props = {
-        ...props,
-        emdFileId: reconstruction.emdFileId,
-        tiffFileId: reconstruction.tiffFileId
+      props = {...props,
+        reconstruction
       }
+
+      if (_.has(reconstruction, 'emdFileId')) {
+        props['emdFileId'] = reconstruction.emdFileId
+      }
+
+      if (_.has(reconstruction, 'tiffFileId')) {
+        props['tiffFileId'] = reconstruction.tiffFileId
+      }
+    }
+  }
+
+  const curatorGroup = selectors.girder.getCuratorGroup(state);
+  if (!_.isNil(curatorGroup)) {
+    const me = selectors.girder.getMe(state);
+    if (!_.isNil(me)) {
+      props['isCurator'] = _.includes(me.groups, curatorGroup['_id'])
     }
   }
 

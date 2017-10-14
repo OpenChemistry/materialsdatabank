@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {GridList, GridTile} from 'material-ui/GridList';
 import { connect } from 'react-redux'
+import _ from 'lodash'
 
 import SearchResult from '../searchresult'
 import selectors from '../../redux/selectors';
@@ -31,6 +32,8 @@ class SearchResults extends Component {
             >
               <SearchResult
                 _id={dataset._id}
+                slug={dataset.slug}
+                public={dataset.public}
                 title={dataset.title}
                 authors={dataset.authors}
                 imageFileId={dataset.imageFileId}

@@ -8,6 +8,7 @@
     "material-ui": "^0.19.2",
     "material-ui-search-bar": "^0.4.0",
     "molecule-3d-for-react": "git+https://github.com/cjh1/molecule-3d-for-react.git",
+    "pretty-bytes": "^4.0.2",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-redirect": "^1.0.0",
