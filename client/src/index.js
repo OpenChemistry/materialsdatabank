@@ -6,6 +6,8 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux'
 import { Route } from 'react-router'
+import Cookies from 'universal-cookie';
+import _ from 'lodash'
 
 import './index.css';
 import configureStore from './store/configureStore'
@@ -17,6 +19,8 @@ import SideBar from './components/sidebar';
 import DatasetContainer from './containers/dataset'
 import Welcome from './components/welcome'
 import Search from './components/search'
+import { SelectLoginProvider, OauthRedirect } from './components/oauth'
+import { authenticate } from './redux/ducks/girder'
 
 
 const store = configureStore()
@@ -30,6 +34,11 @@ const style = {
   display: 'flex'
 }
 
+const cookies = new Cookies();
+const cookieToken = cookies.get('girderToken');
+if (!_.isNil(cookieToken)) {
+  store.dispatch(authenticate(cookieToken));
+}
 ReactDOM.render(
     <MuiThemeProvider >
       <Provider store={store}>
@@ -44,6 +53,8 @@ ReactDOM.render(
               <Route exact path='/search' component={Search}/>
             </div>
            <Footer />
+           <OauthRedirect/>
+           <SelectLoginProvider/>
           </div>
         </ConnectedRouter>
       </Provider>
