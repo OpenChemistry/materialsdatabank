@@ -10,6 +10,7 @@
     "molecule-3d-for-react": "git+https://github.com/cjh1/molecule-3d-for-react.git",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
+    "react-redirect": "^1.0.0",
     "react-redux": "^5.0.6",
     "react-router": "^4.2.0",
     "react-router-redux": "^5.0.0-alpha.6",
@@ -20,7 +21,8 @@
     "redux-form": "^7.1.1",
     "redux-form-material-ui": "^4.3.0",
     "redux-logger": "^3.0.6",
-    "redux-saga": "^0.15.6"
+    "redux-saga": "^0.15.6",
+    "universal-cookie": "^2.1.0"
   },
   "scripts": {
     "start": "react-scripts start",

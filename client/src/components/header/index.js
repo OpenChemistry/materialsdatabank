@@ -8,6 +8,9 @@ import { push } from 'react-router-redux'
 import './index.css'
 import logo from './OpenChemistry_Logo.svg';
 import { searchDatasetsByText } from '../../redux/ducks/datasets'
+import Menu from './menu'
+import Login from './login'
+import selectors from '../../redux/selectors';
 
 
 const style = {
@@ -25,12 +28,23 @@ const titleStyle = {
 
 const searchBarStyle = {
   margin: '15px 50px',
-  maxWidth: 800
+  maxWidth: 800,
+  width: '70%'
 };
 
 const iconStyleRight = {
   width: '50%'
 }
+
+const divStyle = {
+  width: '100%',
+  display: 'flex',
+}
+
+const loginMenuStyle = {
+  'margin-top': '18px'
+}
+
 
 class RightElement extends Component {
 
@@ -65,18 +79,27 @@ class RightElement extends Component {
 
   render = () => {
     return (
-      <SearchBar
-        hintText={'Search by author, paper, microscope, atomic species'}
-        onChange={this.onChange}
-        onRequestSearch={this.onRequestSearch}
-        style={searchBarStyle}
-        className={'mdb-searchbar'}
-      />);
+      <div style={divStyle}>
+        <SearchBar
+          hintText={'Search by author, paper, microscope, atomic species'}
+          onChange={this.onChange}
+          onRequestSearch={this.onRequestSearch}
+          style={searchBarStyle}
+          className={'mdb-searchbar'}
+        />
+        <div style={loginMenuStyle}>
+          {!this.props.isAuthenticated ? <Login/> : <Menu/>}
+        </div>
+      </div>);
   }
 }
 
 function mapStateToProps(state) {
-  return {};
+  const isAuthenticated = selectors.girder.isAuthenticated(state);
+
+  return {
+    isAuthenticated,
+  }
 }
 
 RightElement = connect(mapStateToProps)(RightElement)
