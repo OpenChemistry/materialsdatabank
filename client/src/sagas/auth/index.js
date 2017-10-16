@@ -40,7 +40,6 @@ export function* watchNewToken() {
 }
 
 export function* authenticate(action) {
-  console.log('auth')
   const payload = action.payload;
   const token = payload.token;
   const redirect = payload.redirect;
@@ -48,10 +47,7 @@ export function* authenticate(action) {
   yield put(setAuthenticating(true));
   let me = null;
   let auth = false;
-  console.log('token')
-  console.log(token)
   if (!_.isNil(token)) {
-    console.log('in token')
     me = yield call(user.fetchMe, token);
     if (me != null) {
       yield put(newToken(token));
