@@ -50,6 +50,10 @@ function redirectMapStateToProps(state, ownProps) {
 }
 OauthRedirect = connect(redirectMapStateToProps)(OauthRedirect);
 
+const contentStyle = {
+  maxWidth: '300px'
+}
+
 class SelectLoginProvider extends Component {
   constructor(props) {
     super(props)
@@ -96,10 +100,10 @@ class SelectLoginProvider extends Component {
       onTouchTap={this.handleClose}
     />]
 
+    // title="Select a login provider. You'll be taken to the provider to authenticate.
     return (
       <Dialog
-        title="Select a login provider. You'll be taken to the provider to authenticate."
-
+       contentStyle={contentStyle}
         actions={actions}
         modal={false}
         open={this.state.open}
@@ -109,10 +113,10 @@ class SelectLoginProvider extends Component {
         onTouchTap={this.handleGoogle}
         label='Sign in with Google'
         labelPosition='after' />
-      <FlatButton icon={<img className='mdb-github' src={github} alt="github" />}
+      {/*<FlatButton icon={<img className='mdb-github' src={github} alt="github" />}
         onTouchTap={this.handleGitHub}
         label='Sign in with GitHub'
-         labelPosition='after' />
+         labelPosition='after' />*/}
       </Dialog>
     );
 
