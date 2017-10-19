@@ -107,7 +107,7 @@ def _import(gc, bibtex_file=None, emd_file=None, tiff_file=None, cjson_file=None
         folder = six.next(folder)
     except StopIteration:
         folder = gc.createFolder(private_folder['_id'], 'mdb', parentType='folder',
-                                 public=True)
+                                 public=False)
 
     if image_file is not None:
         image_file = gc.uploadFileToFolder(folder['_id'], image_file)
