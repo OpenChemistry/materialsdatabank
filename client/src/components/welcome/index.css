@@ -14,7 +14,7 @@ pre {
 
 .mdb-welcome-text {
   font-family: Roboto, sans-serif;
-  color: rgb(158, 158, 158);
+  color: rgba(0, 0, 0, 0.87);
   text-align: left;
   font-size: 18px;
 }
