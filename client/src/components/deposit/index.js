@@ -99,6 +99,7 @@ class FileInputField extends Component {
             />
           </div>
           <RaisedButton
+              disabled={this.props.disabled}
               style={style.button}
               containerElement='label' // <-- Just add me!
               label='Select file'>
@@ -257,6 +258,7 @@ class Deposit extends Component {
             name="imageFile"
             component={FileInputField}
             label='Image file ( Thumbnail for dataset )'
+            disabled={submitting}
           />
           <Field
             style={style.field}
@@ -264,6 +266,7 @@ class Deposit extends Component {
             component={FileInputField}
             label={'Structure file ( XYZ )'}
             hintText={'Structure file'}
+            disabled={submitting}
           />
           <Field
             style={style.field}
@@ -271,6 +274,7 @@ class Deposit extends Component {
             component={FileInputField}
             label={'Reconstruction file ( EMD or TIFF )'}
             hintText={'Reconstruction file'}
+            disabled={submitting}
           />
           <div style={style.field}>
             <RaisedButton

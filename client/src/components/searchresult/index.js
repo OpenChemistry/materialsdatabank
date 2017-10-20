@@ -5,7 +5,7 @@ import { push } from 'react-router-redux'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 import Image from 'material-ui/svg-icons/image/image';
-import {grey300, grey50} from 'material-ui/styles/colors';
+import {grey300, blueGrey50} from 'material-ui/styles/colors';
 
 import './index.css'
 import { symbols } from '../../elements'
@@ -20,7 +20,7 @@ const publicStyle = {
 
 const privateStyle = {
     ...publicStyle,
-    backgroundColor: grey50
+    backgroundColor: blueGrey50
 };
 
 
