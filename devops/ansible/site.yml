@@ -10,12 +10,13 @@
       set_fact:
         girder_host: "{{girder_host|default('localhost')}}"
         girder_port: "{{girder_port|default(8080)}}"
-    - name:
-      debug: msg="{{girder_host}}"
+        girder_scheme: "http"
+
     - name: Create Girder mdb user
       girder:
         host: "{{girder_host}}"
         port: "{{girder_port}}"
+        scheme: "{{girder_scheme}}"
         user:
           firstName: "mdb"
           lastName: "mdb"
@@ -25,10 +26,23 @@
           admin: yes
         state: present
 
+    - name: Create curator group
+      girder:
+        host: "{{girder_host}}"
+        port: "{{girder_port}}"
+        scheme: "{{girder_scheme}}"
+        username: "mdbadmin"
+        password: "{{ mdb_password }}"
+        group:
+          name: "curator"
+          description: "The MDB curation group"
+        state: present
+
     - name: Enable MDB plugins
       girder:
         host: "{{girder_host}}"
         port: "{{girder_port}}"
+        scheme: "{{girder_scheme}}"
         username: "mdbadmin"
         password: "{{ mdb_password }}"
         plugins:
@@ -39,6 +53,7 @@
       girder:
         host: "{{girder_host}}"
         port: "{{girder_port}}"
+        scheme: "{{girder_scheme}}"
         username: "mdbadmin"
         password: "{{ mdb_password }}"
         assetstore:
@@ -48,10 +63,63 @@
           current: true
         state: present
 
+    - name: Enable OAuth plugins
+      girder:
+        host: "{{girder_host}}"
+        port: "{{girder_port}}"
+        scheme: "{{girder_scheme}}"
+        username: "mdbadmin"
+        password: "{{ mdb_password }}"
+        plugins:
+          - oauth
+        state: present
+
     - name: Restart the server
       girder:
         host: "{{girder_host}}"
         port: "{{girder_port}}"
+        scheme: "{{girder_scheme}}"
+        username: "mdbadmin"
+        password: "{{ mdb_password }}"
+        put:
+          path: "system/restart"
+
+    - name: Wait until server restarts
+      wait_for:
+        host="{{girder_host}}"
+        port="{{girder_port}}"
+        delay=5
+
+    - name: Configure OAuth plugins
+      girder:
+        host: "{{girder_host}}"
+        port: "{{girder_port}}"
+        scheme: "{{girder_scheme}}"
+        username: "mdbadmin"
+        password: "{{ mdb_password }}"
+        setting:
+          key: "{{item.key}}"
+          value: "{{item.value}}"
+        state: present
+      with_items:
+        - {
+          "key": "oauth.google_client_id",
+          "value": "{{ oauth_google_client_id }}"
+        }
+        - {
+          "key": "oauth.google_client_secret",
+          "value": "{{ oauth_google_client_secret }}"
+        }
+        - {
+          "key": "oauth.providers_enabled",
+          "value": ["google"]
+        }
+
+    - name: Restart the server
+      girder:
+        host: "{{girder_host}}"
+        port: "{{girder_port}}"
+        scheme: "{{girder_scheme}}"
         username: "mdbadmin"
         password: "{{ mdb_password }}"
         put:
