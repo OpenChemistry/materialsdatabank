@@ -9,8 +9,8 @@ import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import PropTypes from 'prop-types';
 import _ from 'lodash'
-import prettyBytes from 'pretty-bytes';
 import LinearProgress from 'material-ui/LinearProgress';
+import filesize from 'filesize'
 
 import { upload } from '../../redux/ducks/upload'
 import selectors from  '../../redux/selectors'
@@ -73,7 +73,7 @@ class FileInputField extends Component {
     }
     const file = this.props.input.value;
     const name = file !== '' ? file.name : '';
-    const size = file !== '' ? prettyBytes(file.size) : '';
+    const size = file !== '' ? filesize(file.size) : '';
     const showProgress = this.props.progress > 0;
     const progressStyle = {}
     if (!showProgress) {
@@ -166,7 +166,7 @@ const deposit = (values, dispatch) => {
 
 const validate = values => {
   const errors = {}
-  const requiredFields = [ 'title', 'authors', 'structureFile']
+  const requiredFields = [ 'title', 'authors', 'structureFile', 'url']
   requiredFields.forEach(field => {
     if (!values[ field ]) {
       errors[ field ] = 'Required'
@@ -250,8 +250,8 @@ class Deposit extends Component {
             style={style.field}
             name="url"
             component={TextField}
-            hintText="URL to paper"
-            floatingLabelText="URL to paper"
+            hintText="DOI"
+            floatingLabelText="DOI"
           />
           <Field
             style={style.field}

@@ -49,7 +49,7 @@ class Dataset(Resource):
         .jsonParam('dataset', 'Dataset document', required=True, paramType='body')
     )
     def create_dataset(self, dataset):
-        self.requireParams(['authors', 'title', 'url'], dataset)
+        self.requireParams(['authors', 'title'], dataset)
         authors = dataset.get('authors')
         if not isinstance(authors, list):
             authors = authors.split(' and ')
@@ -236,6 +236,7 @@ class Dataset(Resource):
         return list(model.filterResultsByPermission(cursor=cursor, user=user,
                                                     level=AccessType.READ,
                                                     limit=limit, offset=offset))
+
 
     @access.cookie
     @access.public(scope=TokenScope.DATA_READ)

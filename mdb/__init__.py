@@ -88,9 +88,11 @@ def cli(ctx, username, password, api_key, api_url):
               type=click.Path(exists=True, dir_okay=False, readable=True))
 @click.option('--url', default=None,
               help='the url for the dataset', type=str)
+@click.option('--slug', default=None,
+              help='the url slug', type=str)
 @click.pass_obj
 def _import(gc, bibtex_file=None, emd_file=None, tiff_file=None, cjson_file=None,
-            xyz_file=None, cml_file=None, image_file=None, url=None):
+            xyz_file=None, cml_file=None, image_file=None, url=None, slug=None):
     with open(bibtex_file) as bibtex_file:
         bibtex_database = bibtexparser.load(bibtex_file)
         entry = bibtex_database.entries[0]
@@ -115,7 +117,8 @@ def _import(gc, bibtex_file=None, emd_file=None, tiff_file=None, cjson_file=None
     dataset = {
         'authors': authors,
         'title': title,
-        'url': url
+        'url': url,
+        'slug': slug
     }
 
     if image_file is not None:

@@ -28,6 +28,9 @@ export default class Welcome extends Component {
             associated materials properties arising from non-crystalline structures such as defects, dislocations, strain, complex grain structure,
             local chemical ordering, and phase boundaries.
           </p>
+          <div style={{ 'text-align': 'center'}}>
+            <iframe src="https://player.vimeo.com/video/202250016" width="640" height="480" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+          </div>
         </div>
       </Paper>
     );

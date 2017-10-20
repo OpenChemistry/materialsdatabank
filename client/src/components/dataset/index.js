@@ -171,15 +171,15 @@ class Dataset extends Component {
                     </TableRow>
                     <TableRow>
                       <TableRowColumn style={{...tableLabelStyle}}>
-                        Paper
+                        DOI
                       </TableRowColumn>
                       <TableRowColumn style={{...tableStyle}}>
-                        <a href={this.props.url}>
+                        <a href={`https://dx.doi.org/${this.props.url}`}>
                           {this.props.url}
                         </a>
                       </TableRowColumn>
                     </TableRow>
-                    { !_.isNil(this.props.tiffFileId) || !_.isNil(this.props.emdFileId) &&
+                    { (!_.isNil(this.props.reconstruction.tiffFileId) || !_.isNil(this.props.reconstruction.emdFileId)) &&
                     <TableRow>
                       <TableRowColumn style={{...tableLabelStyle}}>
                         Reconstruction
@@ -188,14 +188,14 @@ class Dataset extends Component {
                         <IconMenu
                           iconButtonElement={<IconButton><FileFileDownload /></IconButton>}
                         >
-                          { !_.isNil(this.props.tiffFileId) &&
+                          { !_.isNil(this.props.reconstruction.tiffFileId) &&
                           <MenuItem
                             value="tiff"
                             primaryText="TIFF"
                             href={tiffUrl}
                           />
                           }
-                          { !_.isNil(this.props.emdFileId) &&
+                          { !_.isNil(this.props.reconstruction.emdFileId) &&
                           <MenuItem
                             value="emd"
                             primaryText="EMD"
@@ -272,7 +272,8 @@ Dataset.propTypes = {
   imageFileId:  PropTypes.string,
   url:  PropTypes.string,
   isCurator: PropTypes.bool,
-  public: PropTypes.bool
+  public: PropTypes.bool,
+  reconstruction:PropTypes.object
 }
 
 Dataset.defaultProps = {
@@ -282,7 +283,8 @@ Dataset.defaultProps = {
   atomicSpecies: [],
   url: null,
   isCurator: false,
-  public: false
+  public: false,
+  reconstruction: {}
 }
 
 
