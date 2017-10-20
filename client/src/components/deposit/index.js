@@ -166,7 +166,7 @@ const deposit = (values, dispatch) => {
 
 const validate = values => {
   const errors = {}
-  const requiredFields = [ 'title', 'authors', 'structureFile']
+  const requiredFields = [ 'title', 'authors', 'structureFile', 'url']
   requiredFields.forEach(field => {
     if (!values[ field ]) {
       errors[ field ] = 'Required'
@@ -250,8 +250,8 @@ class Deposit extends Component {
             style={style.field}
             name="url"
             component={TextField}
-            hintText="URL to paper"
-            floatingLabelText="URL to paper"
+            hintText="DOI"
+            floatingLabelText="DOI"
           />
           <Field
             style={style.field}

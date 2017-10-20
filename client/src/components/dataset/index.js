@@ -171,10 +171,10 @@ class Dataset extends Component {
                     </TableRow>
                     <TableRow>
                       <TableRowColumn style={{...tableLabelStyle}}>
-                        Paper
+                        DOI
                       </TableRowColumn>
                       <TableRowColumn style={{...tableStyle}}>
-                        <a href={this.props.url}>
+                        <a href={`https://dx.doi.org/${this.props.url}`}>
                           {this.props.url}
                         </a>
                       </TableRowColumn>
