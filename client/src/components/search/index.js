@@ -15,8 +15,6 @@ import './index.css'
 import { searchDatasetsByFields } from '../../redux/ducks/datasets'
 import selectors from  '../../redux/selectors'
 
-console.log(searchDatasetsByFields)
-
 const style = {
   width: '256px',
   margin: '30px',
