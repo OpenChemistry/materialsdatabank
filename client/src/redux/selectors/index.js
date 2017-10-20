@@ -4,6 +4,7 @@ import * as reconstructions from './reconstructions'
 import * as search from './search'
 import * as girder from './girder'
 import * as app from './app'
+import * as upload from './upload'
 
 
 export default {
@@ -13,4 +14,5 @@ export default {
   search,
   girder,
   app,
+  upload,
 };

@@ -20,7 +20,8 @@ import DatasetContainer from './containers/dataset'
 import Welcome from './components/welcome'
 import Search from './components/search'
 import { SelectLoginProvider, OauthRedirect } from './components/oauth'
-import { authenticate } from './redux/ducks/girder'
+import { authenticate, loadCuratorGroup } from './redux/ducks/girder'
+import Deposit from './components/deposit'
 
 
 const store = configureStore()
@@ -39,6 +40,7 @@ const cookieToken = cookies.get('girderToken');
 if (!_.isNil(cookieToken)) {
   store.dispatch(authenticate(cookieToken));
 }
+
 ReactDOM.render(
     <MuiThemeProvider >
       <Provider store={store}>
@@ -51,6 +53,7 @@ ReactDOM.render(
               <Route exact path='/dataset/:id' component={DatasetContainer}/>
               <Route exact path='/welcome' component={Welcome}/>
               <Route exact path='/search' component={Search}/>
+              <Route exact path='/deposit' component={Deposit}/>
             </div>
            <Footer />
            <OauthRedirect/>

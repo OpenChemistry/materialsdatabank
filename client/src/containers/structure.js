@@ -33,6 +33,7 @@ function mapStateToProps(state, ownProps) {
   let structures = selectors.structures.getStructuresById(state);
   let props = {};
   if (ownProps._id != null && ownProps._id in structures) {
+
     // For now we only have a single structure, so just pick the first.
     const structure = structures[ownProps._id][0];
     props = {

@@ -1,17 +1,37 @@
 import axios, { CancelToken } from 'axios';
 import { CANCEL } from 'redux-saga'
 import _ from 'lodash'
+import * as girder from './girder'
 
 
 var _girderClient = axios.create({
   baseURL: `${window.location.origin}/api/v1`
 });
 
-
-
 export function get(url, config) {
   const source = CancelToken.source()
   const request = _girderClient.get(url, { cancelToken: source.token, ...config })
+  request[CANCEL] = () => source.cancel()
+  return request
+}
+
+export function post(url, data, config) {
+  const source = CancelToken.source()
+  const request = _girderClient.post(url, data, { ...config, cancelToken: source.token })
+  request[CANCEL] = () => source.cancel()
+  return request
+}
+
+export function put(url, data, config) {
+  const source = CancelToken.source()
+  const request = _girderClient.put(url, data, { ...config, cancelToken: source.token })
+  request[CANCEL] = () => source.cancel()
+  return request
+}
+
+export function patch(url, data, config) {
+  const source = CancelToken.source()
+  const request = _girderClient.patch(url, data, { ...config, cancelToken: source.token })
   request[CANCEL] = () => source.cancel()
   return request
 }
@@ -30,6 +50,7 @@ export function updateToken(token) {
     baseURL: `${window.location.origin}/api/v1`
   });
 }
+
 
 export function searchByText(terms) {
   terms = JSON.stringify(terms)
@@ -70,4 +91,55 @@ export function searchByFields(title, authors, atomicSpecies) {
   .then(response => response.data )
 }
 
+export function createDataSet(title, authors, url, slug, imageFileId) {
+  const dataset = {
+      title,
+      authors,
+      url,
+      slug,
+      imageFileId
+  }
+
+  return post('mdb/datasets', dataset)
+  .then(response => response.data)
+}
+
+export function createStructure(dataSetId, xyzFileId) {
+  const structure = {
+    xyzFileId,
+  }
+
+  return post(`mdb/datasets/${dataSetId}/structures`, structure)
+  .then(response => response.data)
+}
+
+export function createReconstruction(dataSetId, emdFileId=null, tiffFileId=null) {
+  const reconstruction = {
+    emdFileId,
+    tiffFileId,
+  }
+
+  return post(`mdb/datasets/${dataSetId}/reconstructions`, reconstruction)
+  .then(response => response.data)
+}
+
+export function updateDataSet(id, data) {
+  return patch(`mdb/datasets/${id}`, data)
+  .then(response => response.data)
+}
+
+export function updateReconstruction(id, data) {
+  return patch(`mdb/datasets/_/reconstructions/${id}`, data)
+  .then(response => response.data)
+}
+
+export function updateStructure(id, data) {
+  return patch(`mdb/datasets/_/structures/${id}`, data)
+  .then(response => response.data)
+}
+
+
+export {
+  girder
+}
 
