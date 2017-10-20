@@ -32,7 +32,9 @@ export function updateToken(action) {
   }
 
   const cookies = new Cookies();
-  cookies.set('girderToken', girderToken);
+  cookies.set('girderToken', girderToken, {
+    path: '/'
+  });
 }
 
 export function* watchNewToken() {
