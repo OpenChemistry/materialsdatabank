@@ -15,6 +15,8 @@ import LinearProgress from 'material-ui/LinearProgress';
 import { upload } from '../../redux/ducks/upload'
 import selectors from  '../../redux/selectors'
 import { clearNewDataSet } from '../../redux/ducks/upload';
+import { setProgress } from '../../redux/ducks/app';
+
 import './index.css'
 
 const style = {
@@ -151,10 +153,13 @@ const deposit = (values, dispatch) => {
     imageFile.id = 'imageFile';
   }
 
+  dispatch(setProgress(true));
+
   return new Promise((resolve, reject) => {
     dispatch(upload(title, authors, url, slug, structureFile,
         reconstructionFile, imageFile, resolve, reject));
-  });
+  }).then(() => dispatch(setProgress(false)));
+
 //    this.props.dispatch(push('/'));
 }
 
@@ -195,7 +200,6 @@ class Deposit extends Component {
   }
 
   render = () => {
-    console.log('deposit')
     const {handleSubmit, pristine, submitting, invalid} = this.props;
     const indeterminateProgress = {
       width: '90%',
@@ -267,10 +271,6 @@ class Deposit extends Component {
             component={FileInputField}
             label={'Reconstruction file ( EMD or TIFF )'}
             hintText={'Reconstruction file'}
-          />
-          <LinearProgress
-            style={indeterminateProgress}
-            mode="indeterminate"
           />
           <div style={style.field}>
             <RaisedButton

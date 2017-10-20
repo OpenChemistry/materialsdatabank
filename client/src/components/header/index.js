@@ -4,6 +4,7 @@ import SearchBar from 'material-ui-search-bar'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 import { push } from 'react-router-redux'
+import LinearProgress from 'material-ui/LinearProgress';
 
 import './index.css'
 import logo from './OpenChemistry_Logo.svg';
@@ -104,21 +105,44 @@ function mapStateToProps(state) {
 
 RightElement = connect(mapStateToProps)(RightElement)
 
-export default class Header extends Component {
+class Header extends Component {
   render = () => {
+  const progressStyle = {}
+
+  if (!this.props.progress) {
+    progressStyle['display'] = 'none';
+  }
   return (
-    <AppBar
-      title={
-        <div>
-          <div style={{ fontSize: 32, marginTop: 10 }}>Material Data Bank</div>
-          <div style={{ fontSize: 14, fontWeight: 300 }}>An Information Portal for 3D atomic electron tomography data</div>
-        </div>
-      }
-      titleStyle={titleStyle}
-      style={style}
-      iconElementLeft={<img className='mdb-logo' src={logo} alt="logo" />}
-      iconElementRight={<RightElement/>}
-      iconStyleRight={iconStyleRight} />
+    <div>
+      <AppBar
+        title={
+          <div>
+            <div style={{ fontSize: 32, marginTop: 10 }}>Material Data Bank</div>
+            <div style={{ fontSize: 14, fontWeight: 300 }}>An Information Portal for 3D atomic electron tomography data</div>
+          </div>
+        }
+        titleStyle={titleStyle}
+        style={style}
+        iconElementLeft={<img className='mdb-logo' src={logo} alt="logo" />}
+        iconElementRight={<RightElement/>}
+        iconStyleRight={iconStyleRight} />
+      <LinearProgress
+        style={progressStyle}
+        mode="indeterminate"
+      />
+     </div>
   );
   }
 }
+
+
+function mapStateToPropsHeader(state) {
+
+  const progress = selectors.app.progress(state);
+
+  return {
+    progress,
+  }
+}
+
+export default connect(mapStateToPropsHeader)(Header)

@@ -21,6 +21,7 @@ import selectors from '../../redux/selectors';
 import { symbols } from '../../elements'
 import StructureContainer from '../../containers/structure'
 import { approveDataSet } from '../../redux/ducks/upload';
+import { setProgress } from '../../redux/ducks/app';
 
 import './index.css'
 
@@ -84,10 +85,29 @@ const textDivStyle = {
 
 class Dataset extends Component {
 
-  approve = () => {
-    this.props.dispatch(approveDataSet(this.props._id));
+  constructor(props) {
+    super(props);
+    this.state = {
+        approving: false
+    }
   }
 
+  approve = () => {
+    this.props.dispatch(setProgress(true));
+    this.props.dispatch(approveDataSet(this.props._id));
+    this.setState({
+      approving: true
+    })
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+    if (nextProps.public && this.state.approving) {
+      this.props.dispatch(setProgress(false));
+      this.setState({
+        approving: false
+      });
+    }
+  }
 
   render = () => {
     const species = this.props.atomicSpecies.map((an) => symbols[an]).join(', ');
@@ -228,7 +248,7 @@ class Dataset extends Component {
             <div style={textDivStyle} className={'mdb-text'}>This dataset is awaiting approval.</div>
             { this.props.isCurator &&
             <RaisedButton
-
+              disabled={this.state.approving}
               style={approveButtonStyle}
               label="Approve"
               labelPosition="after"

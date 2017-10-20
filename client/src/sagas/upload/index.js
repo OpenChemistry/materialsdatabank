@@ -210,7 +210,7 @@ export  function* watchLoadCuratorGroup() {
 function* approveDataSet(action) {
   try {
     yield put( approveDataSetRequest(id) );
-    const id = action.payload.id;
+    const {id} = action.payload;
 
     const {
       structures,
@@ -238,7 +238,6 @@ function* approveDataSet(action) {
 
     // Reload the structure
     yield put(loadStructures(id));
-
   }
   catch(error) {
     yield put( approveDataSetRequest(error) )
