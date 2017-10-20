@@ -9,8 +9,8 @@ import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import PropTypes from 'prop-types';
 import _ from 'lodash'
-import prettyBytes from 'pretty-bytes';
 import LinearProgress from 'material-ui/LinearProgress';
+import filesize from 'filesize'
 
 import { upload } from '../../redux/ducks/upload'
 import selectors from  '../../redux/selectors'
@@ -73,7 +73,7 @@ class FileInputField extends Component {
     }
     const file = this.props.input.value;
     const name = file !== '' ? file.name : '';
-    const size = file !== '' ? prettyBytes(file.size) : '';
+    const size = file !== '' ? filesize(file.size) : '';
     const showProgress = this.props.progress > 0;
     const progressStyle = {}
     if (!showProgress) {
