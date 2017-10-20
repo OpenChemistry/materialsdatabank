@@ -290,7 +290,6 @@ function mapStateToProps(state, ownProps) {
   let props = {};
 
   if (!_.isNull(ownProps._id)) {
-    console.log('dataset: ' + ownProps._id)
     let structures = selectors.structures.getStructuresById(state);
     if (_.has(structures, ownProps._id)) {
       // For now we only have a single structure, so just pick the first.
