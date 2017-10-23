@@ -5,7 +5,7 @@ import './index.css'
 import kitwareLogo from './Kitware_Full_Logo.png';
 import strobeLogo from './strobe.png';
 import uclaLogo from './ucla.png';
-import berkeleyLogo from './berkeley.png';
+import berkeleyLogo from './berkeley.jpg';
 
 
 const style = {
@@ -30,7 +30,7 @@ export default class Footer extends Component {
             onClick={() => this.select(0)} href="http://www.ucla.edu/"
           />
           <BottomNavigationItem
-            icon={<img className='mdb-kitware-logo' src={berkeleyLogo} alt="Berkeley Lab" />}
+            icon={<img style={{width: '75px'}} src={berkeleyLogo} alt="Berkeley Lab" />}
             onClick={() => this.select(0)} href="http://www.lbl.gov/"
           />
       </BottomNavigation>
