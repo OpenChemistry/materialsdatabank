@@ -68,7 +68,7 @@ class RightElement extends Component {
   }
 
   onRequestSearch = () => {
-    this.props.dispatch(push('/'))
+    this.props.dispatch(push('/results'))
     if (_.isString(this.state.searchText) && !_.isEmpty(this.state.searchText)) {
       const text = this.state.searchText.toLowerCase();
       this.props.dispatch(searchDatasetsByText(text.split(/\s/)))

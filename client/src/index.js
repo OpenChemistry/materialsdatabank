@@ -49,10 +49,11 @@ ReactDOM.render(
            <Header />
            <SideBar />
             <div style={style}>
-              <Route exact path='/' component={Main}/>
+              <Route exact path='/' component={Welcome}/>
               <Route exact path='/dataset/:id' component={DatasetContainer}/>
               <Route exact path='/welcome' component={Welcome}/>
               <Route exact path='/search' component={Search}/>
+              <Route exact path='/results' component={Main}/>
               <Route exact path='/deposit' component={Deposit}/>
             </div>
            <Footer />
