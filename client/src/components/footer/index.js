@@ -2,12 +2,15 @@ import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigati
 import React, { Component } from 'react';
 
 import './index.css'
-import logo from './Kitware_Full_Logo.png';
+import kitwareLogo from './Kitware_Full_Logo.png';
+import strobeLogo from './strobe.png';
+import uclaLogo from './ucla.png';
+import berkeleyLogo from './berkeley.png';
 
 
 const style = {
   position: 'fixed',
-  bottom: '10px'
+  bottom: '20px'
 }
 
 export default class Footer extends Component {
@@ -15,8 +18,20 @@ export default class Footer extends Component {
     return (
         <BottomNavigation style={style}>
           <BottomNavigationItem
-            icon={<img className='mdb-kitware-logo' src={logo} alt="logo" />}
+            icon={<img className='mdb-kitware-logo' src={kitwareLogo} alt="Kitware" />}
             onClick={() => this.select(0)} href="http://www.kitware.com"
+          />
+          <BottomNavigationItem
+            icon={<img className='mdb-kitware-logo' src={strobeLogo} alt="STROBE" />}
+              onClick={() => this.select(0)} href="http://strobe.colorado.edu/"
+          />
+          <BottomNavigationItem
+            icon={<img className='mdb-kitware-logo' src={uclaLogo} alt="UCLA" />}
+            onClick={() => this.select(0)} href="http://www.ucla.edu/"
+          />
+          <BottomNavigationItem
+            icon={<img className='mdb-kitware-logo' src={berkeleyLogo} alt="Berkeley Lab" />}
+            onClick={() => this.select(0)} href="http://www.lbl.gov/"
           />
       </BottomNavigation>
     );
