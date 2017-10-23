@@ -47,7 +47,7 @@ class Search extends Component {
         )
     );
 
-    this.props.dispatch(push('/'));
+    this.props.dispatch(push('/results'));
   }
 
   reset = () => {

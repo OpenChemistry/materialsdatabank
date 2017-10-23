@@ -68,7 +68,7 @@ class RightElement extends Component {
   }
 
   onRequestSearch = () => {
-    this.props.dispatch(push('/'))
+    this.props.dispatch(push('/results'))
     if (_.isString(this.state.searchText) && !_.isEmpty(this.state.searchText)) {
       const text = this.state.searchText.toLowerCase();
       this.props.dispatch(searchDatasetsByText(text.split(/\s/)))
@@ -117,7 +117,7 @@ class Header extends Component {
       <AppBar
         title={
           <div>
-            <div style={{ fontSize: 32, marginTop: 10 }}>Material Data Bank</div>
+            <div style={{ fontSize: 32, marginTop: 10 }}>Materials Data Bank</div>
             <div style={{ fontSize: 14, fontWeight: 300 }}>An Information Portal for 3D atomic electron tomography data</div>
           </div>
         }
