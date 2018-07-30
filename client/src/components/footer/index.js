@@ -26,10 +26,6 @@ export default class Footer extends Component {
               onClick={() => this.select(0)} href="http://strobe.colorado.edu/"
           />
           <BottomNavigationItem
-            icon={<img className='mdb-kitware-logo' src={uclaLogo} alt="UCLA" />}
-            onClick={() => this.select(0)} href="http://www.ucla.edu/"
-          />
-          <BottomNavigationItem
             icon={<img style={{width: '75px'}} src={berkeleyLogo} alt="Berkeley Lab" />}
             onClick={() => this.select(0)} href="http://www.lbl.gov/"
           />
