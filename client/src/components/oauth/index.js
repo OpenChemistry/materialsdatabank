@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import ReactRedirect from 'react-redirect'
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
 import google from './google.svg';
@@ -20,12 +19,9 @@ class OauthRedirect extends Component {
 
     if (!_.isNil(providers) && !_.isNil(providers) && _.has(providers, provider)) {
       const url = providers[provider];
-      return (
-           <ReactRedirect location={url}/>
-      );
-    } else {
-      return (null);
+      window.location = url;
     }
+    return (null);
   }
 }
 

@@ -15,11 +15,8 @@ class PrivateRoute extends Component {
       }
 
       if (providers && providers.Google) {
-        return (<ReactRedirect location={providers.Google}>
-                <div>
-                  Redirecting...
-                  </div>
-               </ReactRedirect>)
+        window.location = providers.Google;
+        return (null);
       }
 
       return <div>Authenticating...</div>
