@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
-import {
-  TextField
-} from 'redux-form-material-ui'
-import { reduxForm, Field, reset} from 'redux-form'
-import SearchIcon from 'material-ui/svg-icons/action/search';
-import Clear from 'material-ui/svg-icons/content/clear';
-import RaisedButton from 'material-ui/RaisedButton';
+
+import Button from '@material-ui/core/Button';
+
+import ClearIcon from '@material-ui/icons/Clear';
+import SearchIcon from '@material-ui/icons/Search';
+import { TextField } from 'redux-form-material-ui';
+
+import { reduxForm, Field, reset} from 'redux-form';
+
 import { connect } from 'react-redux'
-import { push } from 'react-router-redux'
+import { push } from 'connected-react-router'
 import PropTypes from 'prop-types';
 import _ from 'lodash'
 
@@ -16,8 +18,6 @@ import { searchDatasetsByFields } from '../../redux/ducks/datasets'
 import selectors from  '../../redux/selectors'
 
 const style = {
-  width: '256px',
-  margin: '30px',
   button: {
     float: 'right',
     margin: '20px 10px auto auto'
@@ -62,41 +62,44 @@ class Search extends Component {
 
   render = () => {
     return (
-      <form style={style} onKeyDown={this.onKeyDown}>
+      <form onKeyDown={this.onKeyDown}>
         <Field
+          fullWidth
           name="title"
           component={TextField}
-          hintText="Title"
-          floatingLabelText="Title"
+          label="Title"
         />
         <Field
+          fullWidth
           name="authors"
           component={TextField}
-          hintText="Author"
-          floatingLabelText="Author"
+          label="Author"
         />
         <Field
+          fullWidth
           name="atomicSpecies"
           component={TextField}
-          hintText="Atomic Species"
-          floatingLabelText="Atomic Species"/>
+          label="Atomic Species"
+        />
         <div>
-          <RaisedButton
-            label="Search"
-            labelPosition="after"
-            primary={true}
-            icon={<SearchIcon />}
+          <Button
+            variant="raised"
+            color="primary"
             style={style.button}
             onClick={() => this.search()}
-          />
-          <RaisedButton
-            label="Clear"
-            labelPosition="after"
-            primary={true}
-            icon={<Clear />}
+          >
+            <SearchIcon />
+            Search
+          </Button>
+          <Button
+            variant="raised"
+            color="primary"
             style={style.button}
             onClick={() => this.reset()}
-          />
+          >
+            <ClearIcon/>
+            Clear
+          </Button>
         </div>
       </form>
     );

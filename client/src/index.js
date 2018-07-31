@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 //import registerServiceWorker from './registerServiceWorker';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import injectTapEventPlugin from 'react-tap-event-plugin';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'; // v1.x
+import CssBaseline from '@material-ui/core/CssBaseline';
 import { Provider } from 'react-redux';
-import { ConnectedRouter } from 'react-router-redux'
+import { ConnectedRouter } from 'connected-react-router'
 import { Route } from 'react-router'
 import Cookies from 'universal-cookie';
 import _ from 'lodash'
@@ -23,17 +23,15 @@ import { SelectLoginProvider, OauthRedirect } from './components/oauth'
 import { authenticate, loadCuratorGroup } from './redux/ducks/girder'
 import Deposit from './components/deposit'
 
+import * as Molecule from  '@openchemistry/molecule-moljs';
+
+Molecule.defineCustomElements(window);
+
 
 const store = configureStore()
 store.runSaga(rootSaga)
 
-// Needed for onTouchTap
-// http://stackoverflow.com/a/34015469/988941
-injectTapEventPlugin();
-
-const style = {
-  display: 'flex'
-}
+const theme = createMuiTheme();
 
 const cookies = new Cookies();
 const cookieToken = cookies.get('girderToken');
@@ -42,28 +40,42 @@ if (!_.isNil(cookieToken)) {
 }
 
 ReactDOM.render(
-    <MuiThemeProvider >
+  <MuiThemeProvider theme={theme}>
+    <div className="fill">
+      <CssBaseline/>
       <Provider store={store}>
         <ConnectedRouter history={store.history}>
-          <div>
-           <Header />
-           <SideBar />
-            <div style={style}>
-              <Route exact path='/' component={Welcome}/>
-              <Route exact path='/dataset/:id' component={DatasetContainer}/>
-              <Route exact path='/welcome' component={Welcome}/>
-              <Route exact path='/search' component={Search}/>
-              <Route exact path='/results' component={Main}/>
-              <Route exact path='/deposit' component={Deposit}/>
-            </div>
-           <Footer />
-           <OauthRedirect/>
-           <SelectLoginProvider/>
+        <div className="app-container">
+          <div className="header-container">
+            <Header />
           </div>
+          <div className="body-container">
+            <div className="sidebar-container">
+              <SideBar />
+            </div>
+            <div className="content-wrapper">
+              <div className="content-container">
+                <Route exact path='/' component={Welcome}/>
+                <Route exact path='/dataset/:id' component={DatasetContainer}/>
+                <Route exact path='/welcome' component={Welcome}/>
+                <Route exact path='/search' component={Search}/>
+                <Route exact path='/results' component={Main}/>
+                <Route exact path='/deposit' component={Deposit}/>
+              </div>
+              <div className="footer-container">
+                <Footer />
+              </div>
+            </div>
+          </div>
+          <OauthRedirect/>
+          <SelectLoginProvider/>
+        </div>
         </ConnectedRouter>
       </Provider>
-    </MuiThemeProvider>,
-    document.getElementById('root')
-  );
+    </div>
+  </MuiThemeProvider>
+  ,
+  document.getElementById('root')
+);
 
 //registerServiceWorker();

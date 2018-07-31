@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
-import {GridList, GridTile} from 'material-ui/GridList';
+
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
+import GridListTileBar from '@material-ui/core/GridListTileBar';
+
 import { connect } from 'react-redux'
 import _ from 'lodash'
 
@@ -13,7 +17,9 @@ const styles = {
     justifyContent: 'space-around',
   },
   gridList: {
-    overflowY: 'auto'
+    overflowY: 'auto',
+    height: 'auto',
+    width: '100%'
   },
 };
 
@@ -24,11 +30,12 @@ class SearchResults extends Component {
         <GridList
           cellHeight={'auto'}
           style={styles.gridList}
-          cols={3}
+          cols={2}
         >
           {this.props.results.map((dataset) => (
-            <GridTile
+            <GridListTile
               key={dataset._id}
+              style={{ height: 'auto' }}
             >
               <SearchResult
                 _id={dataset._id}
@@ -39,7 +46,7 @@ class SearchResults extends Component {
                 imageFileId={dataset.imageFileId}
                 atomicSpecies={dataset.atomicSpecies}
               />
-            </GridTile>
+            </GridListTile>
           ))}
         </GridList>
     );

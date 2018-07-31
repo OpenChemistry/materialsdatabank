@@ -1,24 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-import Paper from 'material-ui/Paper';
-import Menu from 'material-ui/Menu';
-import MenuItem from 'material-ui/MenuItem';
-import Home from 'material-ui/svg-icons/action/home';
-import OpenInBrowser from 'material-ui/svg-icons/action/open-in-browser';
-import Search from 'material-ui/svg-icons/action/search';
-import { push } from 'react-router-redux'
+
+import MenuItem from '@material-ui/core/MenuItem';
+import MenuList from '@material-ui/core/MenuList';
+import Typography from '@material-ui/core/Typography';
+
+import HomeIcon from '@material-ui/icons/Home';
+import SearchIcon from '@material-ui/icons/Search';
+import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser';
+
+import { push } from 'connected-react-router'
 
 import './index.css'
-
-const style = {
-    paper: {
-      display: 'inline-block',
-      float: 'left',
-      margin: '20px 32px 16px 0',
-      backgroundColor: '#FAFAFA',
-      height: '90%'
-    }
-};
 
 class SideBar extends Component {
 
@@ -26,25 +19,27 @@ class SideBar extends Component {
 
   render = () => {
     return (
-        <Paper style={style.paper}>
-          <Menu>
-            <MenuItem
-              primaryText="Welcome"
-              leftIcon={<Home />}
-              onClick={() => this.pushRoute('/welcome') }
-            />
-            <MenuItem
-              primaryText="Deposit"
-              leftIcon={<OpenInBrowser />}
-              onClick={() => this.pushRoute('/deposit') }
-            />
-            <MenuItem
-              primaryText="Search"
-              leftIcon={<Search />}
-              onClick={() => this.pushRoute('/search') }
-            />
-          </Menu>
-        </Paper>);
+      <MenuList>
+        <MenuItem
+          onClick={() => this.pushRoute('/welcome') }
+        >
+          <HomeIcon />
+          <Typography>Welcome</Typography>
+        </MenuItem>
+        <MenuItem
+          onClick={() => this.pushRoute('/deposit') }
+        >
+          <OpenInBrowserIcon/>
+          <Typography>Deposit</Typography>
+        </MenuItem>
+        <MenuItem
+          onClick={() => this.pushRoute('/search') }
+        >
+          <SearchIcon/>
+          <Typography>Search</Typography>
+        </MenuItem>
+      </MenuList>
+    );
   }
 }
 

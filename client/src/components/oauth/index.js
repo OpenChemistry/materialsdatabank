@@ -1,7 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import FlatButton from 'material-ui/FlatButton';
-import Dialog from 'material-ui/Dialog';
+
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+
 import google from './google.svg';
 import github from './github.svg';
 import PropTypes from 'prop-types';
@@ -90,29 +98,40 @@ class SelectLoginProvider extends Component {
   render = () => {
 
   const actions = [
-    <FlatButton
-      label="Cancel"
-      primary={true}
-      onTouchTap={this.handleClose}
-    />]
+    <Button
+      color="primary"
+      onClick={this.handleClose}
+    >
+      Cancel
+    </Button>
+  ]
 
     // title="Select a login provider. You'll be taken to the provider to authenticate.
     return (
       <Dialog
-       contentStyle={contentStyle}
-        actions={actions}
-        modal={false}
         open={this.state.open}
-        onRequestClose={this.handleClose}
+        onClose={this.handleClose}
       >
-      <FlatButton icon={<img className='mdb-google' src={google} alt="google" />}
-        onTouchTap={this.handleGoogle}
-        label='Sign in with Google'
-        labelPosition='after' />
-      {/*<FlatButton icon={<img className='mdb-github' src={github} alt="github" />}
-        onTouchTap={this.handleGitHub}
-        label='Sign in with GitHub'
-         labelPosition='after' />*/}
+        <DialogTitle id="login-dialog-title">Login Provider</DialogTitle>
+        <List>
+          <ListItem button onClick={this.handleGoogle}>
+            <ListItemText primary="Sign in with Google" />
+            <ListItemIcon>
+              <img className='mdb-google' src={google} alt="google" />
+            </ListItemIcon>
+          </ListItem>
+          {/*
+          <ListItem button onClick={this.handleGitHub}>
+            <ListItemText primary="Sign in with GitHub" />
+            <ListItemIcon>
+              <img className='mdb-github' src={github} alt="github" />
+            </ListItemIcon>
+          </ListItem>
+          */}
+        </List>
+        <DialogActions>
+          {actions}
+        </DialogActions>
       </Dialog>
     );
 

@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import { TextField } from 'redux-form-material-ui'
 import { reduxForm, Field, reset} from 'redux-form'
-import SearchIcon from 'material-ui/svg-icons/action/search';
-import Clear from 'material-ui/svg-icons/content/clear';
-import RaisedButton from 'material-ui/RaisedButton';
-import FlatButton from 'material-ui/FlatButton';
+
+import Button from '@material-ui/core/Button';
+import LinearProgress from '@material-ui/core/LinearProgress';
+
+import ClearIcon from '@material-ui/icons/Clear';
+import SearchIcon from '@material-ui/icons/Search';
+
 import { connect } from 'react-redux'
-import { push } from 'react-router-redux'
-import PropTypes from 'prop-types';
+import { push } from 'connected-react-router'
+
 import _ from 'lodash'
-import LinearProgress from 'material-ui/LinearProgress';
 import filesize from 'filesize'
 
 import { upload } from '../../redux/ducks/upload'
@@ -24,16 +26,17 @@ const style = {
   margin: '30px',
   button: {
     float: 'right',
-    margin: '20px 10px auto auto'
+    marginLeft: '0.5rem'
   },
   field: {
     width: '100%',
-    'max-width': '700px'
-
+    marginTop: '1rem'
   }
 }
 
 class FileInputField extends Component {
+
+  fileInput;
 
   constructor(props) {
     super(props)
@@ -55,20 +58,19 @@ class FileInputField extends Component {
     const style = {
       div: {
         width: '100%',
-        'max-width': '700px',
-        'min-width': '445px'
+        marginTop: '1rem',
+        display: 'flex'
       },
       button: {
-        'margin-top': '38px',
-        float: 'right'
+        marginTop: '1rem',
+        marginLeft: '1rem'
       },
       textField: {
         cursor: 'auto',
         width: '100%'
       },
       fileDiv: {
-        width: '70%',
-        float: 'left'
+        flexGrow: '1'
       }
     }
     const file = this.props.input.value;
@@ -85,30 +87,37 @@ class FileInputField extends Component {
           <div style={style.fileDiv}>
             <TextField style={style.textField}
               disabled={true}
-              hintText="Disabled Hint Text"
               value={file !== '' ?`${name} (${size})` : ''}
-              floatingLabelText={this.props.label}
-              underlineShow={false}
+              label={this.props.label}
+              onClick={() => {
+                if (this.fileInput) {
+                  this.fileInput.click();
+                }
+              }}
             />
             <LinearProgress
               style={progressStyle}
-              mode="determinate"
-              value={this.state.complete ? 0 : this.props.progress}
-              min={0}
-              max={this.state.complete ? 0 : this.props.total}
+              variant="determinate"
+              value={this.state.complete ? 0 : this.props.progress / this.props.total}
             />
           </div>
-          <RaisedButton
-              disabled={this.props.disabled}
-              style={style.button}
-              containerElement='label' // <-- Just add me!
-              label='Select file'>
-                <input
-                  type="file"
-                  style={{display: 'none'}}
-                  onChange={(e) => this.props.input.onChange(e.target.files[0])}
-                />
-          </RaisedButton>
+          <Button
+            disabled={this.props.disabled}
+            style={style.button}
+            onClick={() => {
+              if (this.fileInput) {
+                this.fileInput.click();
+              }
+            }}
+          >
+            Select file
+            <input
+              ref={ref => {this.fileInput = ref;}}
+              type="file"
+              hidden
+              onChange={(e) => this.props.input.onChange(e.target.files[0])}
+            />
+          </Button>
         </div>
     );
   }
@@ -228,30 +237,27 @@ class Deposit extends Component {
             style={style.field}
             name="title"
             component={TextField}
-            hintText="Title"
-            floatingLabelText="Title"
+            label="Title"
           />
           <Field
             style={style.field}
             name="authors"
             component={TextField}
-            hintText="Authors"
-            floatingLabelText='Authors ( "and" separated )'
+            label='Authors ( "and" separated )'
           />
           <Field
             style={style.field}
             name="slug"
             component={TextField}
-            hintText="URL slug"
-            floatingLabelText="URL slug ( human readable identifier )"
-            errorText={this.props.slugError}
+            label="URL slug ( human readable identifier )"
+            error={!!this.props.slugError}
+            helperText={this.props.slugError}
           />
           <Field
             style={style.field}
             name="url"
             component={TextField}
-            hintText="DOI"
-            floatingLabelText="DOI"
+            label="DOI"
           />
           <Field
             style={style.field}
@@ -277,24 +283,26 @@ class Deposit extends Component {
             disabled={submitting}
           />
           <div style={style.field}>
-            <RaisedButton
-              disabled={pristine || submitting || invalid}
-              type='submit'
-              label='Deposit'
-              labelPosition="after"
-              primary={true}
-              icon={<SearchIcon />}
+            <Button
               style={style.button}
-            />
-            <RaisedButton
-              disabled={pristine || submitting}
-              label="Clear"
-              labelPosition="after"
-              primary={true}
-              icon={<Clear />}
+                variant="raised"
+                disabled={pristine || submitting || invalid}
+                type='submit'
+                color='primary'
+              >
+                <SearchIcon/>
+                Deposit
+              </Button>
+              <Button
               style={style.button}
-              onClick={() => this.reset()}
-            />
+                variant="raised"
+                disabled={pristine || submitting}
+                color='primary'
+                onClick={() => this.reset()}
+              >
+                <ClearIcon/>
+                Clear
+              </Button>
           </div>
         </form>
         }

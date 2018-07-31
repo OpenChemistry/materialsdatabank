@@ -1,50 +1,55 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {Card, CardHeader, CardMedia} from 'material-ui/Card';
-import { push } from 'react-router-redux'
+
+
+import Typography from '@material-ui/core/Typography';
+import CardContent from '@material-ui/core/CardContent';
+import Card from '@material-ui/core/Card';
+
+import grey from '@material-ui/core/colors/grey';
+
+import ImageIcon from '@material-ui/icons/Image';
+
+import { push } from 'connected-react-router'
 import { connect } from 'react-redux'
 import _ from 'lodash'
-import Image from 'material-ui/svg-icons/image/image';
-import {grey300, blueGrey50} from 'material-ui/styles/colors';
 
 import './index.css'
 import { symbols } from '../../elements'
 
-const publicStyle = {
-  height: '90%',
-  width: '90%',
-  margin: 20,
-  textAlign: 'center',
-  //display: 'inline-block',
-};
-
-const privateStyle = {
-    ...publicStyle,
-    backgroundColor: blueGrey50
-};
-
-
-const cardHeaderStyle = {
-  textAlign: 'left'
-}
-
-const textStyle = {
-  paddingRight: '0px'
+const cardStyle = {
+  margin: '1rem',
+  cursor: 'pointer',
+  height: '90%'
 }
 
 const cardMediaStyle = {
-  width: '40%',
-  margin: 20,
-  display: 'inline-block'
-};
+  width: '100%',
+  height: '10rem',
+  backgroundColor: grey[300]
+}
 
-const imageStyle = {
-  height: '100%'
+let Image = (src) => {
+  if (src) {
+    return (
+      <img style={{objectFit: 'cover', width: '100%', height: '100%'}} src={src} />
+    );
+  } else {
+    return (
+      <div style={{width: '100%', height: '100%'}}>
+        <div style={{top: '50%', position: 'relative', transform: 'translateY(-50%)'}}>
+          <Typography align="center" variant="headline" color="textSecondary">
+            <ImageIcon/>
+          </Typography>
+        </div>
+      </div>
+    );
+  }
 }
 
 class SearchResult extends Component {
 
-  onTouchTap = () => {
+  onClickHandler = () => {
 
     let id = this.props._id;
     if (!_.isNil(this.props.slug)) {
@@ -62,25 +67,25 @@ class SearchResult extends Component {
     const species = this.props.atomicSpecies.map((an) => symbols[an]).join(', ');
     const speciesText = `Atomic Species: ${species}`;
     return (
-      <Card style={this.props.public ? publicStyle : privateStyle} zDepth={2} onTouchTap={this.onTouchTap}>
-        <CardHeader
-          style={cardHeaderStyle}
-          textStyle={textStyle}
-          title={this.props.title}
-          subtitle={speciesText}
-        />
-        <CardMedia style={cardMediaStyle}>
-          { !_.isNil(imageUrl) &&
-          <img src={imageUrl} alt="" />
+      <Card onClick={this.onClickHandler} style={cardStyle}>
+        <CardContent>
+          <Typography gutterBottom variant="body1" color="textSecondary"  noWrap>
+            {speciesText}
+          </Typography>
+        </CardContent>
+        <div style={cardMediaStyle}>
+          {Image(imageUrl)}
+        </div>
+        <CardContent>
+          <Typography gutterBottom variant="body2">
+            {this.props.title}
+          </Typography>
+          { !this.props.public &&
+            <Typography variant="caption">
+              * This dataset is awaiting approval
+            </Typography>
           }
-          {
-            _.isNil(imageUrl) &&
-          <Image style={imageStyle} color={grey300}/>
-          }
-        </CardMedia>
-        { !this.props.public &&
-        <div className={'mdb-search-text'}>This dataset is awaiting approval.</div>
-        }
+        </CardContent>
       </Card>
     );
   }

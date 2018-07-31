@@ -1,10 +1,16 @@
-import AppBar from 'material-ui/AppBar';
 import React, { Component } from 'react';
+
+import AppBar from '@material-ui/core/AppBar';
+import Button from '@material-ui/core/Button';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import LinearProgress from '@material-ui/core/LinearProgress';
+
 import SearchBar from 'material-ui-search-bar'
+
 import { connect } from 'react-redux'
 import _ from 'lodash'
-import { push } from 'react-router-redux'
-import LinearProgress from 'material-ui/LinearProgress';
+import { push } from 'connected-react-router'
 
 import './index.css'
 import logo from './OpenChemistry_Logo.svg';
@@ -13,24 +19,9 @@ import Menu from './menu'
 import Login from './login'
 import selectors from '../../redux/selectors';
 
-
-const style = {
-    backgroundColor: '#FAFAFA'
-}
-
-const titleStyle = {
-  margin: 0,
-  paddingTop: '8px',
-  paddingLeft: '10px',
-
-  lineHeight: 'normal',
-  color: '#424242',
-}
-
 const searchBarStyle = {
-  margin: '15px 50px',
-  maxWidth: 800,
-  width: '70%'
+  width: '100%',
+  maxWidth: '30rem'
 };
 
 const iconStyleRight = {
@@ -40,10 +31,13 @@ const iconStyleRight = {
 const divStyle = {
   width: '100%',
   display: 'flex',
+  justifyContent: 'flex-end'
 }
 
 const loginMenuStyle = {
-  'margin-top': '18px'
+  alignSelf: 'center',
+  marginLeft: '1rem'
+  // marginTop: '18px'
 }
 
 
@@ -82,7 +76,7 @@ class RightElement extends Component {
     return (
       <div style={divStyle}>
         <SearchBar
-          hintText={'Search by author, paper, microscope, atomic species'}
+          placeholder={'Search by author, paper, microscope, atomic species'}
           onChange={this.onChange}
           onRequestSearch={this.onRequestSearch}
           style={searchBarStyle}
@@ -114,21 +108,25 @@ class Header extends Component {
   }
   return (
     <div>
-      <AppBar
-        title={
-          <div>
-            <div style={{ fontSize: 32, marginTop: 10 }}>Materials Data Bank</div>
-            <div style={{ fontSize: 14, fontWeight: 300 }}>An Information Portal for 3D atomic electron tomography data</div>
-          </div>
-        }
-        titleStyle={titleStyle}
-        style={style}
-        iconElementLeft={<img className='mdb-logo' src={logo} alt="logo" />}
-        iconElementRight={<RightElement/>}
-        iconStyleRight={iconStyleRight} />
+      <AppBar color="default" position="static">
+        <Toolbar>
+        <Button color="inherit" aria-label="Logo" style={{marginRight: 9, paddingTop: 0, paddingBottom: 0}}>
+          <img className='mdb-logo' src={logo} alt="logo" />
+        </Button>
+        <Typography variant="title" color="inherit" style={{flexGrow: 0}}>
+          Materials Data Bank
+          <Typography variant="caption" color="textSecondary">
+            An Information Portal for 3D atomic electron tomography data
+          </Typography>
+        </Typography>
+        <div style={{flexGrow: 1}}>
+          <RightElement/>
+        </div>
+        </Toolbar>
+      </AppBar>
       <LinearProgress
         style={progressStyle}
-        mode="indeterminate"
+        variant="indeterminate"
       />
      </div>
   );

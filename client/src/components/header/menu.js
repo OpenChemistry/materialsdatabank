@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-import FlatButton from 'material-ui/FlatButton';
-import MaterialMenu from 'material-ui/Menu';
-import MenuItem from 'material-ui/MenuItem';
-import NavigationArrowDropDown from 'material-ui/svg-icons/navigation/arrow-drop-down';
-import ActionExitToApp from 'material-ui/svg-icons/action/exit-to-app';
-import Popover, {PopoverAnimationVertical} from 'material-ui/Popover';
+
+import MenuItem from '@material-ui/core/MenuItem';
+import MenuList from '@material-ui/core/MenuList';
+import Popover, { PopoverAnimationVertical } from '@material-ui/core/Popover';
+
+import Button from '@material-ui/core/Button';
+import DropDownIcon from '@material-ui/icons/ArrowDropDown';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 import selectors from '../../redux/selectors';
 import { invalidateToken } from '../../redux/ducks/girder'
@@ -21,8 +23,6 @@ class Menu extends Component {
   }
 
   handleTouchTap = (event) => {
-    // This prevents ghost click.
-    event.preventDefault();
 
     this.setState({
       open: true,
@@ -48,23 +48,23 @@ class Menu extends Component {
 
     return (
         <div>
-          <FlatButton
-            label={me ? me.login : '' }
-            onClick={this.handleTouchTap}
-            labelPosition='before'
-            icon={<NavigationArrowDropDown />} />
+          <Button onClick={this.handleTouchTap}>
+            {me ? me.login : 'user' }
+            <DropDownIcon />
+          </Button>
           <Popover
             open={this.state.open}
             anchorEl={this.state.anchorEl}
             anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-            targetOrigin={{horizontal: 'left', vertical: 'top'}}
-            onRequestClose={this.handleRequestClose}
+            onClose={this.handleRequestClose}
             animation={PopoverAnimationVertical}
           >
-            <MaterialMenu>
-              <MenuItem primaryText='Sign out' leftIcon={<ActionExitToApp/>}
-                        onTouchTap={this.handleSignOut}  />
-            </MaterialMenu>
+            <MenuList>
+              <MenuItem onClick={this.handleSignOut} >
+                <ExitToAppIcon/>
+                Sign out
+              </MenuItem>
+            </MenuList>
           </Popover>
         </div>
 

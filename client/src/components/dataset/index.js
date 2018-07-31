@@ -1,21 +1,25 @@
 import React, { Component } from 'react';
-import {GridList, GridTile} from 'material-ui/GridList';
-import {Card, CardHeader, CardMedia} from 'material-ui/Card';
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
-import IconButton from 'material-ui/IconButton';
-import FileFileDownload from 'material-ui/svg-icons/file/file-download';
+
+import Button from '@material-ui/core/Button';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardContent from '@material-ui/core/CardContent';
+import IconButton from '@material-ui/core/IconButton';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableRow from '@material-ui/core/TableRow';
+import Typography from '@material-ui/core/Typography';
+
+import DoneIcon from '@material-ui/icons/Done';
+import DownloadIcon from '@material-ui/icons/CloudDownload';
+
 import PropTypes from 'prop-types';
-import {
-  Table,
-  TableBody,
-  TableRow,
-  TableRowColumn
-} from 'material-ui/Table';
+
 import { connect } from 'react-redux'
 import _ from 'lodash'
-import RaisedButton from 'material-ui/RaisedButton';
-import Done from 'material-ui/svg-icons/action/done';
 
 import selectors from '../../redux/selectors';
 import { symbols } from '../../elements'
@@ -35,23 +39,9 @@ const infoStyle = {
     textAlign: 'left'
 }
 
-const titleStyle = {
-    fontSize: '25px'
-}
-
-const subtitleStyle = {
-    fontSize: '15px'
-}
-
-
 const tableLabelStyle = {
   fontSize: '18px',
   color: '#9E9E9E'
-}
-
-const approveButtonStyle = {
-  float: 'right',
-  margin: '20px'
 }
 
 const cardMediaStyle = {
@@ -77,18 +67,20 @@ const approvalDivStyle = {
   display: 'inline'
 }
 
-const textDivStyle = {
-  width: '300px',
-  margin: '20px',
-  float: 'left'
-}
-
 class Dataset extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-        approving: false
+        approving: false,
+        reconstructionMenu: {
+          anchor: null,
+          open: false
+        },
+        structureMenu: {
+          anchor: null,
+          open: false
+        }
     }
   }
 
@@ -109,6 +101,14 @@ class Dataset extends Component {
     }
   }
 
+  handleClick = (key, anchor) => {
+    this.setState({[key]: {anchor: anchor}});
+  };
+
+  handleClose = () => {
+    this.setState({reconstructionMenu: {anchor: null}, structureMenu: {anchor: null}, });
+  };
+
   render = () => {
     const species = this.props.atomicSpecies.map((an) => symbols[an]).join(', ');
     const authors = this.props.authors.join(' and ');
@@ -127,138 +127,145 @@ class Dataset extends Component {
     }
 
     return (
-        <Card style={style} zDepth={2} >
+        <Card style={style}>
           <CardHeader
             style={cardHeaderStyle}
             title={this.props.title}
-            titleStyle={titleStyle}
-            subtitleStyle={subtitleStyle}
-            subtitle={authors}
+            subheader={authors}
           />
-          <CardMedia style={cardMediaStyle}>
-            <GridList
-              cellHeight={'auto'}
-              cols={3}
-            >
-              <GridTile
-                key={'info'}
-                cols={1}
-                style={infoStyle}
+          <CardContent>
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <TableCell style={{...tableLabelStyle}}>
+                    Atomic Species
+                  </TableCell>
+                  <TableCell style={{...tableStyle}}>
+                    {species}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell style={{...tableLabelStyle}}>
+                    License
+                  </TableCell>
+                  <TableCell style={{...tableStyle}}>
+                    <a href={"https://creativecommons.org/licenses/by/4.0/"}>
+                      CC BY 4
+                    </a>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell style={{...tableLabelStyle}}>
+                    DOI
+                  </TableCell>
+                  <TableCell style={{...tableStyle}}>
+                    <a href={`https://dx.doi.org/${this.props.url}`}>
+                      {this.props.url}
+                    </a>
+                  </TableCell>
+                </TableRow>
+                { (!_.isNil(this.props.reconstruction.tiffFileId) || !_.isNil(this.props.reconstruction.emdFileId)) &&
+                <TableRow>
+                  <TableCell style={{...tableLabelStyle}}>
+                    Reconstruction
+                  </TableCell>
+                  <TableCell style={{...tableStyle}}>
+                    <IconButton
+                      aria-label="More"
+                      aria-owns={this.state.reconstructionMenu.anchor ? 'reconstruction-menu' : null}
+                      aria-haspopup="true"
+                      onClick={(e) => {this.handleClick('reconstructionMenu', e.currentTarget)}}
+                    >
+                      <DownloadIcon />
+                    </IconButton>
+                    <Menu
+                      id="reconstruction-menu"
+                      anchorEl={this.state.reconstructionMenu.anchor}
+                      open={Boolean(this.state.reconstructionMenu.anchor)}
+                      onClose={this.handleClose}
+                    >
+                      { !_.isNil(this.props.reconstruction.tiffFileId) &&
+                      <MenuItem
+                        value="tiff"
+                        onClick={this.handleClose}
+                      >
+                        <a href={tiffUrl}>TIFF</a>
+                      </MenuItem>
+                      }
+                      { !_.isNil(this.props.reconstruction.emdFileId) &&
+                      <MenuItem
+                        value="emd"
+                        onClick={this.handleClose}
+                      >
+                        <a href={emdUrl}>EMD</a>
+                      </MenuItem>
+                      }
+                    </Menu>
+                  </TableCell>
+                </TableRow>
+                }
+                <TableRow>
+                  <TableCell style={{...tableLabelStyle}}>
+                    Structure
+                  </TableCell>
+                  <TableCell style={{...tableStyle}}>
+                    <IconButton
+                      aria-label="More"
+                      aria-owns={this.state.structureMenu.anchor ? 'structure-menu' : null}
+                      aria-haspopup="true"
+                      onClick={(e) => {this.handleClick('structureMenu', e.currentTarget)}}
+                    >
+                      <DownloadIcon />
+                    </IconButton>
+                    <Menu
+                      id="structure-menu"
+                      anchorEl={this.state.structureMenu.anchor}
+                      open={Boolean(this.state.structureMenu.anchor)}
+                      onClose={this.handleClose}
+                    >
+                      <MenuItem
+                        value="xyz"
+                        onClick={this.handleClose}
+                      >
+                        <a href={`${structureUrl}/xyz`}>XYZ</a>
+                      </MenuItem>
+                      <MenuItem
+                        value="cjson"
+                        onClick={this.handleClose}
+                      >
+                        <a href={`${structureUrl}/cjson`}>CJSON</a>
+                      </MenuItem>
+                      <MenuItem
+                        value="cml"
+                        onClick={this.handleClose}
+                      >
+                        <a href={`${structureUrl}/cml`}>CML</a>
+                      </MenuItem>
+                    </Menu>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+            <div style={{width: '100%', height: '30rem'}}>
+              <StructureContainer _id={this.props._id}/>
+            </div>
+            { !this.props.public &&
+            <div style={{textAlign: 'justify', display: 'flex', alignItems: 'center'}}>
+              <Typography color="textSecondary" style={{flexGrow: 1}}>* This dataset is awaiting approval.</Typography>
+              { this.props.isCurator &&
+              <Button
+                variant="contained"
+                color="primary"
+                disabled={this.state.approving}
+                onClick={() => this.approve()}
               >
-                <Table
-                  selectable={false}
-                >
-                  <TableBody
-                    displayRowCheckbox={false}
-                  >
-                    <TableRow>
-                      <TableRowColumn style={{...tableLabelStyle}}>
-                        Atomic Species
-                      </TableRowColumn>
-                      <TableRowColumn style={{...tableStyle}}>
-                        {species}
-                      </TableRowColumn>
-                    </TableRow>
-                    <TableRow>
-                      <TableRowColumn style={{...tableLabelStyle}}>
-                        License
-                      </TableRowColumn>
-                      <TableRowColumn style={{...tableStyle}}>
-                        <a href={"https://creativecommons.org/licenses/by/4.0/"}>
-                          CC BY 4
-                        </a>
-                      </TableRowColumn>
-                    </TableRow>
-                    <TableRow>
-                      <TableRowColumn style={{...tableLabelStyle}}>
-                        DOI
-                      </TableRowColumn>
-                      <TableRowColumn style={{...tableStyle}}>
-                        <a href={`https://dx.doi.org/${this.props.url}`}>
-                          {this.props.url}
-                        </a>
-                      </TableRowColumn>
-                    </TableRow>
-                    { (!_.isNil(this.props.reconstruction.tiffFileId) || !_.isNil(this.props.reconstruction.emdFileId)) &&
-                    <TableRow>
-                      <TableRowColumn style={{...tableLabelStyle}}>
-                        Reconstruction
-                      </TableRowColumn>
-                      <TableRowColumn style={{...tableStyle}}>
-                        <IconMenu
-                          iconButtonElement={<IconButton><FileFileDownload /></IconButton>}
-                        >
-                          { !_.isNil(this.props.reconstruction.tiffFileId) &&
-                          <MenuItem
-                            value="tiff"
-                            primaryText="TIFF"
-                            href={tiffUrl}
-                          />
-                          }
-                          { !_.isNil(this.props.reconstruction.emdFileId) &&
-                          <MenuItem
-                            value="emd"
-                            primaryText="EMD"
-                            href={emdUrl}
-                          />
-                          }
-                        </IconMenu>
-                      </TableRowColumn>
-                    </TableRow>
-                    }
-                    <TableRow>
-                      <TableRowColumn style={{...tableLabelStyle}}>
-                        Structure
-                      </TableRowColumn>
-                      <TableRowColumn style={{...tableStyle}}>
-                        <IconMenu
-                          iconButtonElement={<IconButton><FileFileDownload /></IconButton>}
-                        >
-                          <MenuItem
-                            value="xyz"
-                            primaryText="XYZ"
-                            href={`${structureUrl}/xyz`}
-                          />
-                          <MenuItem
-                            value="cjson"
-                            primaryText="CJSON"
-                            href={`${structureUrl}/cjson`}
-                          />
-                          <MenuItem
-                            value="cml"
-                            primaryText="CML"
-                            href={`${structureUrl}/cml`}
-                          />
-                        </IconMenu>
-                      </TableRowColumn>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </GridTile>
-              <GridTile
-                key={'structure'}
-                cols={2}
-              >
-                <StructureContainer _id={this.props._id}/>
-              </GridTile>
-            </GridList>
-          </CardMedia>
-          { !this.props.public &&
-          <div style={approvalDivStyle}>
-            <div style={textDivStyle} className={'mdb-text'}>This dataset is awaiting approval.</div>
-            { this.props.isCurator &&
-            <RaisedButton
-              disabled={this.state.approving}
-              style={approveButtonStyle}
-              label="Approve"
-              labelPosition="after"
-              primary={true}
-              icon={<Done />}
-              onClick={() => this.approve()}
-            />
+                <DoneIcon/>
+                Approve
+              </Button>
+              }
+            </div>
             }
-          </div>
-          }
+          </CardContent>
         </Card>
 
     );

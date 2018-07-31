@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux'
 
 import { loadStructures } from '../redux/ducks/structures'
-import Structure from '../components/structure'
 import selectors from '../redux/selectors'
+import { wc } from '../utils/webcomponent';
 
 class StructureContainer extends Component {
 
@@ -15,7 +15,30 @@ class StructureContainer extends Component {
   }
 
   render() {
-    return <Structure {...this.props} />;
+  return (
+    <div style={{width: '100%', height: '100%', position: 'relative'}}>
+      <oc-molecule-moljs
+        ref={wc(
+          // Events
+          {},
+          // Props
+          {
+            cjson: this.props.cjson,
+            options: {
+              style: {
+                stick: {
+                  radius: 0
+                },
+                sphere: {
+                  scale: 0.7
+                }
+              }
+            }
+          }
+        )}
+      />
+    </div>
+    );
   }
 }
 

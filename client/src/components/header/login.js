@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-import ActionInput from 'material-ui/svg-icons/action/input';
-import FlatButton from 'material-ui/FlatButton';
+
+import Button from '@material-ui/core/Button';
+
+import InputIcon from '@material-ui/icons/Input';
 
 import { selectAuthProvider }  from '../../redux/ducks/app'
 
 class Login extends Component {
   render = () => {
     return (
-        <FlatButton icon={<ActionInput/>}
-                    onTouchTap={this.handleTouchTap}
-                    label='Log in'
-                    labelPosition='before' />
+        <Button onClick={this.handleTouchTap}>
+          <InputIcon/>
+          Log in
+        </Button>
     );
   }
 
