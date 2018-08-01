@@ -98,7 +98,7 @@ class FileInputField extends Component {
             <LinearProgress
               style={progressStyle}
               variant="determinate"
-              value={this.state.complete ? 0 : this.props.progress / this.props.total}
+              value={this.state.complete ? 0 : (this.props.progress / this.props.total)*100}
             />
           </div>
           <Button
