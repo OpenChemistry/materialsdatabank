@@ -8,21 +8,37 @@ import { wc } from '../utils/webcomponent';
 
 class StructureContainer extends Component {
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      rotate: true
+    };
+  }
+
   componentDidMount() {
     if (this.props._id != null) {
       this.props.dispatch(loadStructures(this.props._id));
     }
   }
 
+  onMouseDown() {
+    this.setState({
+      rotate: false
+    });
+  }
+
   render() {
   return (
-    <div style={{width: '100%', height: '100%', position: 'relative'}}>
+    <div style={{width: '100%', height: '100%', position: 'relative'}}
+         onMouseDown={() => this.onMouseDown()} >
       <oc-molecule-moljs
         ref={wc(
           // Events
           {},
           // Props
           {
+            rotate: this.state.rotate,
             cjson: this.props.cjson,
             options: {
               style: {
