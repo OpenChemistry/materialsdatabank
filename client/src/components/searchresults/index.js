@@ -2,11 +2,9 @@ import React, { Component } from 'react';
 
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
-import GridListTileBar from '@material-ui/core/GridListTileBar';
 import Typography from '@material-ui/core/Typography';
 
 import { connect } from 'react-redux'
-import _ from 'lodash'
 
 import SearchResult from '../searchresult'
 import selectors from '../../redux/selectors';
@@ -14,18 +12,6 @@ import selectors from '../../redux/selectors';
 import PageHead from '../page-head';
 import PageBody from '../page-body';
 
-const styles = {
-  root: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-  },
-  gridList: {
-    overflowY: 'auto',
-    height: 'auto',
-    width: '100%'
-  },
-};
 
 class SearchResults extends Component {
   render = () => {
@@ -42,13 +28,11 @@ class SearchResults extends Component {
         <PageBody>
           <GridList
             cellHeight={'auto'}
-            style={styles.gridList}
             cols={2}
           >
             {this.props.results.map((dataset) => (
               <GridListTile
                 key={dataset._id}
-                style={{ height: 'auto' }}
               >
                 <SearchResult
                   _id={dataset._id}

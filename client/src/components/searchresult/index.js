@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-
+import withStyles from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography';
 import CardContent from '@material-ui/core/CardContent';
 import Card from '@material-ui/core/Card';
-
-import grey from '@material-ui/core/colors/grey';
 
 import ImageIcon from '@material-ui/icons/Image';
 
@@ -17,18 +15,25 @@ import _ from 'lodash'
 import './index.css'
 import { symbols } from '../../elements'
 
-const cardStyle = {
-  marginLeft: '1rem',
-  marginRight: '1rem',
-  cursor: 'pointer',
-  height: '90%'
-}
-
-const cardMediaStyle = {
-  width: '100%',
-  height: '10rem',
-  backgroundColor: grey[300]
-}
+const style = (theme) => ({
+  root: {
+    paddingLeft: 2 * theme.spacing.unit,
+    paddingRight: 2 * theme.spacing.unit,
+    paddingBottom: 2 * theme.spacing.unit,
+    height: '100%',
+    width: '100%'
+  },
+  card: {
+    height: '100%',
+    width: '100%',
+    cursor: 'pointer'
+  },
+  media: {
+    width: '100%',
+    height: 24 * theme.spacing.unit,
+    backgroundColor: theme.palette.grey[300]
+  }
+});
 
 let Image = (src) => {
   if (src) {
@@ -62,32 +67,35 @@ class SearchResult extends Component {
 
   render = () => {
     let imageUrl = null;
+    const { classes } = this.props;
     if (!_.isNil(this.props.imageFileId)) {
       imageUrl = `${window.location.origin}/api/v1/mdb/datasets/${this.props._id}/image`;
     }
     const species = this.props.atomicSpecies.map((an) => symbols[an]).join(', ');
     const speciesText = `Atomic Species: ${species}`;
     return (
-      <Card onClick={this.onClickHandler} style={cardStyle}>
-        <CardContent>
-          <Typography gutterBottom variant="body1" color="textSecondary"  noWrap>
-            {speciesText}
-          </Typography>
-        </CardContent>
-        <div style={cardMediaStyle}>
-          {Image(imageUrl)}
-        </div>
-        <CardContent>
-          <Typography gutterBottom variant="body2">
-            {this.props.title}
-          </Typography>
-          { !this.props.public &&
-            <Typography variant="caption">
-              * This dataset is awaiting approval
+      <div className={classes.root}>
+        <Card onClick={this.onClickHandler} className={classes.card}>
+          <CardContent>
+            <Typography gutterBottom variant="body1" color="textSecondary"  noWrap>
+              {speciesText}
             </Typography>
-          }
-        </CardContent>
-      </Card>
+          </CardContent>
+          <div className={classes.media} >
+            {Image(imageUrl)}
+          </div>
+          <CardContent>
+            <Typography gutterBottom variant="body2">
+              {this.props.title}
+            </Typography>
+            { !this.props.public &&
+              <Typography variant="caption">
+                * This dataset is awaiting approval
+              </Typography>
+            }
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 }
@@ -112,4 +120,5 @@ function mapStateToProps(state) {
   return {};
 }
 
+SearchResult = withStyles(style)(SearchResult);
 export default connect(mapStateToProps)(SearchResult)
