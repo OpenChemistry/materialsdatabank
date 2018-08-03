@@ -12,7 +12,6 @@ import { push } from 'connected-react-router'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 
-import './index.css'
 import { symbols } from '../../elements'
 
 const style = (theme) => ({
