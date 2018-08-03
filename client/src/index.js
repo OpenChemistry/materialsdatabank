@@ -3,9 +3,12 @@ import ReactDOM from 'react-dom';
 //import registerServiceWorker from './registerServiceWorker';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'; // v1.x
 import CssBaseline from '@material-ui/core/CssBaseline';
+import teal from '@material-ui/core/colors/teal';
+import pink from '@material-ui/core/colors/pink';
+
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router'
-import { Route } from 'react-router'
+import { Route, Switch } from 'react-router'
 import Cookies from 'universal-cookie';
 import _ from 'lodash'
 
@@ -31,7 +34,24 @@ Molecule.defineCustomElements(window);
 const store = configureStore()
 store.runSaga(rootSaga)
 
-const theme = createMuiTheme();
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: teal[400]
+    },
+    secondary: pink,
+  },
+  pageHead: {
+    paddingTop: 4,
+    paddingBottom: 14
+  },
+  pageBody: {
+    marginTop: -13
+  },
+  pageContent: {
+    width: 120
+  }
+});
 
 const cookies = new Cookies();
 const cookieToken = cookies.get('girderToken');
@@ -55,12 +75,14 @@ ReactDOM.render(
             </div>
             <div className="content-wrapper">
               <div className="content-container">
-                <Route exact path='/' component={Welcome}/>
-                <Route exact path='/dataset/:id' component={DatasetContainer}/>
-                <Route exact path='/welcome' component={Welcome}/>
-                <Route exact path='/search' component={Search}/>
-                <Route exact path='/results' component={Main}/>
-                <Route exact path='/deposit' component={Deposit}/>
+                <Switch>
+                  <Route exact path='/' component={Welcome}/>
+                  <Route exact path='/dataset/:id' component={DatasetContainer}/>
+                  <Route exact path='/welcome' component={Welcome}/>
+                  <Route exact path='/search' component={Search}/>
+                  <Route exact path='/results' component={Main}/>
+                  <Route exact path='/deposit' component={Deposit}/>
+                </Switch>
               </div>
               <div className="footer-container">
                 <Footer />

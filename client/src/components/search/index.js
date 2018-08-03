@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 
+import withStyles from '@material-ui/core/styles/withStyles';
 import Button from '@material-ui/core/Button';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
+import Typography from '@material-ui/core/Typography';
 
 import ClearIcon from '@material-ui/icons/Clear';
 import SearchIcon from '@material-ui/icons/Search';
@@ -17,13 +22,25 @@ import './index.css'
 import { searchDatasetsByFields } from '../../redux/ducks/datasets'
 import selectors from  '../../redux/selectors'
 
-const style = {
-  button: {
-    float: 'right',
-    margin: '20px 10px auto auto'
-  }
+import PageHead from '../page-head';
+import PageBody from '../page-body';
 
-}
+const style = (theme) => (
+  {
+    field: {
+      width: '100%',
+      display: 'flex',
+      marginBottom: 2 * theme.spacing.unit,
+    },
+    textField: {
+      flexGrow: 1
+    },
+    actions: {
+      display: 'flex',
+      justifyContent: 'flex-end'
+    }
+  }
+)
 
 class Search extends Component {
 
@@ -61,47 +78,67 @@ class Search extends Component {
   }
 
   render = () => {
+    const { pristine, submitting, invalid, classes } = this.props;
     return (
-      <form onKeyDown={this.onKeyDown}>
-        <Field
-          fullWidth
-          name="title"
-          component={TextField}
-          label="Title"
-        />
-        <Field
-          fullWidth
-          name="authors"
-          component={TextField}
-          label="Author"
-        />
-        <Field
-          fullWidth
-          name="atomicSpecies"
-          component={TextField}
-          label="Atomic Species"
-        />
-        <div>
-          <Button
-            variant="raised"
-            color="primary"
-            style={style.button}
-            onClick={() => this.search()}
-          >
-            <SearchIcon />
-            Search
-          </Button>
-          <Button
-            variant="raised"
-            color="primary"
-            style={style.button}
-            onClick={() => this.reset()}
-          >
-            <ClearIcon/>
-            Clear
-          </Button>
-        </div>
-      </form>
+      <div>
+        <PageHead>
+          <Typography  color="inherit" gutterBottom variant="display1">
+            Search for structures
+          </Typography>
+          <Typography variant="subheading" paragraph color="inherit">
+            Filter by publication title, authors, or atomic species.
+          </Typography>
+        </PageHead>
+        <PageBody>
+          <Card>
+            <form onKeyDown={this.onKeyDown}>
+              <CardContent>
+                <Field
+                  fullWidth
+                  name="title"
+                  className={classes.field}
+                  component={TextField}
+                  label="Title"
+                />
+                <Field
+                  fullWidth
+                  name="authors"
+                  className={classes.field}
+                  component={TextField}
+                  label="Author"
+                />
+                <Field
+                  fullWidth
+                  name="atomicSpecies"
+                  className={classes.field}
+                  component={TextField}
+                  label="Atomic Species"
+                />
+              </CardContent>
+              <CardActions className={classes.actions}>
+                <Button
+                  variant="raised"
+                  disabled={ submitting || invalid}
+                  color="primary"
+                  onClick={() => this.search()}
+                >
+                  <SearchIcon />
+                  Search
+                </Button>
+                <Button
+                  variant="raised"
+                  disabled={pristine || submitting}
+                  color="primary"
+                  onClick={() => this.reset()}
+                >
+                  <ClearIcon/>
+                  Clear
+                </Button>
+              </CardActions>
+            </form>
+          </Card>
+        </PageBody>
+      </div>
     );
   }
 }
@@ -129,6 +166,7 @@ function mapStateToProps(state, ownProps) {
   return props;
 }
 
+Search = withStyles(style)(Search);
 Search = connect(mapStateToProps)(Search)
 
 

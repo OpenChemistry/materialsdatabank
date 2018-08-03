@@ -99,6 +99,7 @@ class SelectLoginProvider extends Component {
 
   const actions = [
     <Button
+      key="cancel"
       color="primary"
       onClick={this.handleClose}
     >
@@ -114,14 +115,14 @@ class SelectLoginProvider extends Component {
       >
         <DialogTitle id="login-dialog-title">Login Provider</DialogTitle>
         <List>
-          <ListItem button onClick={this.handleGoogle}>
+          <ListItem key='google' button onClick={this.handleGoogle}>
             <ListItemText primary="Sign in with Google" />
             <ListItemIcon>
               <img className='mdb-google' src={google} alt="google" />
             </ListItemIcon>
           </ListItem>
           {/*
-          <ListItem button onClick={this.handleGitHub}>
+          <ListItem  key='github' button onClick={this.handleGitHub}>
             <ListItemText primary="Sign in with GitHub" />
             <ListItemIcon>
               <img className='mdb-github' src={github} alt="github" />

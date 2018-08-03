@@ -13,6 +13,12 @@ import { push } from 'connected-react-router'
 
 import './index.css'
 
+const style = {
+  menu: {
+    color: 'white'
+  }
+}
+
 class SideBar extends Component {
 
   pushRoute = (route) => this.props.dispatch(push(route));
@@ -21,22 +27,25 @@ class SideBar extends Component {
     return (
       <MenuList>
         <MenuItem
+          style={style.menu}
           onClick={() => this.pushRoute('/welcome') }
         >
-          <HomeIcon />
-          <Typography>Welcome</Typography>
+          <HomeIcon color="primary" />&nbsp;
+          <Typography color="inherit" variant="subheading">Welcome</Typography>
         </MenuItem>
         <MenuItem
+          style={style.menu}
           onClick={() => this.pushRoute('/deposit') }
         >
-          <OpenInBrowserIcon/>
-          <Typography>Deposit</Typography>
+          <OpenInBrowserIcon color="primary" />&nbsp;
+          <Typography color="inherit" variant="subheading">Deposit</Typography>
         </MenuItem>
         <MenuItem
+          style={style.menu}
           onClick={() => this.pushRoute('/search') }
         >
-          <SearchIcon/>
-          <Typography>Search</Typography>
+          <SearchIcon color="primary" />&nbsp;
+          <Typography color="inherit" variant="subheading">Search</Typography>
         </MenuItem>
       </MenuList>
     );

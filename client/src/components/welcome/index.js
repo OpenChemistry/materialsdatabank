@@ -1,11 +1,30 @@
 import React, { Component } from 'react';
 
+import withStyles from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography';
-import CardContent from '@material-ui/core/CardContent';
+
 import CardMedia from '@material-ui/core/CardMedia';
 import Card from '@material-ui/core/Card';
 
+import PageHead from '../page-head';
+import PageBody from '../page-body';
+
 import './index.css'
+
+const style = theme => (
+  {
+    header: {
+      backgroundColor: theme.palette.secondary.main,
+    },
+    body: {
+      marginTop: - theme.spacing.unit * 20
+    },
+    content: {
+      width: '100%',
+      maxWidth: theme.spacing.unit * 40
+    }
+  }
+)
 
 let embeddedVideo = () => {
   return (
@@ -15,35 +34,40 @@ let embeddedVideo = () => {
   );
 }
 
-export default class Welcome extends Component {
-
+class Welcome extends Component {
+  
   render = () => {
+    const { classes } = this.props;
     return (
-      <Card>
-        <CardContent>
-          <Typography gutterBottom variant="headline" component="h2">
+      <div>
+        <PageHead>
+          <Typography color="inherit" gutterBottom variant="display1">
             Materials Data Bank
           </Typography>
-          <Typography gutterBottom variant="subheading" color="textSecondary">
-          An Information Portal for 3D atomic electron tomography data
+          <Typography variant="title" paragraph color="inherit">
+            An Information Portal for 3D atomic electron tomography data
           </Typography>
-          <Typography gutterBottom variant="body2">
+          <Typography color="inherit" gutterBottom variant="body2">
             Materials Data Bank (MDB) archives the information about the 3D atomic structures (3D atomic coordinates and chemical species)
             determined by atomic electron tomography (AET).
           </Typography>
-          <Typography gutterBottom variant="body2">
+          <Typography color="inherit" gutterBottom variant="body2">
             This databank is designed to provide useful resources for research and education in studying the true 3D atomic structure and
             associated materials properties arising from non-crystalline structures such as defects, dislocations, strain, complex grain structure,
             local chemical ordering, and phase boundaries.
           </Typography>
-        </CardContent>
-        <CardMedia
-          component={embeddedVideo}
-        />
-      </Card>
+        </PageHead>
+        <PageBody>
+          <Card>
+            <CardMedia
+              component={embeddedVideo}
+            />
+          </Card>
+        </PageBody>
+      </div>
     );
   }
 }
 
-
+export default withStyles(style)(Welcome);
 

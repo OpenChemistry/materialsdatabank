@@ -18,7 +18,8 @@ import './index.css'
 import { symbols } from '../../elements'
 
 const cardStyle = {
-  margin: '1rem',
+  marginLeft: '1rem',
+  marginRight: '1rem',
   cursor: 'pointer',
   height: '90%'
 }
