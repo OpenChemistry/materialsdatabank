@@ -1,3 +1,9 @@
 .mdb-kitware-logo {
   width: 80px;
 }
+
+.bottom-logo {
+  height: 2rem;
+  width: auto;
+  vertical-align: middle;
+}

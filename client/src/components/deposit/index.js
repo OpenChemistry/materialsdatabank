@@ -1,15 +1,22 @@
 import React, { Component } from 'react';
 import { TextField } from 'redux-form-material-ui'
 import { reduxForm, Field, reset} from 'redux-form'
-import SearchIcon from 'material-ui/svg-icons/action/search';
-import Clear from 'material-ui/svg-icons/content/clear';
-import RaisedButton from 'material-ui/RaisedButton';
-import FlatButton from 'material-ui/FlatButton';
+
+import withStyles from '@material-ui/core/styles/withStyles';
+import Button from '@material-ui/core/Button';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
+import Typography from '@material-ui/core/Typography';
+
+import ClearIcon from '@material-ui/icons/Clear';
+import SearchIcon from '@material-ui/icons/Search';
+
 import { connect } from 'react-redux'
-import { push } from 'react-router-redux'
-import PropTypes from 'prop-types';
+import { push } from 'connected-react-router'
+
 import _ from 'lodash'
-import LinearProgress from 'material-ui/LinearProgress';
 import filesize from 'filesize'
 
 import { upload } from '../../redux/ducks/upload'
@@ -17,23 +24,34 @@ import selectors from  '../../redux/selectors'
 import { clearNewDataSet } from '../../redux/ducks/upload';
 import { setProgress } from '../../redux/ducks/app';
 
+import PageHead from '../page-head';
+import PageBody from '../page-body';
+
 import './index.css'
 
-const style = {
-  width: '90%',
-  margin: '30px',
-  button: {
-    float: 'right',
-    margin: '20px 10px auto auto'
-  },
-  field: {
-    width: '100%',
-    'max-width': '700px'
-
+const style = (theme) => (
+  {
+    field: {
+      width: '100%',
+      display: 'flex',
+      marginBottom: 2 * theme.spacing.unit,
+    },
+    textField: {
+      flexGrow: 1
+    },
+    button: {
+      marginLeft: theme.spacing.unit
+    },
+    actions: {
+      display: 'flex',
+      justifyContent: 'flex-end'
+    }
   }
-}
+)
 
 class FileInputField extends Component {
+
+  fileInput;
 
   constructor(props) {
     super(props)
@@ -52,64 +70,52 @@ class FileInputField extends Component {
    }
 
   render = () => {
-    const style = {
-      div: {
-        width: '100%',
-        'max-width': '700px',
-        'min-width': '445px'
-      },
-      button: {
-        'margin-top': '38px',
-        float: 'right'
-      },
-      textField: {
-        cursor: 'auto',
-        width: '100%'
-      },
-      fileDiv: {
-        width: '70%',
-        float: 'left'
-      }
-    }
+    const {classes} = this.props;
     const file = this.props.input.value;
     const name = file !== '' ? file.name : '';
     const size = file !== '' ? filesize(file.size) : '';
     const showProgress = this.props.progress > 0;
-    const progressStyle = {}
-    if (!showProgress) {
-      progressStyle['display'] = 'none';
-    }
-    return (
 
-        <div style={style.div}>
-          <div style={style.fileDiv}>
-            <TextField style={style.textField}
-              disabled={true}
-              hintText="Disabled Hint Text"
-              value={file !== '' ?`${name} (${size})` : ''}
-              floatingLabelText={this.props.label}
-              underlineShow={false}
-            />
-            <LinearProgress
-              style={progressStyle}
-              mode="determinate"
-              value={this.state.complete ? 0 : this.props.progress}
-              min={0}
-              max={this.state.complete ? 0 : this.props.total}
-            />
-          </div>
-          <RaisedButton
-              disabled={this.props.disabled}
-              style={style.button}
-              containerElement='label' // <-- Just add me!
-              label='Select file'>
-                <input
-                  type="file"
-                  style={{display: 'none'}}
-                  onChange={(e) => this.props.input.onChange(e.target.files[0])}
-                />
-          </RaisedButton>
+    return (
+      <div className={classes.field}>
+        <div className={classes.textField}>
+          <TextField
+            fullWidth
+            disabled={true}
+            value={file !== '' ?`${name} (${size})` : ''}
+            label={this.props.label}
+            onClick={() => {
+              if (this.fileInput) {
+                this.fileInput.click();
+              }
+            }}
+          />
+
+          <LinearProgress
+            hidden={!showProgress}
+            variant="determinate"
+            value={this.state.complete ? 0 : 100 * this.props.progress / this.props.total}
+          />
         </div>
+
+        <Button
+          disabled={this.props.disabled}
+          className={classes.button}
+          onClick={() => {
+            if (this.fileInput) {
+              this.fileInput.click();
+            }
+          }}
+        >
+          Select file
+          <input
+            ref={ref => {this.fileInput = ref;}}
+            type="file"
+            hidden
+            onChange={(e) => this.props.input.onChange(e.target.files[0])}
+          />
+        </Button>
+      </div>
     );
   }
 }
@@ -130,6 +136,8 @@ function mapStateToPropsFileInputField(state, ownProps) {
 
   return props;
 }
+
+FileInputField = withStyles(style)(FileInputField);
 FileInputField = connect(mapStateToPropsFileInputField)(FileInputField)
 
 
@@ -201,102 +209,102 @@ class Deposit extends Component {
   }
 
   render = () => {
-    const {handleSubmit, pristine, submitting, invalid} = this.props;
-    const indeterminateProgress = {
-      width: '90%',
-      'top': '10px'
-
-    }
-    if (!submitting) {
-      indeterminateProgress['display'] = 'none';
-    }
+    const {handleSubmit, pristine, submitting, invalid, classes} = this.props;
 
     return (
-       <div>
-        <p className={'mdb-deposit-text'}>
-          We currently only accept the atomic structural information published in peer-reviewed journal.
-        </p>
+      <div>
+        <PageHead>
+          <Typography  color="inherit" gutterBottom variant="display1">
+            Deposit a new structure
+          </Typography>
+          <Typography  color="inherit" variant="subheading" paragraph>
+            We currently only accept the atomic structural information published in peer-reviewed journal.
+          </Typography>
 
-        { !this.props.isLoggedIn &&
-        <p className={'mdb-deposit-text'}>
-          To deposit the atomic structure of materials, please login.
-        </p>
-        }
-        {this.props.isLoggedIn &&
-        <form style={style} onSubmit={handleSubmit(deposit)}>
-          <Field
-            style={style.field}
-            name="title"
-            component={TextField}
-            hintText="Title"
-            floatingLabelText="Title"
-          />
-          <Field
-            style={style.field}
-            name="authors"
-            component={TextField}
-            hintText="Authors"
-            floatingLabelText='Authors ( "and" separated )'
-          />
-          <Field
-            style={style.field}
-            name="slug"
-            component={TextField}
-            hintText="URL slug"
-            floatingLabelText="URL slug ( human readable identifier )"
-            errorText={this.props.slugError}
-          />
-          <Field
-            style={style.field}
-            name="url"
-            component={TextField}
-            hintText="DOI"
-            floatingLabelText="DOI"
-          />
-          <Field
-            style={style.field}
-            name="imageFile"
-            component={FileInputField}
-            label='Image file ( Thumbnail for dataset )'
-            disabled={submitting}
-          />
-          <Field
-            style={style.field}
-            name="structureFile"
-            component={FileInputField}
-            label={'Structure file ( XYZ )'}
-            hintText={'Structure file'}
-            disabled={submitting}
-          />
-          <Field
-            style={style.field}
-            name="reconstructionFile"
-            component={FileInputField}
-            label={'Reconstruction file ( EMD or TIFF )'}
-            hintText={'Reconstruction file'}
-            disabled={submitting}
-          />
-          <div style={style.field}>
-            <RaisedButton
-              disabled={pristine || submitting || invalid}
-              type='submit'
-              label='Deposit'
-              labelPosition="after"
-              primary={true}
-              icon={<SearchIcon />}
-              style={style.button}
-            />
-            <RaisedButton
-              disabled={pristine || submitting}
-              label="Clear"
-              labelPosition="after"
-              primary={true}
-              icon={<Clear />}
-              style={style.button}
-              onClick={() => this.reset()}
-            />
-          </div>
-        </form>
+          { !this.props.isLoggedIn &&
+          <Typography variant="subheading" color="error">
+            You need to login before depositing a new material structure.
+          </Typography>
+          }
+        </PageHead>
+        { this.props.isLoggedIn &&
+        <PageBody>
+          <Card>
+            <form onSubmit={handleSubmit(deposit)}>
+              <CardContent>
+                <Field
+                  className={classes.field}
+                  name="title"
+                  component={TextField}
+                  label="Title"
+                />
+                <Field
+                  className={classes.field}
+                  name="authors"
+                  component={TextField}
+                  label='Authors ( "and" separated )'
+                />
+                <Field
+                  className={classes.field}
+                  name="slug"
+                  component={TextField}
+                  label="URL slug ( human readable identifier )"
+                  error={!!this.props.slugError}
+                  helperText={this.props.slugError}
+                />
+                <Field
+                  className={classes.field}
+                  name="url"
+                  component={TextField}
+                  label="DOI"
+                />
+                <Field
+                  className={classes.field}
+                  name="imageFile"
+                  component={FileInputField}
+                  label='Image file ( Thumbnail for dataset )'
+                  disabled={submitting}
+                />
+                <Field
+                  className={classes.field}
+                  name="structureFile"
+                  component={FileInputField}
+                  label={'Structure file ( XYZ )'}
+                  hintText={'Structure file'}
+                  disabled={submitting}
+                />
+                <Field
+                  className={classes.field}
+                  name="reconstructionFile"
+                  component={FileInputField}
+                  label={'Reconstruction file ( EMD or TIFF )'}
+                  hintText={'Reconstruction file'}
+                  disabled={submitting}
+                />
+              </CardContent>
+              <CardActions className={classes.actions}>
+                <Button
+                  variant="raised"
+                  disabled={pristine || submitting || invalid}
+                  type='submit'
+                  color='primary'
+                >
+                  <SearchIcon/>
+                  Deposit
+                </Button>
+                <Button
+                  variant="raised"
+                  disabled={pristine || submitting}
+                  color='primary'
+                  onClick={() => this.reset()}
+                >
+                  <ClearIcon/>
+                  Clear
+                </Button>
+              </CardActions>
+            </form>
+          </Card>
+        </PageBody>
         }
       </div>
     );
@@ -329,6 +337,8 @@ function mapStateToPropsDeposit(state, ownProps) {
 
   return props;
 }
+
+Deposit = withStyles(style)(Deposit);
 Deposit = connect(mapStateToPropsDeposit)(Deposit)
 
 
@@ -337,4 +347,3 @@ export default reduxForm({
   destroyOnUnmount: false,
   validate
 })(Deposit)
-
