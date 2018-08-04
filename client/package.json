@@ -5,8 +5,8 @@
   "dependencies": {
     "@material-ui/core": "^1.4.2",
     "@material-ui/icons": "^2.0.0",
-    "@openchemistry/molecule": "^0.2.1",
-    "@openchemistry/molecule-moljs": "^0.4.0",
+    "@openchemistry/molecule": "^0.2.5",
+    "@openchemistry/molecule-moljs": "^0.4.2",
     "axios": "^0.18.0",
     "connected-react-router": "^4.3.0",
     "filesize": "^3.5.11",
