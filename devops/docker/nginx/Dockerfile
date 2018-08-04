@@ -1,4 +1,4 @@
-FROM node:6.11 as build
+FROM node:8.11 as build
 COPY ./client /client
 RUN cd /client && npm install && npm run build
 
