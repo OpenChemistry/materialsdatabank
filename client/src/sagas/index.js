@@ -15,6 +15,10 @@ import {
 } from './reconstructions'
 
 import {
+  watchLoadProjections
+} from './projections'
+
+import {
   watchFetchOauthProviders,
   watchInvalidateToken,
   watchNewToken,
@@ -35,6 +39,7 @@ export default function* root() {
   yield fork(watchLoadDatasetById)
   yield fork(watchLoadStructures)
   yield fork(watchLoadReconstructions)
+  yield fork(watchLoadProjections)
   yield fork(watchFetchOauthProviders)
   yield fork(watchInvalidateToken)
   yield fork(watchNewToken)

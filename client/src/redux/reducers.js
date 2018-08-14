@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 import datasets  from './ducks/datasets';
 import structures  from './ducks/structures';
 import reconstructions  from './ducks/reconstructions';
+import projections  from './ducks/projections';
 import girder from './ducks/girder';
 import app from './ducks/app';
 import upload from './ducks/upload';
@@ -12,6 +13,7 @@ export default combineReducers({
   datasets,
   structures,
   reconstructions,
+  projections,
   girder,
   app,
   upload,

@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 
 import { loadDatasetById } from '../redux/ducks/datasets'
 import { loadReconstructions } from '../redux/ducks/reconstructions'
+import { loadProjections } from '../redux/ducks/projections'
 import Dataset from '../components/dataset'
 import selectors from '../redux/selectors'
 
@@ -13,6 +14,7 @@ class DatasetContainer extends Component {
     if (this.props._id != null) {
       this.props.dispatch(loadDatasetById(this.props._id));
       this.props.dispatch(loadReconstructions(this.props._id));
+      this.props.dispatch(loadProjections(this.props._id));
     }
   }
 
