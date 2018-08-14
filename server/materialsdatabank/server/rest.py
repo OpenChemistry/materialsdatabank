@@ -23,15 +23,22 @@ class Dataset(Resource):
         self.route('GET', (':id',), self.fetch_dataset)
         self.route('GET', (':id','image'), self.fetch_image)
         self.route('PATCH', (':id', ), self.update_dataset)
+
+        self.route('POST', (':id', 'structures',), self.create_structure)
         self.route('GET', (':id', 'structures',), self.fetch_structures)
         self.route('GET', (':id', 'structures', ':structureId', ':format'), self.fetch_structure)
         self.route('PATCH', (':id', 'structures', ':structureId'), self.update_structure)
+
+        self.route('POST', (':id', 'reconstructions',), self.create_reconstruction)
         self.route('GET', (':id', 'reconstructions',), self.fetch_reconstructions)
         self.route('GET', (':id', 'reconstructions', ':reconstructionId', ':format'), self.fetch_reconstruction)
         self.route('PATCH', (':id', 'reconstructions', ':reconstructionId'), self.update_reconstruction)
+
+        self.route('POST', (':id', 'projections',), self.create_projection)
         self.route('GET', (':id', 'projections',), self.fetch_projections)
-        self.route('POST', (':id', 'structures',), self.create_structure)
-        self.route('POST', (':id', 'reconstructions',), self.create_reconstruction)
+        self.route('GET', (':id', 'projections', ':projectionId', ':format'), self.fetch_projection)
+        self.route('PATCH', (':id', 'projections', ':projectionId'), self.update_projection)
+
 
     def _requireParamOneOf(self, require_one_of, provided):
 
@@ -273,16 +280,96 @@ class Dataset(Resource):
         if format == 'tiff':
             return downloadFile(reconstruction, 'tiffFileId')
 
+    # Projections endpoints
+
+    @access.user(scope=TokenScope.DATA_WRITE)
+    @autoDescribeRoute(
+        Description('Create a projection.')
+        .modelParam('id', 'The dataset id',
+                    model=DatasetModel, destName='dataset',
+                    level=AccessType.READ, paramType='path')
+        .jsonParam('projection', 'Dataset document', required=True, paramType='body')
+    )
+    def create_projection(self, dataset, projection):
+        self.requireParams(['emdFileId', 'tiffFileId'], projection)
+        emd_file_id = projection.get('emdFileId')
+        tiff_file_id = projection.get('tiffFileId')
+
+        projection = ProjectionModel().create(
+            dataset, emd_file_id, tiff_file_id, user=self.getCurrentUser())
+
+        cherrypy.response.status = 201
+        cherrypy.response.headers['Location'] = '/datasets/%s/projections/%s' % (dataset['_id'], projection['_id'])
+
+        return projection
+
     @access.public(scope=TokenScope.DATA_READ)
     @autoDescribeRoute(
         Description('Get the projections.')
-        .param('id', 'The dataset id', paramType='path')
+        .param('id', 'Dataset id', paramType='path')
+        .pagingParams(defaultSort=None)
         .errorResponse('ID was invalid.')
         .errorResponse('Read permission denied on the item.', 403)
     )
-    def fetch_projections(self, id):
+    def fetch_projections(self, id, limit, offset, sort=None):
         dataset = DatasetModel().load(id, user=self.getCurrentUser(), level=AccessType.READ)
-        return id
+        model = ProjectionModel()
+        cursor = model.find(dataset['_id'], sort=sort)
+        user = self.getCurrentUser()
+        return list(model.filterResultsByPermission(cursor=cursor, user=user,
+                                                    level=AccessType.READ,
+                                                    limit=limit, offset=offset))
+
+    @access.cookie
+    @access.public(scope=TokenScope.DATA_READ)
+    @autoDescribeRoute(
+        Description('Get the projection.')
+        .param('id', 'The dataset id ( not used )',
+                    paramType='path')
+        .modelParam('projectionId', 'The projection id',
+                    model=ProjectionModel, destName='projection',
+                    level=AccessType.READ, paramType='path')
+        .param('format', 'The format', paramType='path')
+        .param('contentDisposition', 'Specify the Content-Disposition response '
+               'header disposition-type value.', required=False,
+               enum=['inline', 'attachment'], default='attachment')
+        .pagingParams(defaultSort=None)
+        .errorResponse('ID was invalid.')
+        .errorResponse('Read permission denied on the item.', 403)
+    )
+    def fetch_projection(self, id, projection, format, contentDisposition, limit, offset, sort=None):
+        supported_formats = ['emd', 'tiff']
+
+        if format not in supported_formats:
+            raise RestException('"%s" is not a supported format.')
+
+        file_model = File()
+        def downloadFile(projection, id):
+            file = file_model.load(projection[id], force=True)
+
+            return file_model.download(file, contentDisposition=contentDisposition)
+
+        if format == 'emd':
+            return downloadFile(projection, 'emdFileId')
+
+        if format == 'tiff':
+            return downloadFile(projection, 'tiffFileId')
+
+    @access.user(scope=TokenScope.DATA_WRITE)
+    @autoDescribeRoute(
+        Description('Update projection.')
+        .param('id', 'The dataset id ( not used )', paramType='path')
+        .modelParam('projectionId', 'The projection id',
+                    model=ProjectionModel, destName='projection',
+                    level=AccessType.WRITE, paramType='path')
+        .jsonParam('updates', 'Update document', required=True, paramType='body')
+    )
+    def update_projection(self, id, projection, updates):
+        if 'public' in updates:
+            projection = ProjectionModel().update(projection, user=self.getCurrentUser(),
+                                                          public=updates['public'])
+
+        return projection
 
     @access.public(scope=TokenScope.DATA_READ)
     @autoDescribeRoute(
