@@ -118,8 +118,8 @@ const reducer = handleActions({
 // Action Creators
 
 export const upload = createAction(UPLOAD,
-    (title, authors, url, slug,  structureFile, reconstructionFile, imageFile, resolve, reject) => ({ title,
-      authors, slug, url,  structureFile, reconstructionFile, imageFile, resolve, reject}));
+    (title, authors, url, slug,  structureFile, reconstructionFile, imageFile, projectionFile, resolve, reject) => ({ title,
+      authors, slug, url,  structureFile, reconstructionFile, imageFile, projectionFile, resolve, reject}));
 
 export const uploadError = createAction(UPLOAD_ERROR);
 

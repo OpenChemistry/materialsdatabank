@@ -58,11 +58,14 @@ export function* upload(action) {
     structureFile,
     reconstructionFile,
     imageFile,
+    projectionFile,
     structureFileId,
     reconstructionFileId,
     imageFileId,
+    projectionFileId,
     resolve,
-    reject} = action.payload;
+    reject
+  } = action.payload;
 
   try {
     let mdbFolder = yield select(selectors.upload.getMdbFolder);
@@ -78,6 +81,10 @@ export function* upload(action) {
       filesToUpload['reconstructionFileModel'] = call(uploadFile, reconstructionFile, mdbFolder['_id'])
     }
 
+    if (!_.isNil(projectionFile)) {
+      filesToUpload['projectionFileModel'] = call(uploadFile, projectionFile, mdbFolder['_id'])
+    }
+
     if (!_.isNil(imageFile)) {
       filesToUpload['imageFileModel'] = call(uploadFile, imageFile, mdbFolder['_id'])
     }
@@ -85,7 +92,8 @@ export function* upload(action) {
     const {
       structureFileModel,
       reconstructionFileModel,
-      imageFileModel
+      imageFileModel,
+      projectionFileModel
     } = yield all(filesToUpload)
 
     // Now create the data set
@@ -102,12 +110,25 @@ export function* upload(action) {
 
       if (reconstructionFile.name.toLowerCase().endsWith('.tiff')) {
         tiffFileId = reconstructionFileModel['_id'];
-      }
-      else if (reconstructionFile.name.toLowerCase().endsWith('.emd')) {
+      } else if (reconstructionFile.name.toLowerCase().endsWith('.emd')) {
         emdFileId = reconstructionFileModel['_id'];
       }
 
       yield call(rest.createReconstruction, dataSet['_id'], emdFileId, tiffFileId);
+    }
+
+    if (!_.isNil(projectionFileModel)) {
+      // Projection
+      let emdFileId = null;
+      let tiffFileId = null;
+
+      if (projectionFile.name.toLowerCase().endsWith('.tiff')) {
+        tiffFileId = projectionFileModel['_id'];
+      } else if (projectionFile.name.toLowerCase().endsWith('.emd')) {
+        emdFileId = projectionFileModel['_id'];
+      }
+
+      yield call(rest.createProjection, dataSet['_id'], emdFileId, tiffFileId);
     }
 
     yield put(newDataSet(dataSet))
@@ -214,10 +235,12 @@ function* approveDataSet(action) {
 
     const {
       structures,
-      reconstructions
+      reconstructions,
+      projections
     } = yield all({
       structures: call(rest.fetchStructures, id),
-      reconstructions: call(rest.fetchReconstructions, id)
+      reconstructions: call(rest.fetchReconstructions, id),
+      projections: call(rest.fetchProjections, id)
     });
 
     for (let structure of structures) {
@@ -228,6 +251,12 @@ function* approveDataSet(action) {
 
     for (let reconstruction of reconstructions) {
       yield call(rest.updateReconstruction, reconstruction['_id'], {
+        public: true
+      });
+    }
+
+    for (let projection of projections) {
+      yield call(rest.updateProjection, projection['_id'], {
         public: true
       });
     }

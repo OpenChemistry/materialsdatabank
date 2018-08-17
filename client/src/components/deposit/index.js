@@ -150,7 +150,9 @@ const deposit = (values, dispatch) => {
     url,
     structureFile,
     reconstructionFile,
-    imageFile} = values;
+    imageFile,
+    projectionFile
+  } = values;
 
   if (!_.isNil(structureFile)) {
     structureFile.id = 'structureFile';
@@ -161,12 +163,15 @@ const deposit = (values, dispatch) => {
   if (!_.isNil(imageFile)) {
     imageFile.id = 'imageFile';
   }
+  if (!_.isNil(projectionFile)) {
+    projectionFile.id = 'projectionFile';
+  }
 
   dispatch(setProgress(true));
 
   return new Promise((resolve, reject) => {
     dispatch(upload(title, authors, url, slug, structureFile,
-        reconstructionFile, imageFile, resolve, reject));
+        reconstructionFile, imageFile, projectionFile, resolve, reject));
   }).then(() => dispatch(setProgress(false)));
 
 //    this.props.dispatch(push('/'));
@@ -279,6 +284,14 @@ class Deposit extends Component {
                   component={FileInputField}
                   label={'Reconstruction file ( EMD or TIFF )'}
                   hintText={'Reconstruction file'}
+                  disabled={submitting}
+                />
+                <Field
+                  className={classes.field}
+                  name="projectionFile"
+                  component={FileInputField}
+                  label={'Projection file ( EMD or TIFF )'}
+                  hintText={'Projection file'}
                   disabled={submitting}
                 />
               </CardContent>

@@ -83,7 +83,11 @@ class Dataset extends Component {
         structureMenu: {
           anchor: null,
           open: false
-        }
+        },
+        projectionMenu: {
+          anchor: null,
+          open: false
+        },
     }
   }
 
@@ -109,7 +113,13 @@ class Dataset extends Component {
   };
 
   handleClose = () => {
-    this.setState({reconstructionMenu: {anchor: null}, structureMenu: {anchor: null}, });
+    this.setState(
+      {
+        reconstructionMenu:{anchor: null},
+        structureMenu: {anchor: null},
+        projectionMenu: {anchor: null}
+      }
+    );
   };
 
   render = () => {
@@ -122,11 +132,18 @@ class Dataset extends Component {
         structureUrl = `${window.location.origin}/api/v1/mdb/datasets/_/structures/${this.props.structure._id}`
     }
 
-    let emdUrl = '';
-    let tiffUrl = '';
+    let reconEmdUrl = '';
+    let reconTiffUrl = '';
     if (!_.isNil(this.props.reconstruction)) {
-      emdUrl = `${window.location.origin}/api/v1/mdb/datasets/_/reconstructions/${this.props.reconstruction._id}/emd`
-      tiffUrl = `${window.location.origin}/api/v1/mdb/datasets/_/reconstructions/${this.props.reconstruction._id}/tiff`
+      reconEmdUrl = `${window.location.origin}/api/v1/mdb/datasets/_/reconstructions/${this.props.reconstruction._id}/emd`
+      reconTiffUrl = `${window.location.origin}/api/v1/mdb/datasets/_/reconstructions/${this.props.reconstruction._id}/tiff`
+    }
+
+    let projEmdUrl = '';
+    let projTiffUrl = '';
+    if (!_.isNil(this.props.projection)) {
+      projEmdUrl = `${window.location.origin}/api/v1/mdb/datasets/_/projections/${this.props.projection._id}/emd`
+      projTiffUrl = `${window.location.origin}/api/v1/mdb/datasets/_/projections/${this.props.projection._id}/tiff`
     }
 
     return (
@@ -172,7 +189,10 @@ class Dataset extends Component {
                       </a>
                     </TableCell>
                   </TableRow>
-                  { (!_.isNil(this.props.reconstruction.tiffFileId) || !_.isNil(this.props.reconstruction.emdFileId)) &&
+                  { ( !_.isNil(this.props.reconstruction) &&
+                     (!_.isNil(this.props.reconstruction.tiffFileId) ||
+                      !_.isNil(this.props.reconstruction.emdFileId))
+                    ) &&
                   <TableRow>
                     <TableCell style={{...tableLabelStyle}}>
                       Reconstruction
@@ -197,7 +217,7 @@ class Dataset extends Component {
                           value="tiff"
                           onClick={this.handleClose}
                         >
-                          <a href={tiffUrl}>TIFF</a>
+                          <a href={reconTiffUrl}>TIFF</a>
                         </MenuItem>
                         }
                         { !_.isNil(this.props.reconstruction.emdFileId) &&
@@ -205,7 +225,50 @@ class Dataset extends Component {
                           value="emd"
                           onClick={this.handleClose}
                         >
-                          <a href={emdUrl}>EMD</a>
+                          <a href={reconEmdUrl}>EMD</a>
+                        </MenuItem>
+                        }
+                      </Menu>
+                    </TableCell>
+                  </TableRow>
+                  }
+                  { ( !_.isNil(this.props.projection) &&
+                      (!_.isNil(this.props.projection.tiffFileId) ||
+                       !_.isNil(this.props.projection.emdFileId))
+                    ) &&
+                  <TableRow>
+                    <TableCell style={{...tableLabelStyle}}>
+                      Projection
+                    </TableCell>
+                    <TableCell style={{...tableStyle}}>
+                      <IconButton
+                        aria-label="More"
+                        aria-owns={this.state.projectionMenu.anchor ? 'projection-menu' : null}
+                        aria-haspopup="true"
+                        onClick={(e) => {this.handleClick('projectionMenu', e.currentTarget)}}
+                      >
+                        <DownloadIcon />
+                      </IconButton>
+                      <Menu
+                        id="projection-menu"
+                        anchorEl={this.state.projectionMenu.anchor}
+                        open={Boolean(this.state.projectionMenu.anchor)}
+                        onClose={this.handleClose}
+                      >
+                        { !_.isNil(this.props.projection.tiffFileId) &&
+                        <MenuItem
+                          value="tiff"
+                          onClick={this.handleClose}
+                        >
+                          <a href={projTiffUrl}>TIFF</a>
+                        </MenuItem>
+                        }
+                        { !_.isNil(this.props.projection.emdFileId) &&
+                        <MenuItem
+                          value="emd"
+                          onClick={this.handleClose}
+                        >
+                          <a href={projEmdUrl}>EMD</a>
                         </MenuItem>
                         }
                       </Menu>
@@ -289,7 +352,8 @@ Dataset.propTypes = {
   url:  PropTypes.string,
   isCurator: PropTypes.bool,
   public: PropTypes.bool,
-  reconstruction:PropTypes.object
+  reconstruction:PropTypes.object,
+  projection:PropTypes.object
 }
 
 Dataset.defaultProps = {
@@ -300,7 +364,8 @@ Dataset.defaultProps = {
   url: null,
   isCurator: false,
   public: false,
-  reconstruction: {}
+  reconstruction: {},
+  projection: {}
 }
 
 
@@ -332,6 +397,23 @@ function mapStateToProps(state, ownProps) {
 
       if (_.has(reconstruction, 'tiffFileId')) {
         props['tiffFileId'] = reconstruction.tiffFileId
+      }
+    }
+
+    let projections = selectors.projections.getProjectionsById(state);
+    if (_.has(projections, ownProps._id)) {
+      // For now we only have a single projection, so just pick the first.
+      const projection = projections[ownProps._id][0];
+      props = {...props,
+        projection
+      }
+
+      if (_.has(projection, 'emdFileId')) {
+        props['emdFileId'] = projection.emdFileId
+      }
+
+      if (_.has(projection, 'tiffFileId')) {
+        props['tiffFileId'] = projection.tiffFileId
       }
     }
   }

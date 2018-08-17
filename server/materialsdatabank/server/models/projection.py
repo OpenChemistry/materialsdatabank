@@ -11,11 +11,14 @@ class Projection(BaseAccessControlledModel):
     def validate(self, projection):
         return projection
 
-    def create(self, dataset,  user=None, public=False):
+    def create(self, dataset, emd_file_id, tiff_file_id, user=None, public=False):
         projection = {
-            'datasetId': dataset['_id']
+            'datasetId': dataset['_id'],
+            'emdFileId': emd_file_id,
+            'tiffFileId': tiff_file_id
         }
 
+        self.setPublic(projection, public)
         curator = list(Group().find({
             'name': 'curator',
         }))
