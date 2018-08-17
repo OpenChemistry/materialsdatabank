@@ -50,18 +50,8 @@ class MDBCli(GirderClient):
 
 
 @click.group()
-@click.option('--api-url', default=None,
-              help='RESTful API URL '
-                   '(e.g https://girder.example.com:443/%s)' % GirderClient.DEFAULT_API_ROOT)
-@click.option('--api-key', envvar='GIRDER_API_KEY', default=None,
-              help='[default: GIRDER_API_KEY env. variable]')
-@click.option('--username', default=None)
-@click.option('--password', default=None)
-@click.pass_context
-def cli(ctx, username, password, api_key, api_url):
-    ctx.obj = MDBCli(
-        username, password, api_url=api_url, api_key=api_key)
-
+def cli():
+    pass
 
 @cli.command('import', help='Import document.')
 @click.option('--bibtex-file', default=None,
@@ -90,9 +80,17 @@ def cli(ctx, username, password, api_key, api_url):
               help='the url for the dataset', type=str)
 @click.option('--slug', default=None,
               help='the url slug', type=str)
+@click.option('--api-url', default=None,
+              help='RESTful API URL '
+                   '(e.g https://girder.example.com:443/%s)' % GirderClient.DEFAULT_API_ROOT)
+@click.option('--api-key', envvar='GIRDER_API_KEY', default=None,
+              help='[default: GIRDER_API_KEY env. variable]')
+@click.option('--username', default=None)
+@click.option('--password', default=None)
 @click.pass_obj
-def _import(gc, bibtex_file=None, emd_file=None, tiff_file=None, cjson_file=None,
-            xyz_file=None, cml_file=None, image_file=None, url=None, slug=None):
+def _import(ctx, username, password, api_key, api_url, bibtex_file=None,
+            emd_file=None, tiff_file=None, cjson_file=None, xyz_file=None,
+            cml_file=None, image_file=None, url=None, slug=None):
     with open(bibtex_file) as bibtex_file:
         bibtex_database = bibtexparser.load(bibtex_file)
         entry = bibtex_database.entries[0]
@@ -100,6 +98,8 @@ def _import(gc, bibtex_file=None, emd_file=None, tiff_file=None, cjson_file=None
         if 'others' in authors:
             authors.remove('others')
         title = entry['title']
+
+    gc = MDBCli(username, password, api_url=api_url, api_key=api_key)
 
     me = gc.get('/user/me')
     private_folder = next(gc.listFolder(me['_id'], 'user', 'Private'))
