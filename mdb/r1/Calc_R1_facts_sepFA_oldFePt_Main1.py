@@ -23,15 +23,15 @@ Created on Fri Aug  3 02:55:49 2018
     # zDir (projection directon during the GENIFRE itertaion, should 1 (y-direction) or 2 (z-direction))
 
 import numpy as np
-import scipy as sp
+import scipy.io as spio
 import calc_R1_function_python_GEN
 
 # load data
 stringList = 'OldFePt'
-currPos = sp.io.loadmat('currModel_{0}.mat'.format(stringList))
-currAtom = sp.io.loadmat('currAtom_{0}.mat'.format(stringList))
-currProjs = sp.io.loadmat('currProjection_{0}.mat'.format(stringList))
-currAngles =sp.io.loadmat('currAngle_{0}.mat'.format(stringList))
+currPos = spio.loadmat('currModel_{0}.mat'.format(stringList))
+currAtom = spio.loadmat('currAtom_{0}.mat'.format(stringList))
+currProjs = spio.loadmat('currProjection_{0}.mat'.format(stringList))
+currAngles =spio.loadmat('currAngle_{0}.mat'.format(stringList))
 
 currPos = currPos['currModel']
 currAtom = currAtom['currAtom'] - 1
