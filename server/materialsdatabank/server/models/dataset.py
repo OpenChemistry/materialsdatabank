@@ -61,7 +61,8 @@ class Dataset(AccessControlledModel):
 
         return self.save(dataset)
 
-    def update(self, dataset, user=None, atomic_species=None, public=None):
+    def update(self, dataset, user=None, atomic_species=None, validation=None,
+               public=None):
         query = {
             '_id': dataset['_id']
         }
@@ -75,6 +76,9 @@ class Dataset(AccessControlledModel):
 
         if public is not None:
             updates.setdefault('$set', {})['public'] = public
+
+        if validation is not None:
+            updates.setdefault('$set', {})['validation'] = validation
 
         if updates:
             super(Dataset, self).update(query, update=updates, multi=False)

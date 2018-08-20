@@ -5,11 +5,14 @@ from girder.api.describe import Description, autoDescribeRoute
 from girder.api.rest import Resource, RestException
 from girder.constants import AccessType, TokenScope
 from girder.models.file import File
+from girder.models.group import Group
 
 from girder.plugins.materialsdatabank.models.dataset import Dataset as DatasetModel
 from girder.plugins.materialsdatabank.models.reconstruction import Reconstruction as ReconstructionModel
 from girder.plugins.materialsdatabank.models.structure import Structure as StructureModel
 from girder.plugins.materialsdatabank.models.projection import Projection as ProjectionModel
+
+from mdb.tasks.validation import r1, R1FactorResultTransform
 
 CHUNK_SIZE = 1024 * 1024;
 
@@ -23,6 +26,7 @@ class Dataset(Resource):
         self.route('GET', (':id',), self.fetch_dataset)
         self.route('GET', (':id','image'), self.fetch_image)
         self.route('PATCH', (':id', ), self.update_dataset)
+        self.route('PUT', (':id', 'validate' ), self.validate)
 
         self.route('POST', (':id', 'structures',), self.create_structure)
         self.route('GET', (':id', 'structures',), self.fetch_structures)
@@ -85,9 +89,9 @@ class Dataset(Resource):
         model = DatasetModel()
         dataset = model.load(id, user=self.getCurrentUser(), level=AccessType.WRITE)
 
-        if 'public' in updates:
-            dataset = DatasetModel().update(dataset, user=self.getCurrentUser(),
-                                            public=updates.get('public'))
+        dataset = DatasetModel().update(dataset, user=self.getCurrentUser(),
+                                        public=updates.get('public'),
+                                        validation=updates.get('validation'))
 
         return dataset
 
@@ -428,3 +432,39 @@ class Dataset(Resource):
             return File().download(file, contentDisposition='inline')
 
         return None
+
+    @access.user(scope=TokenScope.DATA_WRITE)
+    @autoDescribeRoute(
+        Description('Validate a dataset.')
+        .modelParam('id', 'The dataset id',
+                    model=DatasetModel, destName='dataset',
+                    level=AccessType.WRITE, paramType='path')
+    )
+    def validate(self, dataset):
+
+        curator = list(Group().find({
+            'name': 'curator',
+        }))
+
+        if len(curator) > 0:
+            user = self.getCurrentUser()
+            groups = user['groups']
+
+            if curator[0]['_id'] not in groups:
+                raise RestException('Insufficient permissions to validate dataset.')
+        else:
+            raise RestException('Unable to load group. Please check correct groups have been configured.')
+
+
+        result = r1.delay(dataset, girder_result_hooks=[
+            R1FactorResultTransform(dataset['_id'])
+        ])
+
+        validation = {
+            'jobId': result.job['_id']
+        }
+
+        DatasetModel().update(dataset, validation=validation)
+
+        return result.job
+
