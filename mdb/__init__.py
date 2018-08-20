@@ -7,6 +7,7 @@ import six
 import numpy as np
 import scipy.io as spio
 from .r1 import calculate_r1_factor
+from periodictable import elements
 
 
 class MDBCli(GirderClient):
@@ -187,4 +188,58 @@ def _r1(proj_file, proj_angles_file,  struc_file, atomic_spec_file, atomic_numbe
     r1 = calculate_r1_factor(currProjs, currAngles, currPos, currAtom, AtomicNumbers)
 
     print('R1 factor: %s' % r1)
+
+
+def _extract_key(mat_dict):
+    keys = mat_dict.keys()
+    # filter out __XXX
+    keys = [k for k in keys if not k.startswith('__')]
+
+    if len(keys) != 1:
+        raise Exception('Unable to extract single key from: %d' % mat_dict.keys())
+
+    return keys[0]
+
+def _extract_data(mat_dict):
+    key = _extract_key(mat_dict)
+
+    return mat_dict[key]
+
+NUMBER_TO_SYMBOL =  {el.number: el.symbol for el in elements}
+
+@cli.command('xyz', help='Convert structure from MatLab to XYZ.')
+@click.option('-s', '--struc-file', default=None,
+              help='path to MatLab file containing the atomic structure',
+              type=click.Path(exists=True, dir_okay=False, readable=True))
+@click.option('-t', '--atomic-spec-file', default=None,
+              help='path to MatLab file containing atomic species',
+              type=click.Path(exists=True, dir_okay=False, readable=True))
+@click.option('-n', '--atomic-numbers-file', default=None,
+              help='path to CSV file containing the atomic numbers of the species',
+              type=click.File('r'))
+@click.option('-o', '--xyz-file', help='path to write the XYZ data to',
+              type=click.File('w'))
+def _xyz(struc_file, atomic_spec_file, atomic_numbers_file, xyz_file):
+    positions = _extract_data(spio.loadmat(struc_file))
+    atomic_species = _extract_data(spio.loadmat(atomic_spec_file))
+    atomic_species = atomic_species - 1
+    atomic_numbers = [int(x) for x in atomic_numbers_file.read().split(',')]
+
+    (_, number_of_atoms) = atomic_species.shape
+
+    xyz = '%s\n\n' % number_of_atoms
+
+    for i in range(0, number_of_atoms):
+        atomic_number = atomic_numbers[atomic_species[0][i]]
+        symbol = NUMBER_TO_SYMBOL[atomic_number]
+        xyz += '%s %f %f %f\n' % (symbol, positions[0][i], positions[1][i],
+            positions[2][i])
+
+    if xyz_file is None:
+        click.echo(xyz)
+    else:
+        xyz_file.write(xyz)
+
+
+
 

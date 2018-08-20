@@ -41,7 +41,8 @@ setup(
         'jsonpath-rw',
         'bibtexparser',
         'numpy',
-        'scipy'
+        'scipy',
+        'periodictable'
     ],
     entry_points= {
         'girder_worker_plugins': [
