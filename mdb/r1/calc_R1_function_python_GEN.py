@@ -6,7 +6,7 @@ Created on Fri Aug  3 02:55:49 2018
          yongsoo.ysyang@gmail.com
 """
 
-from fparameters_python import fparameters_python
+from .fparameters_python import fparameters_python
 import numpy as np
 
 # main function for calculating R1 factor
@@ -67,7 +67,8 @@ def calc_R1_function_python(atomPos,atomType,Projections,Angles,Resolution,CropH
 
 
 # main function for calculating R1 factor using individual atomic scattering factor
-def calc_R1_function_indivFA_python(atomPos,atomType,Projections,Angles,Resolution,CropHalfWidth,VolSize,BF_Array,HTFact_Array,Axis_array,AtomicNumbers, zDir):
+def calc_R1_function_indivFA_python(atomPos,atomType,Projections,Angles,Resolution,
+    CropHalfWidth,VolSize,BF_Array,HTFact_Array,Axis_array,AtomicNumbers, zDir):
 
     # rename variables
     currPos = atomPos

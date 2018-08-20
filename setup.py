@@ -37,7 +37,9 @@ setup(
         'girder_client>=2.3.0',
         'click',
         'jsonpath-rw',
-        'bibtexparser'
+        'bibtexparser',
+        'numpy',
+        'scipy'
     ],
     entry_points='''
         [console_scripts]

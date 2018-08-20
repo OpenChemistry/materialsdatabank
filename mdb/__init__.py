@@ -4,6 +4,10 @@ import types
 import bibtexparser
 from girder_client import GirderClient
 import six
+import numpy as np
+import scipy.io as spio
+from .r1 import calculate_r1_factor
+
 
 class MDBCli(GirderClient):
 
@@ -150,4 +154,37 @@ def _import(ctx, username, password, api_key, api_url, bibtex_file=None,
 
     gc.post('mdb/datasets/%s/structures' % dataset['_id'], json=struc)
 
+
+@cli.command('r1', help='Calculate R1 factor.')
+@click.option('-p', '--proj-file', default=None,
+              help='path to experimentally measured projections',
+              type=click.Path(exists=True, dir_okay=False, readable=True))
+@click.option('-a', '--proj-angles-file', default=None,
+              help='path experimentally measured projection angles',
+              type=click.Path(exists=True, dir_okay=False, readable=True))
+@click.option('-s', '--struc-file', default=None,
+              help='path to file containing the atomic structure',
+              type=click.Path(exists=True, dir_okay=False, readable=True))
+@click.option('-t', '--atomic-spec-file', default=None,
+              help='path to file containing atomic species',
+              type=click.Path(exists=True, dir_okay=False, readable=True))
+@click.option('-n', '--atomic-numbers-file', default=None,
+              help='path to file containing atomic number of the species',
+              type=click.File('r'))
+def _r1(proj_file, proj_angles_file,  struc_file, atomic_spec_file, atomic_numbers_file):
+    currPos = spio.loadmat(struc_file)
+    currAtom = spio.loadmat(atomic_spec_file)
+    currProjs = spio.loadmat(proj_file)
+    currAngles =spio.loadmat(proj_angles_file)
+
+    currPos = currPos['currModel']
+    currAtom = currAtom['currAtom'] - 1
+    currProjs = currProjs['currProjection']
+    currAngles =currAngles['currAngle']
+
+    AtomicNumbers = np.array([int(x) for x in atomic_numbers_file.read().split(',')])
+
+    r1 = calculate_r1_factor(currProjs, currAngles, currPos, currAtom, AtomicNumbers)
+
+    print('R1 factor: %s' % r1)
 
