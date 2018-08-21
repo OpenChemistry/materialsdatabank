@@ -4,6 +4,9 @@ from girder_worker.app import app
 from girder_worker.utils import girder_job
 from girder_worker_utils.transforms.girder_io import GirderClientResultTransform
 
+from materialsdatabank.utility import proj_to_numpy, xyz_to_numpy
+from materialsdatabank.r1 import calculate_r1_factor
+
 class R1FactorResultTransform(GirderClientResultTransform):
     def __init__(self, dataset_id, **kwargs):
         super(R1FactorResultTransform, self).__init__(**kwargs)
@@ -34,8 +37,11 @@ class R1FactorResultTransform(GirderClientResultTransform):
 
 @girder_job(title='R1 factor calculation')
 @app.task
-def r1(dataset):
-    import time
-    time.sleep(5)
+def r1(dataset, proj_file, struc_file):
+    (proj, angles) = proj_to_numpy(proj_file)
+    with open(struc_file) as f:
+        (positions, atomic_spec, atomic_numbers) = xyz_to_numpy(f)
 
-    return 0.09906451799552095
+    r1 = calculate_r1_factor(proj, angles, positions, atomic_spec, atomic_numbers)
+
+    return r1

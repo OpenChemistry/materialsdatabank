@@ -33,7 +33,7 @@ setup(
 
     packages=find_packages(),
     extras_require={
-        'worker': ['girder_worker']
+        'worker': ['girder_worker', 'pillow']
     },
     install_requires=[
         'girder_client>=2.3.0',
@@ -42,14 +42,15 @@ setup(
         'bibtexparser',
         'numpy',
         'scipy',
-        'periodictable'
+        'periodictable',
+        'h5py'
     ],
     entry_points= {
         'girder_worker_plugins': [
-              'mdb = mdb.girder_worker:MDBPlugin',
+              'mdb = materialsdatabank.girder_worker:MDBPlugin',
         ],
         'console_scripts': [
-            'mdb=mdb:cli'
+            'mdb=materialsdatabank:cli'
         ]
     }
 )

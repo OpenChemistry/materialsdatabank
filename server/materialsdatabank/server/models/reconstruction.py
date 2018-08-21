@@ -11,11 +11,10 @@ class Reconstruction(BaseAccessControlledModel):
     def validate(self, reconstruction):
         return reconstruction
 
-    def create(self, dataset, emd_file_id, tiff_file_id, user=None, public=False):
+    def create(self, dataset, emd_file_id, user=None, public=False):
         reconstruction = {
             'datasetId': dataset['_id'],
-            'emdFileId': emd_file_id,
-            'tiffFileId': tiff_file_id
+            'emdFileId': emd_file_id
         }
 
 

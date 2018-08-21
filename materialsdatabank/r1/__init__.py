@@ -2,6 +2,7 @@ import numpy as np
 import scipy.io as spio
 from . import calc_R1_function_python_GEN
 
+
 def calculate_r1_factor(proj, proj_angles, atom_positions, atomic_spec, atomic_numbers):
     # pixel size (resolution)
     Resolution = 0.3725
@@ -28,4 +29,5 @@ def calculate_r1_factor(proj, proj_angles, atom_positions, atomic_spec, atomic_n
         atomic_spec, proj, proj_angles, Resolution, CropHalfWidth, VolSize,
         BF_Array, HTFact_Array, Axis_array, atomic_numbers, zDir)
 
-    return Result[0][1]
+    return Result[1]
+
