@@ -88,12 +88,15 @@ def cli():
                    '(e.g https://girder.example.com:443/%s)' % GirderClient.DEFAULT_API_ROOT)
 @click.option('-k', '--api-key', envvar='GIRDER_API_KEY', default=None,
               help='[default: GIRDER_API_KEY env. variable]')
+@click.option('-j', '--json-file', default=None,
+              help='path to the json file containing the reconstruction parameters',
+              type=click.File('r'), required=True)
 @click.option('-n', '--username', default=None)
 @click.option('-w', '--password', default=None)
 @click.pass_obj
 def _deposit(ctx, username, password, api_key, api_url, bibtex_file=None,
             recon_file=None, proj_file=None, xyz_file=None, image_file=None,
-            url=None, slug=None):
+            url=None, slug=None, json_file=None):
     with open(bibtex_file) as bibtex_file:
         bibtex_database = bibtexparser.load(bibtex_file)
         entry = bibtex_database.entries[0]
@@ -131,8 +134,17 @@ def _deposit(ctx, username, password, api_key, api_url, bibtex_file=None,
 
     # Upload reconstructions
     recon_file = gc.uploadFileToFolder(folder['_id'], recon_file)
+    (resolution, crop_half_width, volume_size,
+    z_direction, b_factor, h_factor, axis_convention) = json_to_reconstruction_params(json_file)
     recon = {
-        'emdFileId': recon_file['_id']
+        'emdFileId': recon_file['_id'],
+        'resolution': resolution,
+        'cropHalfWidth': crop_half_width,
+        'volumeSize': volume_size,
+        'zDirection': z_direction,
+        'bFactor': b_factor,
+        'hFactor': h_factor,
+        'axisConvention': axis_convention
     }
 
     click.echo('Creating reconstruction ...')
