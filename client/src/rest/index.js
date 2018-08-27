@@ -118,22 +118,12 @@ export function createStructure(dataSetId, xyzFileId) {
   .then(response => response.data)
 }
 
-export function createReconstruction(dataSetId, emdFileId=null, tiffFileId=null) {
-  const reconstruction = {
-    emdFileId,
-    tiffFileId,
-  }
-
+export function createReconstruction(dataSetId, reconstruction) {
   return post(`mdb/datasets/${dataSetId}/reconstructions`, reconstruction)
   .then(response => response.data)
 }
 
-export function createProjection(dataSetId, emdFileId=null, tiffFileId=null) {
-  const projection = {
-    emdFileId,
-    tiffFileId,
-  }
-
+export function createProjection(dataSetId, projection) {
   return post(`mdb/datasets/${dataSetId}/projections`, projection)
   .then(response => response.data)
 }
