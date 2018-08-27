@@ -26,6 +26,7 @@ def xyz_to_numpy(xyz_file):
                             % (number_of_atoms, i))
 
     atomic_numbers = [SYMBOL_TO_NUMBER[e] for e in set(elements)]
+    atomic_numbers.sort()
     atomic_spec = [atomic_numbers.index(SYMBOL_TO_NUMBER[e]) for e in elements]
     atomic_spec_np = np.ndarray(shape=(1, number_of_atoms), dtype=np.int)
     atomic_spec_np[0] = np.asarray(atomic_spec)
