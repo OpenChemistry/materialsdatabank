@@ -15,7 +15,6 @@ from girder.plugins.materialsdatabank.models.projection import Projection as Pro
 
 from materialsdatabank.tasks import r1, R1FactorResultTransform
 from girder_worker_utils.transforms.girder_io import GirderFileId
-from shutil import copyfile
 import tempfile
 from PIL import Image
 from shutil import copyfileobj
@@ -273,21 +272,17 @@ class Dataset(Resource):
                     slices.append(Image.fromarray(slice, mode='F'))
 
                 io = BytesIO()
-                slices[0].save(io, format='tiff', save_all=True, append_images=slices[1:])
+                slices[0].save(io, format='tiff', compression='tiff_deflate',  save_all=True, append_images=slices[1:])
                 io.seek(0)
+
                 def _stream():
                     bytes_read = 0
-                    file_size = file['size']
                     while True:
-                        to_read = min(CHUNK_SIZE, file_size - bytes_read)
-                        if to_read <= 0:
-                            break
-
-                        chunk = io.read(to_read)
-                        bytes_read += to_read
+                        chunk = io.read(CHUNK_SIZE)
 
                         if not chunk:
                             break
+                        bytes_read += len(chunk)
                         yield chunk
 
                 return _stream
@@ -295,7 +290,7 @@ class Dataset(Resource):
         if local_file_path is None:
             # Assetstore is not local, so we will have to download to temp file.
             with tempfile.NamedTemporaryFile() as f:
-                copyfile(File().download(file), f)
+                copyfileobj(File().download(file), f)
                 f.seek(0)
                 return _read(f.name)
         else:
