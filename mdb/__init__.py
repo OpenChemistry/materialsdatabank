@@ -4,6 +4,10 @@ import types
 import bibtexparser
 from girder_client import GirderClient
 import six
+import numpy as np
+import scipy.io as spio
+from .r1 import calculate_r1_factor
+
 
 class MDBCli(GirderClient):
 
@@ -50,18 +54,8 @@ class MDBCli(GirderClient):
 
 
 @click.group()
-@click.option('--api-url', default=None,
-              help='RESTful API URL '
-                   '(e.g https://girder.example.com:443/%s)' % GirderClient.DEFAULT_API_ROOT)
-@click.option('--api-key', envvar='GIRDER_API_KEY', default=None,
-              help='[default: GIRDER_API_KEY env. variable]')
-@click.option('--username', default=None)
-@click.option('--password', default=None)
-@click.pass_context
-def cli(ctx, username, password, api_key, api_url):
-    ctx.obj = MDBCli(
-        username, password, api_url=api_url, api_key=api_key)
-
+def cli():
+    pass
 
 @cli.command('import', help='Import document.')
 @click.option('--bibtex-file', default=None,
@@ -90,9 +84,17 @@ def cli(ctx, username, password, api_key, api_url):
               help='the url for the dataset', type=str)
 @click.option('--slug', default=None,
               help='the url slug', type=str)
+@click.option('--api-url', default=None,
+              help='RESTful API URL '
+                   '(e.g https://girder.example.com:443/%s)' % GirderClient.DEFAULT_API_ROOT)
+@click.option('--api-key', envvar='GIRDER_API_KEY', default=None,
+              help='[default: GIRDER_API_KEY env. variable]')
+@click.option('--username', default=None)
+@click.option('--password', default=None)
 @click.pass_obj
-def _import(gc, bibtex_file=None, emd_file=None, tiff_file=None, cjson_file=None,
-            xyz_file=None, cml_file=None, image_file=None, url=None, slug=None):
+def _import(ctx, username, password, api_key, api_url, bibtex_file=None,
+            emd_file=None, tiff_file=None, cjson_file=None, xyz_file=None,
+            cml_file=None, image_file=None, url=None, slug=None):
     with open(bibtex_file) as bibtex_file:
         bibtex_database = bibtexparser.load(bibtex_file)
         entry = bibtex_database.entries[0]
@@ -100,6 +102,8 @@ def _import(gc, bibtex_file=None, emd_file=None, tiff_file=None, cjson_file=None
         if 'others' in authors:
             authors.remove('others')
         title = entry['title']
+
+    gc = MDBCli(username, password, api_url=api_url, api_key=api_key)
 
     me = gc.get('/user/me')
     private_folder = next(gc.listFolder(me['_id'], 'user', 'Private'))
@@ -150,4 +154,37 @@ def _import(gc, bibtex_file=None, emd_file=None, tiff_file=None, cjson_file=None
 
     gc.post('mdb/datasets/%s/structures' % dataset['_id'], json=struc)
 
+
+@cli.command('r1', help='Calculate R1 factor.')
+@click.option('-p', '--proj-file', default=None,
+              help='path to experimentally measured projections',
+              type=click.Path(exists=True, dir_okay=False, readable=True))
+@click.option('-a', '--proj-angles-file', default=None,
+              help='path experimentally measured projection angles',
+              type=click.Path(exists=True, dir_okay=False, readable=True))
+@click.option('-s', '--struc-file', default=None,
+              help='path to file containing the atomic structure',
+              type=click.Path(exists=True, dir_okay=False, readable=True))
+@click.option('-t', '--atomic-spec-file', default=None,
+              help='path to file containing atomic species',
+              type=click.Path(exists=True, dir_okay=False, readable=True))
+@click.option('-n', '--atomic-numbers-file', default=None,
+              help='path to file containing atomic number of the species',
+              type=click.File('r'))
+def _r1(proj_file, proj_angles_file,  struc_file, atomic_spec_file, atomic_numbers_file):
+    currPos = spio.loadmat(struc_file)
+    currAtom = spio.loadmat(atomic_spec_file)
+    currProjs = spio.loadmat(proj_file)
+    currAngles =spio.loadmat(proj_angles_file)
+
+    currPos = currPos['currModel']
+    currAtom = currAtom['currAtom'] - 1
+    currProjs = currProjs['currProjection']
+    currAngles =currAngles['currAngle']
+
+    AtomicNumbers = np.array([int(x) for x in atomic_numbers_file.read().split(',')])
+
+    r1 = calculate_r1_factor(currProjs, currAngles, currPos, currAtom, AtomicNumbers)
+
+    print('R1 factor: %s' % r1)
 

@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='materialsdatabank',
@@ -31,20 +31,24 @@ setup(
 
     keywords='',
 
-    packages=['mdb'],
-
+    packages=find_packages(),
+    extras_require={
+        'worker': ['girder_worker']
+    },
     install_requires=[
         'girder_client>=2.3.0',
         'click',
         'jsonpath-rw',
-        'bibtexparser'
+        'bibtexparser',
+        'numpy',
+        'scipy'
     ],
-    entry_points='''
-        [console_scripts]
-        mdb=mdb:cli
-    ''',
-
-    extras_require={
-
+    entry_points= {
+        'girder_worker_plugins': [
+              'mdb = mdb.girder_worker:MDBPlugin',
+        ],
+        'console_scripts': [
+            'mdb=mdb:cli'
+        ]
     }
 )

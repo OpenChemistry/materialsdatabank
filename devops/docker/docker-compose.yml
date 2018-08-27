@@ -5,6 +5,20 @@ services:
     volumes:
         - /mongodb:/data/db
 
+  rabbit:
+    image: rabbitmq:latest
+
+  girder_worker:
+    image: openchemistry/girder_worker:mdb
+    build:
+      context: ../../
+      dockerfile: devops/docker/girder_worker/Dockerfile
+    environment:
+      - GIRDER_WORKER_BROKER=amqp://guest:guest@rabbit/
+      - GIRDER_WORKER_BACKEND=amqp://guest:guest@rabbit/
+    depends_on:
+      - rabbit
+
   girder:
     image: openchemistry/girder:mdb
     build:
@@ -17,6 +31,9 @@ services:
       - /assetstore:/assetstore
     links:
       - mongodb
+    environment:
+      - GIRDER_WORKER_BROKER=amqp://guest:guest@rabbit/
+      - GIRDER_WORKER_BACKEND=amqp://guest:guest@rabbit/
     depends_on:
       - mongodb
 
