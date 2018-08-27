@@ -160,10 +160,10 @@ def _deposit(ctx, username, password, api_key, api_url, bibtex_file=None,
 @cli.command('r1', help='Calculate R1 factor.')
 @click.option('-p', '--proj-file', default=None,
               help='path to the EMD file containing the experimentally measured projections',
-              type=click.Path(exists=True, dir_okay=False, readable=True))
+              type=click.Path(exists=True, dir_okay=False, readable=True), required=True)
 @click.option('-s', '--struc-file', default=None,
               help='path to the XYZ file containing the atomic structure',
-              type=click.File('r'))
+              type=click.File('r'), required=True)
 def _r1(proj_file, struc_file):
 
     (currProjs, currAngles) = proj_to_numpy(proj_file)
