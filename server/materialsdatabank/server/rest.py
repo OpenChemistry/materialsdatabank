@@ -148,11 +148,29 @@ class Dataset(Resource):
         .jsonParam('reconstruction', 'Dataset document', required=True, paramType='body')
     )
     def create_reconstruction(self, dataset, reconstruction):
-        self.requireParams(['emdFileId'], reconstruction)
+        self.requireParams([
+            'emdFileId',
+            'resolution',
+            'cropHalfWidth',
+            'volumeSize',
+            'zDirection',
+            'bFactor',
+            'hFactor',
+            'axisConvention'
+        ], reconstruction)
         emd_file_id = reconstruction.get('emdFileId')
+        resolution = reconstruction.get('resolution')
+        crop_half_width = reconstruction.get('cropHalfWidth')
+        volume_size = reconstruction.get('volumeSize')
+        z_direction = reconstruction.get('zDirection')
+        b_factor = reconstruction.get('bFactor')
+        h_factor = reconstruction.get('hFactor')
+        axis_convention = reconstruction.get('axisConvention')
 
         reconstruction = ReconstructionModel().create(
-            dataset, emd_file_id, user=self.getCurrentUser())
+            dataset, emd_file_id, resolution, crop_half_width,
+            volume_size, z_direction, b_factor, h_factor,
+            axis_convention, user=self.getCurrentUser())
 
         cherrypy.response.status = 201
         cherrypy.response.headers['Location'] = '/datasets/%s/reconstructions/%s' % (dataset['_id'], reconstruction['_id'])

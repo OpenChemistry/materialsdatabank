@@ -63,6 +63,15 @@ export function* upload(action) {
     reconstructionFileId,
     imageFileId,
     projectionFileId,
+
+    resolution,
+    cropHalfWidth,
+    volumeSize,
+    zDirection,
+    bFactor,
+    hFactor,
+    axisConvention,
+    
     resolve,
     reject
   } = action.payload;
@@ -105,30 +114,26 @@ export function* upload(action) {
 
     if (!_.isNil(reconstructionFileModel)) {
       // Reconstruction
-      let emdFileId = null;
-      let tiffFileId = null;
-
-      if (reconstructionFile.name.toLowerCase().endsWith('.tiff')) {
-        tiffFileId = reconstructionFileModel['_id'];
-      } else if (reconstructionFile.name.toLowerCase().endsWith('.emd')) {
-        emdFileId = reconstructionFileModel['_id'];
+      let emdFileId = reconstructionFileModel['_id'];
+      let reconstruction = {
+        emdFileId,
+        resolution,
+        cropHalfWidth,
+        volumeSize: JSON.parse(volumeSize),
+        zDirection,
+        bFactor: JSON.parse(bFactor),
+        hFactor: JSON.parse(hFactor),
+        axisConvention: JSON.parse(axisConvention)
       }
 
-      yield call(rest.createReconstruction, dataSet['_id'], emdFileId, tiffFileId);
+      yield call(rest.createReconstruction, dataSet['_id'], reconstruction);
     }
 
     if (!_.isNil(projectionFileModel)) {
       // Projection
-      let emdFileId = null;
-      let tiffFileId = null;
+      let emdFileId = projectionFileModel['_id'];
 
-      if (projectionFile.name.toLowerCase().endsWith('.tiff')) {
-        tiffFileId = projectionFileModel['_id'];
-      } else if (projectionFile.name.toLowerCase().endsWith('.emd')) {
-        emdFileId = projectionFileModel['_id'];
-      }
-
-      yield call(rest.createProjection, dataSet['_id'], emdFileId, tiffFileId);
+      yield call(rest.createProjection, dataSet['_id'], {emdFileId});
     }
 
     yield put(newDataSet(dataSet))
