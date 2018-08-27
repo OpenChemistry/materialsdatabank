@@ -523,8 +523,11 @@ class Dataset(Resource):
         projection = list(ProjectionModel().find(dataset['_id']))
         assert len(projection) > 0
         projection = projection[0]
+        reconstruction = list(ReconstructionModel().find(dataset['_id']))
+        assert len(reconstruction) > 0
+        reconstruction = reconstruction[0]
 
-        result = r1.delay(dataset, GirderFileId(projection['emdFileId']),
+        result = r1.delay(reconstruction, GirderFileId(projection['emdFileId']),
             GirderFileId(structure['xyzFileId']), girder_result_hooks=[
             R1FactorResultTransform(dataset['_id'])
         ])
