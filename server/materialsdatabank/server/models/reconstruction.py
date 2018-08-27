@@ -18,14 +18,14 @@ class Reconstruction(BaseAccessControlledModel):
             'datasetId': dataset['_id'],
             'emdFileId': emd_file_id,
             'resolution': resolution,
-            'crop_half_width': crop_half_width,
-            'volume_size': volume_size,
-            'z_direction': z_direction,
-            'b_factor': b_factor,
-            'h_factor': h_factor,
-            'axis_convention': axis_convention
+            'cropHalfWidth': crop_half_width,
+            'volumeSize': volume_size,
+            'zDirection': z_direction,
+            'bFactor': b_factor,
+            'hFactor': h_factor,
+            'axisConvention': axis_convention
         }
-        
+
         self.setPublic(reconstruction, public)
         curator = list(Group().find({
             'name': 'curator',
