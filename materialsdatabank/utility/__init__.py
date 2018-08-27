@@ -1,3 +1,4 @@
+import json
 import numpy as np
 from periodictable import elements
 import h5py as h5
@@ -47,3 +48,31 @@ def proj_to_numpy(emd_file):
         angle = emdgrp['dim3'][:]
 
     return (proj, angle)
+
+def json_to_reconstruction_params(json_file):
+    # with open(str(json_file)) as f:
+    #     parameters = json.load(f)
+    parameters = json.load(json_file)
+    assert('resolution' in parameters)
+    resolution = parameters['resolution']
+
+    assert('cropHalfWidth' in parameters)
+    crop_half_width = parameters['cropHalfWidth']
+
+    assert('volumeSize' in parameters)
+    volume_size = parameters['volumeSize']
+
+    assert('zDirection' in parameters)
+    z_direction = parameters['zDirection']
+
+    assert('bFactor' in parameters)
+    b_factor = parameters['bFactor']
+
+    assert('hFactor' in parameters)
+    h_factor = parameters['hFactor']
+
+    assert('axisConvention' in parameters)
+    axis_convention = parameters['axisConvention']
+    
+    return (resolution, crop_half_width, volume_size,
+            z_direction, b_factor, h_factor, axis_convention)
