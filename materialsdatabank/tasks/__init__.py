@@ -20,28 +20,34 @@ class R1FactorResultTransform(GirderClientResultTransform):
         dataset_uri = 'mdb/datasets/%s' % self.dataset_id
         dataset = self.gc.get(dataset_uri)
         validation = dataset.get('validation', {})
+        validation['r1'] = r1
 
         body = {
             'validation': validation
         }
 
-        validation['r1'] = r1
-
         self.gc.patch(dataset_uri, data=json.dumps(body))
-
-        self.dataset_id
-
 
     def cleanup(self):
         pass
 
 @girder_job(title='R1 factor calculation')
 @app.task
-def r1(dataset, proj_file, struc_file):
+def r1(reconstruction, proj_file, struc_file):
     (proj, angles) = proj_to_numpy(proj_file)
     with open(struc_file) as f:
         (positions, atomic_spec, atomic_numbers) = xyz_to_numpy(f)
 
-    r1 = calculate_r1_factor(proj, angles, positions, atomic_spec, atomic_numbers)
+    resolution = reconstruction['resolution']
+    crop_half_width = reconstruction['cropHalfWidth']
+    volume_size = reconstruction['volumeSize']
+    z_direction = reconstruction['zDirection']
+    b_factor = reconstruction['bFactor']
+    h_factor = reconstruction['hFactor']
+    axis_convention = reconstruction['axisConvention']
+
+    r1 = calculate_r1_factor(proj, angles, positions, atomic_spec, atomic_numbers,
+                                resolution, crop_half_width, volume_size,
+                                z_direction, b_factor, h_factor, axis_convention)
 
     return r1
