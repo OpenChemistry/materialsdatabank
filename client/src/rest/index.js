@@ -82,6 +82,11 @@ export function fetchProjections(id) {
           .then(response => response.data )
 }
 
+export function validateDataSet(id) {
+  return put(`mdb/datasets/${id}/validate`)
+          .then(response => response.data )
+}
+
 export function searchByFields(title, authors, atomicSpecies) {
   authors = _.isNil(authors) ? null : JSON.stringify(authors);
   atomicSpecies = _.isNil(atomicSpecies) ? null : JSON.stringify(atomicSpecies);

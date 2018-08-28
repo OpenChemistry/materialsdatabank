@@ -30,8 +30,13 @@ import {
   watchUpload,
   watchRequestMdbFolder,
   watchLoadCuratorGroup,
-  watchApproveDataSet
+  watchApproveDataSet,
+  watchValidateDataSet
 } from './upload'
+
+import {
+  watchLoadJob
+} from './jobs'
 
 export default function* root() {
   yield fork(watchSearchDatasetsByText)
@@ -49,4 +54,6 @@ export default function* root() {
   yield fork(watchRequestMdbFolder)
   yield fork(watchLoadCuratorGroup)
   yield fork(watchApproveDataSet)
+  yield fork(watchLoadJob)
+  yield fork(watchValidateDataSet)
 }

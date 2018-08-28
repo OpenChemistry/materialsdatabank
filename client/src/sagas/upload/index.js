@@ -2,10 +2,12 @@ import { call, put, take, select, takeEvery, all } from 'redux-saga/effects';
 import { buffers, eventChannel, END } from 'redux-saga';
 import { requestUpload, uploadProgress, uploadComplete, requestMdbFolder,
   receiveMdbFolder, newDataSet, UPLOAD, REQUEST_MDB_FOLDER,
-  approveDataSetRequest, APPROVE_DATASET} from '../../redux/ducks/upload';
+  approveDataSetRequest, APPROVE_DATASET, VALIDATE_DATASET, requestValidateDataSet
+} from '../../redux/ducks/upload';
 import {requestCuratorGroup, receiveCuratorGroup, AUTHENTICATED} from '../../redux/ducks/girder';
 import { uploadError } from '../../redux/ducks/upload';
 import { loadStructures } from '../../redux/ducks/structures';
+import { receiveDataset } from '../../redux/ducks/datasets';
 import _ from 'lodash';
 
 import { girder } from '../../rest'
@@ -280,5 +282,19 @@ function* approveDataSet(action) {
 
 export  function* watchApproveDataSet() {
   yield takeEvery(APPROVE_DATASET, approveDataSet)
+}
+
+function* validateDataset(action) {
+  try {
+    const id = action.payload;
+    const dataset = yield(rest.validateDataSet(id));
+    yield put( receiveDataset(dataset) );
+  } catch(error) {
+    yield put(requestValidateDataSet(error));
+  }
+}
+
+export function* watchValidateDataSet() {
+  yield takeEvery(VALIDATE_DATASET, validateDataset);
 }
 
