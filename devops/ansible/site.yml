@@ -126,6 +126,17 @@
           "value": ["google"]
         }
 
+    - name: Set the server root setting
+      girder:
+        host: "{{girder_host}}"
+        port: "{{girder_port}}"
+        scheme: "{{girder_scheme}}"
+        username: "mdbadmin"
+        password: "{{ mdb_password }}"
+        setting:
+          key: "core.server_root"
+          value: "http://girder:8080/"
+
     - name: Restart the server
       girder:
         host: "{{girder_host}}"
