@@ -16,16 +16,10 @@ setup(
 
     classifiers=[
         'Development Status :: 3 - Alpha',
-
-        'Intended Audience :: ',
-        'Topic :: Software Development :: ',
-
-        'License :: OSI Approved :: BSD 3-Clause',
-
+        'License :: OSI Approved :: BSD License',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
     ],
 
@@ -33,7 +27,7 @@ setup(
 
     packages=find_packages(),
     extras_require={
-        'worker': ['girder_worker']
+        'worker': ['girder_worker', 'pillow']
     },
     install_requires=[
         'girder_client>=2.3.0',
@@ -41,14 +35,16 @@ setup(
         'jsonpath-rw',
         'bibtexparser',
         'numpy',
-        'scipy'
+        'scipy',
+        'periodictable',
+        'h5py'
     ],
     entry_points= {
         'girder_worker_plugins': [
-              'mdb = mdb.girder_worker:MDBPlugin',
+              'mdb = materialsdatabank.girder_worker:MDBPlugin',
         ],
         'console_scripts': [
-            'mdb=mdb:cli'
+            'mdb=materialsdatabank:cli'
         ]
     }
 )

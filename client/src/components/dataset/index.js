@@ -30,7 +30,10 @@ import { setProgress } from '../../redux/ducks/app';
 import PageHead from '../page-head';
 import PageBody from '../page-body';
 
+import ValidateTable from './validate';
+
 import './index.css'
+import { CardActions } from '@material-ui/core';
 
 const privateColor = '#FFEBEE'
 
@@ -65,6 +68,10 @@ const style = {
 const tableStyle = {
     fontSize: '18px'
   }
+
+const curatorCardStyle = {
+  marginTop: '2rem'
+}
 
 const approvalDivStyle = {
   display: 'inline'
@@ -321,10 +328,20 @@ class Dataset extends Component {
                 <StructureContainer _id={this.props._id}/>
               </div>
               { !this.props.public &&
-              <div style={{textAlign: 'justify', display: 'flex', alignItems: 'center'}}>
-                <Typography color="textSecondary" style={{flexGrow: 1}}>* This dataset is awaiting approval.</Typography>
-                { this.props.isCurator &&
+              <Typography color="textSecondary" style={{flexGrow: 1}}>* This dataset is awaiting approval.</Typography>
+              }
+            </CardContent>
+          </Card>
+          { this.props.isCurator &&
+          <div style={curatorCardStyle}>
+            <Card>
+              <CardContent>
+                <ValidateTable _id={this.props._id} />
+              </CardContent>
+              <CardActions style={{display: 'flex'}}>
+                { !this.props.public &&
                 <Button
+                  style={{marginLeft: 'auto'}}
                   variant="contained"
                   color="primary"
                   disabled={this.state.approving}
@@ -334,10 +351,10 @@ class Dataset extends Component {
                   Approve
                 </Button>
                 }
-              </div>
-              }
-            </CardContent>
-          </Card>
+              </CardActions>
+            </Card>
+          </div>
+          }
         </PageBody>
       </div>
     );

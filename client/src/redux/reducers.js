@@ -6,6 +6,7 @@ import projections  from './ducks/projections';
 import girder from './ducks/girder';
 import app from './ducks/app';
 import upload from './ducks/upload';
+import jobs from './ducks/jobs';
 
 import { reducer as formReducer } from 'redux-form'
 
@@ -17,5 +18,6 @@ export default combineReducers({
   girder,
   app,
   upload,
+  jobs,
   form: formReducer
 });

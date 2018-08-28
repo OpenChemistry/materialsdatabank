@@ -21,15 +21,15 @@ RUN apt-get update && apt-get -y install \
   libpython3-dev
 
 # Build avogadrolibs
-RUN git clone https://github.com/openchemistry/avogadrolibs.git /avogadrolibs/source && \
+RUN git clone -b 1.91.0 https://github.com/openchemistry/avogadrolibs.git /avogadrolibs/source && \
   mkdir /avogadrolibs/build && \
   cd /avogadrolibs/build && \
   /cmake/bin/cmake -DCMAKE_BUILD_TYPE:STRING=Release -DUSE_PYTHON:BOOL=YES -DENABLE_TESTING:BOOL=NO \
-    -Dpybind11_DIR:PATH=/pybind11/install/share/cmake/pybind11 -DUSE_LIBSPG:BOOL=NO \
+    -Dpybind11_DIR:PATH=/pybind11/install/share/cmake/pybind11 -DUSE_SPGLIB:BOOL=NO \
     -DUSE_QT:BOOL=NO -DUSE_OPENGL:BOOL=NO ../source && \
   /cmake/bin/cmake --build . && \
   mkdir -p /usr/lib/python3.4/site-packages/ && \
-  cp /avogadrolibs/build/lib/* /usr/local/lib/python3.4/dist-packages/ && \
+  cp /avogadrolibs/build/lib/* /usr/local/lib/python3.5/dist-packages/ && \
   rm -rf /avogadrolibs/source
 
 # Remove cmake

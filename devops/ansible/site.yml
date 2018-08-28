@@ -63,7 +63,7 @@
           current: true
         state: present
 
-    - name: Enable OAuth plugins
+    - name: Enable OAuth plugin
       girder:
         host: "{{girder_host}}"
         port: "{{girder_port}}"
@@ -72,6 +72,17 @@
         password: "{{ mdb_password }}"
         plugins:
           - oauth
+        state: present
+
+    - name: Enable worker plugin
+      girder:
+        host: "{{girder_host}}"
+        port: "{{girder_port}}"
+        scheme: "{{girder_scheme}}"
+        username: "mdbadmin"
+        password: "{{ mdb_password }}"
+        plugins:
+          - worker
         state: present
 
     - name: Restart the server
@@ -114,6 +125,17 @@
           "key": "oauth.providers_enabled",
           "value": ["google"]
         }
+
+    - name: Set the server root setting
+      girder:
+        host: "{{girder_host}}"
+        port: "{{girder_port}}"
+        scheme: "{{girder_scheme}}"
+        username: "mdbadmin"
+        password: "{{ mdb_password }}"
+        setting:
+          key: "core.server_root"
+          value: "http://girder:8080/"
 
     - name: Restart the server
       girder:

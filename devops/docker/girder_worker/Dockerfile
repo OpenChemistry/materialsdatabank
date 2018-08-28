@@ -2,9 +2,9 @@ FROM girder/girder_worker:latest-py3
 
 USER root
 
-COPY ./devops/docker/girder_worker/wait-for-it.sh /wait-for-it.sh
+COPY ./devops/docker/wait-for-it.sh /wait-for-it.sh
 
-COPY ./mdb /materialsdatabank/mdb/
+COPY ./materialsdatabank /materialsdatabank/materialsdatabank/
 COPY ./setup.py /materialsdatabank/setup.py
 
 RUN pip3 install /materialsdatabank/[worker]
