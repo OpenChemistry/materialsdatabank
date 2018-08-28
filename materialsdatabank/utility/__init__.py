@@ -15,7 +15,7 @@ def xyz_to_numpy(xyz_file):
     positions = np.ndarray(shape=(3, number_of_atoms))
 
     for i, line in enumerate(xyz_file):
-        (e, x, y, z) = line.split(' ')
+        (e, x, y, z) = line.split()
         elements.append(e.strip())
         positions [0][i] = float(x.strip())
         positions [1][i] = float(y.strip())

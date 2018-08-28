@@ -538,4 +538,6 @@ class Dataset(Resource):
 
         DatasetModel().update(dataset, user=self.getCurrentUser(), validation=validation)
 
-        return result.job
+        dataset = DatasetModel().load(dataset['_id'], user=self.getCurrentUser(), level=AccessType.READ)
+
+        return dataset
