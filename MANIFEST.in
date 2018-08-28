@@ -1,0 +1,4 @@
+prune client
+prune server
+prune devops
+prune scripts

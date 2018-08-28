@@ -82,6 +82,11 @@ export function fetchProjections(id) {
           .then(response => response.data )
 }
 
+export function validateDataSet(id) {
+  return put(`mdb/datasets/${id}/validate`)
+          .then(response => response.data )
+}
+
 export function searchByFields(title, authors, atomicSpecies) {
   authors = _.isNil(authors) ? null : JSON.stringify(authors);
   atomicSpecies = _.isNil(atomicSpecies) ? null : JSON.stringify(atomicSpecies);
@@ -118,22 +123,12 @@ export function createStructure(dataSetId, xyzFileId) {
   .then(response => response.data)
 }
 
-export function createReconstruction(dataSetId, emdFileId=null, tiffFileId=null) {
-  const reconstruction = {
-    emdFileId,
-    tiffFileId,
-  }
-
+export function createReconstruction(dataSetId, reconstruction) {
   return post(`mdb/datasets/${dataSetId}/reconstructions`, reconstruction)
   .then(response => response.data)
 }
 
-export function createProjection(dataSetId, emdFileId=null, tiffFileId=null) {
-  const projection = {
-    emdFileId,
-    tiffFileId,
-  }
-
+export function createProjection(dataSetId, projection) {
   return post(`mdb/datasets/${dataSetId}/projections`, projection)
   .then(response => response.data)
 }

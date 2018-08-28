@@ -12,6 +12,8 @@ export const NEW_DATASET = 'NEW_DATASET';
 export const CLEAR_NEW_DATASET = 'CLEAR_NEW_DATASET';
 export const APPROVE_DATASET = 'APPROVE_DATASET';
 export const APPROVE_DATASET_REQUEST = 'APPROVE_DATASET_REQUEST';
+export const VALIDATE_DATASET = 'VALIDATE_DATASET';
+export const REQUEST_VALIDATE_DATASET = 'REQUEST_VALIDATE_DATASET';
 
 export const initialState = {
     byId: {},
@@ -117,9 +119,7 @@ const reducer = handleActions({
 
 // Action Creators
 
-export const upload = createAction(UPLOAD,
-    (title, authors, url, slug,  structureFile, reconstructionFile, imageFile, projectionFile, resolve, reject) => ({ title,
-      authors, slug, url,  structureFile, reconstructionFile, imageFile, projectionFile, resolve, reject}));
+export const upload = createAction(UPLOAD);
 
 export const uploadError = createAction(UPLOAD_ERROR);
 
@@ -138,5 +138,8 @@ export const newDataSet = createAction(NEW_DATASET, (dataSet) =>({dataSet}));
 export const clearNewDataSet = createAction(CLEAR_NEW_DATASET);
 export const approveDataSetRequest = createAction(APPROVE_DATASET_REQUEST, (id) => ({id}));
 export const approveDataSet = createAction(APPROVE_DATASET, (id) => ({id}));
+
+export const validateDataSet = createAction(VALIDATE_DATASET);
+export const requestValidateDataSet = createAction(REQUEST_VALIDATE_DATASET);
 
 export default reducer;

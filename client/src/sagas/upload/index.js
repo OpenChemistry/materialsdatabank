@@ -2,10 +2,12 @@ import { call, put, take, select, takeEvery, all } from 'redux-saga/effects';
 import { buffers, eventChannel, END } from 'redux-saga';
 import { requestUpload, uploadProgress, uploadComplete, requestMdbFolder,
   receiveMdbFolder, newDataSet, UPLOAD, REQUEST_MDB_FOLDER,
-  approveDataSetRequest, APPROVE_DATASET} from '../../redux/ducks/upload';
+  approveDataSetRequest, APPROVE_DATASET, VALIDATE_DATASET, requestValidateDataSet
+} from '../../redux/ducks/upload';
 import {requestCuratorGroup, receiveCuratorGroup, AUTHENTICATED} from '../../redux/ducks/girder';
 import { uploadError } from '../../redux/ducks/upload';
 import { loadStructures } from '../../redux/ducks/structures';
+import { receiveDataset } from '../../redux/ducks/datasets';
 import _ from 'lodash';
 
 import { girder } from '../../rest'
@@ -63,6 +65,15 @@ export function* upload(action) {
     reconstructionFileId,
     imageFileId,
     projectionFileId,
+
+    resolution,
+    cropHalfWidth,
+    volumeSize,
+    zDirection,
+    bFactor,
+    hFactor,
+    axisConvention,
+    
     resolve,
     reject
   } = action.payload;
@@ -105,30 +116,26 @@ export function* upload(action) {
 
     if (!_.isNil(reconstructionFileModel)) {
       // Reconstruction
-      let emdFileId = null;
-      let tiffFileId = null;
-
-      if (reconstructionFile.name.toLowerCase().endsWith('.tiff')) {
-        tiffFileId = reconstructionFileModel['_id'];
-      } else if (reconstructionFile.name.toLowerCase().endsWith('.emd')) {
-        emdFileId = reconstructionFileModel['_id'];
+      let emdFileId = reconstructionFileModel['_id'];
+      let reconstruction = {
+        emdFileId,
+        resolution,
+        cropHalfWidth,
+        volumeSize: JSON.parse(volumeSize),
+        zDirection,
+        bFactor: JSON.parse(bFactor),
+        hFactor: JSON.parse(hFactor),
+        axisConvention: JSON.parse(axisConvention)
       }
 
-      yield call(rest.createReconstruction, dataSet['_id'], emdFileId, tiffFileId);
+      yield call(rest.createReconstruction, dataSet['_id'], reconstruction);
     }
 
     if (!_.isNil(projectionFileModel)) {
       // Projection
-      let emdFileId = null;
-      let tiffFileId = null;
+      let emdFileId = projectionFileModel['_id'];
 
-      if (projectionFile.name.toLowerCase().endsWith('.tiff')) {
-        tiffFileId = projectionFileModel['_id'];
-      } else if (projectionFile.name.toLowerCase().endsWith('.emd')) {
-        emdFileId = projectionFileModel['_id'];
-      }
-
-      yield call(rest.createProjection, dataSet['_id'], emdFileId, tiffFileId);
+      yield call(rest.createProjection, dataSet['_id'], {emdFileId});
     }
 
     yield put(newDataSet(dataSet))
@@ -275,5 +282,19 @@ function* approveDataSet(action) {
 
 export  function* watchApproveDataSet() {
   yield takeEvery(APPROVE_DATASET, approveDataSet)
+}
+
+function* validateDataset(action) {
+  try {
+    const id = action.payload;
+    const dataset = yield(rest.validateDataSet(id));
+    yield put( receiveDataset(dataset) );
+  } catch(error) {
+    yield put(requestValidateDataSet(error));
+  }
+}
+
+export function* watchValidateDataSet() {
+  yield takeEvery(VALIDATE_DATASET, validateDataset);
 }
 

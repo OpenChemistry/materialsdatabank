@@ -6,13 +6,20 @@ from girder.api.rest import Resource, RestException
 from girder.constants import AccessType, TokenScope
 from girder.models.file import File
 from girder.models.group import Group
+from girder.api.rest import setResponseHeader, setContentDisposition
 
 from girder.plugins.materialsdatabank.models.dataset import Dataset as DatasetModel
 from girder.plugins.materialsdatabank.models.reconstruction import Reconstruction as ReconstructionModel
 from girder.plugins.materialsdatabank.models.structure import Structure as StructureModel
 from girder.plugins.materialsdatabank.models.projection import Projection as ProjectionModel
 
-from mdb.tasks.validation import r1, R1FactorResultTransform
+from materialsdatabank.tasks import r1, R1FactorResultTransform
+from girder_worker_utils.transforms.girder_io import GirderFileId
+import tempfile
+from PIL import Image
+from shutil import copyfileobj
+from six import BytesIO
+import h5py as h5
 
 CHUNK_SIZE = 1024 * 1024;
 
@@ -104,14 +111,11 @@ class Dataset(Resource):
         .jsonParam('structure', 'Dataset document', required=True, paramType='body')
     )
     def create_structure(self, dataset, structure):
-        self._requireParamOneOf(['cjsonFileId', 'xyzFileId'], structure)
-
-        cjson_file_id = structure.get('cjsonFileId')
+        self._requireParamOneOf(['xyzFileId'], structure)
         xyz_file_id = structure.get('xyzFileId')
-        cml_file_id = structure.get('cmlFileId')
 
         structure = StructureModel().create(
-            dataset, cjson_file_id, xyz_file_id, cml_file_id, user=self.getCurrentUser())
+            dataset, xyz_file_id=xyz_file_id, user=self.getCurrentUser())
 
         cherrypy.response.status = 201
         cherrypy.response.headers['Location'] = '/datasets/%s/structures/%s' % (dataset['_id'], structure['_id'])
@@ -144,12 +148,29 @@ class Dataset(Resource):
         .jsonParam('reconstruction', 'Dataset document', required=True, paramType='body')
     )
     def create_reconstruction(self, dataset, reconstruction):
-        self.requireParams(['emdFileId', 'tiffFileId'], reconstruction)
+        self.requireParams([
+            'emdFileId',
+            'resolution',
+            'cropHalfWidth',
+            'volumeSize',
+            'zDirection',
+            'bFactor',
+            'hFactor',
+            'axisConvention'
+        ], reconstruction)
         emd_file_id = reconstruction.get('emdFileId')
-        tiff_file_id = reconstruction.get('tiffFileId')
+        resolution = reconstruction.get('resolution')
+        crop_half_width = reconstruction.get('cropHalfWidth')
+        volume_size = reconstruction.get('volumeSize')
+        z_direction = reconstruction.get('zDirection')
+        b_factor = reconstruction.get('bFactor')
+        h_factor = reconstruction.get('hFactor')
+        axis_convention = reconstruction.get('axisConvention')
 
         reconstruction = ReconstructionModel().create(
-            dataset, emd_file_id, tiff_file_id, user=self.getCurrentUser())
+            dataset, emd_file_id, resolution, crop_half_width,
+            volume_size, z_direction, b_factor, h_factor,
+            axis_convention, user=self.getCurrentUser())
 
         cherrypy.response.status = 201
         cherrypy.response.headers['Location'] = '/datasets/%s/reconstructions/%s' % (dataset['_id'], reconstruction['_id'])
@@ -248,6 +269,52 @@ class Dataset(Resource):
                                                     level=AccessType.READ,
                                                     limit=limit, offset=offset))
 
+    def _set_content_disposition(self, name, content_disposition, mime_type=None):
+        setResponseHeader(
+            'Content-Type',
+            mime_type or 'application/octet-stream')
+        setContentDisposition(name, content_disposition or 'attachment')
+#        setResponseHeader('Content-Length', size)
+
+
+    def _to_tiff(self, emd_file_id):
+        file = File().load(emd_file_id, force=True)
+        local_file_path = File().getLocalFilePath(file)
+
+        def _read(file_path):
+            with h5.File(file_path, 'r') as f:
+                emdgrp = f['data/tomography']
+                data = emdgrp['data'][:]
+                slices = []
+                for slice in data:
+                    slices.append(Image.fromarray(slice, mode='F'))
+
+                io = BytesIO()
+                slices[0].save(io, format='tiff', compression='tiff_deflate',  save_all=True, append_images=slices[1:])
+                io.seek(0)
+
+                def _stream():
+                    bytes_read = 0
+                    while True:
+                        chunk = io.read(CHUNK_SIZE)
+
+                        if not chunk:
+                            break
+                        bytes_read += len(chunk)
+                        yield chunk
+
+                return _stream
+
+        if local_file_path is None:
+            # Assetstore is not local, so we will have to download to temp file.
+            with tempfile.NamedTemporaryFile() as f:
+                copyfileobj(File().download(file), f)
+                f.seek(0)
+                return _read(f.name)
+        else:
+            return _read(local_file_path)
+
+
 
     @access.cookie
     @access.public(scope=TokenScope.DATA_READ)
@@ -262,27 +329,23 @@ class Dataset(Resource):
         .param('contentDisposition', 'Specify the Content-Disposition response '
                'header disposition-type value.', required=False,
                enum=['inline', 'attachment'], default='attachment')
-        .pagingParams(defaultSort=None)
         .errorResponse('ID was invalid.')
         .errorResponse('Read permission denied on the item.', 403)
     )
-    def fetch_reconstruction(self, id, reconstruction, format, contentDisposition, limit, offset, sort=None):
+    def fetch_reconstruction(self, id, reconstruction, format, contentDisposition):
         supported_formats = ['emd', 'tiff']
 
         if format not in supported_formats:
             raise RestException('"%s" is not a supported format.')
 
         file_model = File()
-        def downloadFile(reconstruction, id):
-            file = file_model.load(reconstruction[id], force=True)
-
-            return File().download(file, contentDisposition=contentDisposition)
+        emd_file = file_model.load(reconstruction['emdFileId'], force=True)
 
         if format == 'emd':
-            return downloadFile(reconstruction, 'emdFileId')
-
-        if format == 'tiff':
-            return downloadFile(reconstruction, 'tiffFileId')
+            return File().download(emd_file, contentDisposition=contentDisposition)
+        elif format == 'tiff':
+            self._set_content_disposition('%s.tiff' % emd_file['name'], contentDisposition, 'image/tiff')
+            return self._to_tiff(reconstruction['emdFileId'])
 
     # Projections endpoints
 
@@ -295,12 +358,11 @@ class Dataset(Resource):
         .jsonParam('projection', 'Dataset document', required=True, paramType='body')
     )
     def create_projection(self, dataset, projection):
-        self.requireParams(['emdFileId', 'tiffFileId'], projection)
+        self.requireParams(['emdFileId'], projection)
         emd_file_id = projection.get('emdFileId')
-        tiff_file_id = projection.get('tiffFileId')
 
         projection = ProjectionModel().create(
-            dataset, emd_file_id, tiff_file_id, user=self.getCurrentUser())
+            dataset, emd_file_id, user=self.getCurrentUser())
 
         cherrypy.response.status = 201
         cherrypy.response.headers['Location'] = '/datasets/%s/projections/%s' % (dataset['_id'], projection['_id'])
@@ -455,8 +517,18 @@ class Dataset(Resource):
         else:
             raise RestException('Unable to load group. Please check correct groups have been configured.')
 
+        structure = list(StructureModel().find(dataset['_id']))
+        assert len(structure) > 0
+        structure = structure[0]
+        projection = list(ProjectionModel().find(dataset['_id']))
+        assert len(projection) > 0
+        projection = projection[0]
+        reconstruction = list(ReconstructionModel().find(dataset['_id']))
+        assert len(reconstruction) > 0
+        reconstruction = reconstruction[0]
 
-        result = r1.delay(dataset, girder_result_hooks=[
+        result = r1.delay(reconstruction, GirderFileId(projection['emdFileId']),
+            GirderFileId(structure['xyzFileId']), girder_result_hooks=[
             R1FactorResultTransform(dataset['_id'])
         ])
 
@@ -464,7 +536,8 @@ class Dataset(Resource):
             'jobId': result.job['_id']
         }
 
-        DatasetModel().update(dataset, validation=validation)
+        DatasetModel().update(dataset, user=self.getCurrentUser(), validation=validation)
 
-        return result.job
+        dataset = DatasetModel().load(dataset['_id'], user=self.getCurrentUser(), level=AccessType.READ)
 
+        return dataset

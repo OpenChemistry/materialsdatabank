@@ -8,6 +8,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
+import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
 import ClearIcon from '@material-ui/icons/Clear';
@@ -35,6 +36,9 @@ const style = (theme) => (
       width: '100%',
       display: 'flex',
       marginBottom: 2 * theme.spacing.unit,
+    },
+    divider: {
+      marginTop:  4 * theme.spacing.unit,
     },
     textField: {
       flexGrow: 1
@@ -144,10 +148,6 @@ FileInputField = connect(mapStateToPropsFileInputField)(FileInputField)
 const deposit = (values, dispatch) => {
 
   const {
-    title,
-    authors,
-    slug,
-    url,
     structureFile,
     reconstructionFile,
     imageFile,
@@ -170,8 +170,7 @@ const deposit = (values, dispatch) => {
   dispatch(setProgress(true));
 
   return new Promise((resolve, reject) => {
-    dispatch(upload(title, authors, url, slug, structureFile,
-        reconstructionFile, imageFile, projectionFile, resolve, reject));
+    dispatch(upload({...values, resolve, reject}));
   }).then(() => dispatch(setProgress(false)));
 
 //    this.props.dispatch(push('/'));
@@ -179,12 +178,51 @@ const deposit = (values, dispatch) => {
 
 const validate = values => {
   const errors = {}
-  const requiredFields = [ 'title', 'authors', 'structureFile', 'url']
+  const requiredFields = [
+    'title',
+    'authors',
+    'structureFile',
+    'url'
+  ]
   requiredFields.forEach(field => {
     if (!values[ field ]) {
       errors[ field ] = 'Required'
     }
   })
+
+  // Validate arrays
+  const arrayFields = {
+    'volumeSize': [3],
+    'bFactor': null,
+    'hFactor': null,
+    'axisConvention': [3, 3]
+  }
+  for (const [ field, size ] of Object.entries(arrayFields)) {
+    if (values[ field ]) {
+      try {
+        let arr = JSON.parse(values[field]);
+        if (Array.isArray(arr)) {
+          if (size) {
+            if (size[0] !== arr.length) {
+              errors[ field ] = 'Provide an array with the right dimensions';
+            } else {
+              if (size[1]) {
+                for (let a of arr) {
+                  if (size[1] !== a.length) {
+                    errors[ field ] = 'Provide an array with the right dimensions';
+                  }
+                }
+              }
+            }
+          }
+        } else {
+          errors[ field ] = 'Provide a valid array';
+        }
+      } catch(e) {
+        errors[ field ] = 'Provide a valid array';
+      }
+    }
+  }
 
   return errors
 }
@@ -282,7 +320,7 @@ class Deposit extends Component {
                   className={classes.field}
                   name="reconstructionFile"
                   component={FileInputField}
-                  label={'Reconstruction file ( EMD or TIFF )'}
+                  label={'Reconstruction file ( EMD format )'}
                   hintText={'Reconstruction file'}
                   disabled={submitting}
                 />
@@ -290,10 +328,94 @@ class Deposit extends Component {
                   className={classes.field}
                   name="projectionFile"
                   component={FileInputField}
-                  label={'Projection file ( EMD or TIFF )'}
+                  label={'Projection file ( EMD format )'}
                   hintText={'Projection file'}
                   disabled={submitting}
                 />
+                <Typography className={classes.divider} variant="subheading" color="textPrimary">
+                  Reconstruction file metadata
+                </Typography>
+                
+                <Tooltip
+                  title='Resolution of the projections. It should have units consistent with the atomic coordinates of the model (Usually px/Angstrom)'
+                >
+                  <Field
+                    className={classes.field}
+                    name='resolution'
+                    component={TextField}
+                    label='Resolution'
+                  />
+                </Tooltip>
+                
+                <Tooltip
+                  title='This value should be changed based on the pixel size and B factor.'
+                >
+                  <Field
+                    className={classes.field}
+                    name='cropHalfWidth'
+                    component={TextField}
+                    label='Crop Half Width'
+                  />
+                </Tooltip>
+
+                <Tooltip
+                  title='The number of pixels in the reconstructed volume along each direction.'
+                >
+                  <Field
+                    className={classes.field}
+                    name='volumeSize'
+                    component={TextField}
+                    label='Number of pixels in each direction'
+                    placeHolder='[256, 256, 256]'
+                  />
+                </Tooltip>
+
+                <Tooltip
+                  title='Projection direction during the GENIFRE iteration (integer). 0 = x, 1 = y, 2 = z'
+                >
+                  <Field
+                    className={classes.field}
+                    name='zDirection'
+                    component={TextField}
+                    label='Z Direction'
+                    placeHolder='2'
+                  />
+                </Tooltip>
+
+                <Tooltip
+                  title='B factors array, one value per atomic species. The B factor accounts for the electron probe size (50 pm), the thermal motions, and the reconstruction error for different chemical elements.'
+                >
+                  <Field
+                    className={classes.field}
+                    name='bFactor'
+                    component={TextField}
+                    label='B Factor Array'
+                  />
+                </Tooltip>
+
+                <Tooltip
+                  title='H factors array, one value per atomic species. The H factor accounts for electron scattering cross sections for different atomic species in the given experimental conditions.'
+                >
+                  <Field
+                    className={classes.field}
+                    name='hFactor'
+                    component={TextField}
+                    label='H Factor Array'
+                  />
+                </Tooltip>
+
+                <Tooltip
+                  title='GENFIRE rotation axis direction for phi, theta, psi directions, respectively.'
+                >
+                  <Field
+                    className={classes.field}
+                    name='axisConvention'
+                    component={TextField}
+                    label='Axis Convention'
+                    placeHolder='[[1, 0, 0], [0, 1, 0], [0, 0, 1]]'
+                  />
+                </Tooltip>
+
               </CardContent>
               <CardActions className={classes.actions}>
                 <Button

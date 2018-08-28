@@ -5,5 +5,4 @@ class MDBPlugin(GirderWorkerPluginABC):
         self.app = app
 
     def task_imports(self):
-        print('tasks')
-        return ['mdb.tasks.validation']
+        return ['materialsdatabank.tasks']

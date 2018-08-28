@@ -6,7 +6,7 @@ import * as search from './search'
 import * as girder from './girder'
 import * as app from './app'
 import * as upload from './upload'
-
+import * as jobs from './jobs'
 
 export default {
   datasets,
@@ -17,4 +17,5 @@ export default {
   girder,
   app,
   upload,
+  jobs
 };
