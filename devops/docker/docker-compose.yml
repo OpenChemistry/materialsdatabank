@@ -13,6 +13,9 @@ services:
     build:
       context: ../../
       dockerfile: devops/docker/girder_worker/Dockerfile
+    links:
+      - rabbit
+      - girder
     environment:
       - GIRDER_WORKER_BROKER=amqp://guest:guest@rabbit/
       - GIRDER_WORKER_BACKEND=amqp://guest:guest@rabbit/
@@ -31,6 +34,7 @@ services:
       - /assetstore:/assetstore
     links:
       - mongodb
+      - rabbit
     environment:
       - GIRDER_WORKER_BROKER=amqp://guest:guest@rabbit/
       - GIRDER_WORKER_BACKEND=amqp://guest:guest@rabbit/
