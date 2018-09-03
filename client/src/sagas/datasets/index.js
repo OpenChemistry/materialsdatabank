@@ -1,14 +1,16 @@
-import { put, call, takeLatest} from 'redux-saga/effects'
+import { put, call, takeLatest } from 'redux-saga/effects'
 import * as rest from '../../rest'
 import {
   receiveDatasets,
   requestDatasetsByText,
   requestDatasetsByFields,
   requestDatasetById,
+  requestToggleEditable,
   receiveDataset,
   SEARCH_DATASETS_BY_TEXT,
   SEARCH_DATASETS_BY_FIELDS,
-  LOAD_DATASET_BY_ID
+  LOAD_DATASET_BY_ID,
+  TOGGLE_EDITABLE
 } from '../../redux/ducks/datasets.js'
 
 export function* searchDatasetsByText(action) {
@@ -56,4 +58,18 @@ export function* searchDatasetsByFields(action) {
 
 export function* watchSearchDatasetsByFields() {
   yield takeLatest(SEARCH_DATASETS_BY_FIELDS, searchDatasetsByFields)
+}
+
+function* toggleEditable(action) {
+  try {
+    const {id, editable} = action.payload;
+    let dataSet = yield call(rest.updateDataSet, id, {editable});
+    yield put( receiveDataset(dataSet) );
+  } catch (error) {
+    yield put( requestToggleEditable(error) )
+  }
+}
+
+export function* watchToggleEditable() {
+  yield takeLatest(TOGGLE_EDITABLE, toggleEditable);
 }

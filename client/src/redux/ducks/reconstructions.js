@@ -25,7 +25,7 @@ const reducer = handleActions({
     const reconstructions = action.payload.reconstructions;
     const datasetId = action.payload.datasetId;
     const byDatasetId = {
-      ...state.byTomId,
+      ...state.byDatasetId,
       [datasetId]: reconstructions
     }
 

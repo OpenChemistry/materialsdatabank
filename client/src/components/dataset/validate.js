@@ -6,7 +6,7 @@ import { loadDatasetById } from '../../redux/ducks/datasets'
 import { loadJob } from '../../redux/ducks/jobs';
 import { validateDataSet } from '../../redux/ducks/upload';
 import selectors from '../../redux/selectors';
-import { Button, Table, TableRow, TableCell, TableHead } from '@material-ui/core';
+import { Button, Table, TableRow, TableCell, TableHead, TableBody } from '@material-ui/core';
 
 const INACTIVE = 'INACTIVE';
 const QUEUED = 'QUEUED';
@@ -132,36 +132,38 @@ class ValidateTable extends Component {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell></TableCell>
+              <TableCell  style={{width: '100%'}}></TableCell>
               <TableCell>Result</TableCell>
               <TableCell>Status</TableCell>
               <TableCell>Refresh status</TableCell>
               <TableCell>Start validation</TableCell>
             </TableRow>
           </TableHead>
-          <TableRow>
-            <TableCell>
-              R1 Validation
-            </TableCell>
-            <TableCell>
-              {result ? result.toFixed(6) : null}
-            </TableCell>
-            <TableCell>
-              <div style={{color}}>
-                {label}
-              </div>
-            </TableCell>
-            <TableCell>
-              <Button variant="contained" size="small" disabled={!hasJobId} onClick={this.fetchJobInfo}>
-                Refresh
-              </Button>
-            </TableCell>
-            <TableCell>
-              <Button variant="contained" size="small" disabled={!canRestart} onClick={this.startValidation}>
-                {hasJobId ? 'Restart' : 'Start'}
-              </Button>
-            </TableCell>
-          </TableRow>
+          <TableBody>
+            <TableRow>
+              <TableCell>
+                R1 Validation
+              </TableCell>
+              <TableCell>
+                {result ? result.toFixed(6) : null}
+              </TableCell>
+              <TableCell>
+                <div style={{color}}>
+                  {label}
+                </div>
+              </TableCell>
+              <TableCell>
+                <Button variant="contained" size="small" disabled={!hasJobId} onClick={this.fetchJobInfo}>
+                  Refresh
+                </Button>
+              </TableCell>
+              <TableCell>
+                <Button variant="contained" size="small" disabled={!canRestart} onClick={this.startValidation}>
+                  {hasJobId ? 'Restart' : 'Start'}
+                </Button>
+              </TableCell>
+            </TableRow>
+          </TableBody>
         </Table>
       </div>
     )

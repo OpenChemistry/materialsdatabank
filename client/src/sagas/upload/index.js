@@ -1,7 +1,7 @@
 import { call, put, take, select, takeEvery, all } from 'redux-saga/effects';
 import { buffers, eventChannel, END } from 'redux-saga';
 import { requestUpload, uploadProgress, uploadComplete, requestMdbFolder,
-  receiveMdbFolder, newDataSet, UPLOAD, REQUEST_MDB_FOLDER,
+  receiveMdbFolder, UPLOAD, REQUEST_MDB_FOLDER,
   approveDataSetRequest, APPROVE_DATASET, VALIDATE_DATASET, requestValidateDataSet
 } from '../../redux/ducks/upload';
 import {requestCuratorGroup, receiveCuratorGroup, AUTHENTICATED} from '../../redux/ducks/girder';
@@ -51,8 +51,9 @@ export function* uploadFile(file, folderId, id=null) {
   return fileModel;
 }
 
-export function* upload(action) {
+function* upload(action) {
   const {
+    dataSetId,
     title,
     authors,
     url,
@@ -83,20 +84,22 @@ export function* upload(action) {
       mdbFolder = yield call(fetchMdbFolder)
     }
 
-    const filesToUpload = {
-        structureFileModel: call(uploadFile, structureFile, mdbFolder['_id'])
+    const filesToUpload = {};
+
+    if (!_.isNil(structureFile)) {
+      filesToUpload['structureFileModel'] = call(uploadFile, structureFile, mdbFolder['_id'], structureFileId);
     }
 
     if (!_.isNil(reconstructionFile)) {
-      filesToUpload['reconstructionFileModel'] = call(uploadFile, reconstructionFile, mdbFolder['_id'])
+      filesToUpload['reconstructionFileModel'] = call(uploadFile, reconstructionFile, mdbFolder['_id'], reconstructionFileId);
     }
 
     if (!_.isNil(projectionFile)) {
-      filesToUpload['projectionFileModel'] = call(uploadFile, projectionFile, mdbFolder['_id'])
+      filesToUpload['projectionFileModel'] = call(uploadFile, projectionFile, mdbFolder['_id'], projectionFileId);
     }
 
     if (!_.isNil(imageFile)) {
-      filesToUpload['imageFileModel'] = call(uploadFile, imageFile, mdbFolder['_id'])
+      filesToUpload['imageFileModel'] = call(uploadFile, imageFile, mdbFolder['_id'], imageFileId);
     }
 
     const {
@@ -104,20 +107,49 @@ export function* upload(action) {
       reconstructionFileModel,
       imageFileModel,
       projectionFileModel
-    } = yield all(filesToUpload)
+    } = yield all(filesToUpload);
 
-    // Now create the data set
-    const dataSet = yield call(rest.createDataSet, title, authors, url,
+    // Now create or update the data set
+    let dataSet;
+    if (_.isNil(dataSetId)) {
+      dataSet = yield call(rest.createDataSet, title, authors, url,
         imageFileModel ? imageFileModel['_id'] : null)
+    } else {
+      let imageFileId_ = imageFileModel ? imageFileModel['_id'] : imageFileId;
+      dataSet = yield call(rest.updateDataSet, dataSetId, {title, authors, url, imageFileId: imageFileId_});
+    }    
 
-    // Structure
-    yield call(rest.createStructure, dataSet['_id'], structureFileModel['_id']);
+    // Create or update structureModel, projectionModel, reconstructionModel
+    if (_.isNil(dataSetId)) {
+      if (!_.isNil(structureFileModel)) {
+        yield call(rest.createStructure, dataSet['_id'], structureFileModel['_id']);
+      }
 
-    if (!_.isNil(reconstructionFileModel)) {
-      // Reconstruction
-      let emdFileId = reconstructionFileModel['_id'];
+      if (!_.isNil(reconstructionFileModel)) {
+        // Reconstruction
+        let emdFileId = reconstructionFileModel['_id'];
+        let reconstruction = {
+          emdFileId,
+          resolution,
+          cropHalfWidth,
+          volumeSize: JSON.parse(volumeSize),
+          zDirection,
+          bFactor: JSON.parse(bFactor),
+          hFactor: JSON.parse(hFactor),
+          axisConvention: JSON.parse(axisConvention)
+        }
+
+        yield call(rest.createReconstruction, dataSet['_id'], reconstruction);
+      }
+
+      if (!_.isNil(projectionFileModel)) {
+        // Projection
+        let emdFileId = projectionFileModel['_id'];
+
+        yield call(rest.createProjection, dataSet['_id'], {emdFileId});
+      }
+    } else {
       let reconstruction = {
-        emdFileId,
         resolution,
         cropHalfWidth,
         volumeSize: JSON.parse(volumeSize),
@@ -126,19 +158,15 @@ export function* upload(action) {
         hFactor: JSON.parse(hFactor),
         axisConvention: JSON.parse(axisConvention)
       }
-
-      yield call(rest.createReconstruction, dataSet['_id'], reconstruction);
+      let reconstructions = yield call(rest.fetchReconstructions, dataSetId);
+      if (reconstructions.length > 0) {
+        let reconstructionModel = reconstructions[0];
+        yield call(rest.updateReconstruction, reconstructionModel['_id'], reconstruction);
+      }
     }
 
-    if (!_.isNil(projectionFileModel)) {
-      // Projection
-      let emdFileId = projectionFileModel['_id'];
-
-      yield call(rest.createProjection, dataSet['_id'], {emdFileId});
-    }
-
-    yield put(newDataSet(dataSet))
-    resolve()
+    yield put( receiveDataset(dataSet) );
+    resolve(dataSet);
 
   }
   catch(error) {

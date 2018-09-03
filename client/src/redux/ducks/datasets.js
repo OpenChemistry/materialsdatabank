@@ -1,5 +1,5 @@
 import { createAction, handleActions } from 'redux-actions';
-import _ from 'lodash'
+import _ from 'lodash';
 
 // Actions
 export const SEARCH_DATASETS_BY_TEXT   = 'SEARCH_DATASETS__BY_TEXT';
@@ -14,6 +14,9 @@ export const LOAD_DATASET_BY_ID   = 'LOAD_DATASET_BY_ID';
 export const REQUEST_DATASET_BY_ID = 'REQUEST_DATASET_BY_ID';
 export const REQUEST_DATASET   = 'REQUEST_DATASET';
 export const RECEIVE_DATASET   = 'RECEIVE_DATASET';
+
+export const TOGGLE_EDITABLE = 'TOGGLE_EDITABLE';
+export const REQUEST_TOGGLE_EDITABLE = 'REQUEST_TOGGLE_EDITABLE';
 
 
 export const initialState = {
@@ -88,5 +91,7 @@ export const requestDatasetById = createAction(REQUEST_DATASET_BY_ID, (id) => ({
 
 export const receiveDataset = createAction(RECEIVE_DATASET, (dataset) => ({ dataset }));
 
+export const toggleEditable = createAction(TOGGLE_EDITABLE);
+export const requestToggleEditable = createAction(REQUEST_TOGGLE_EDITABLE);
 
 export default reducer;
