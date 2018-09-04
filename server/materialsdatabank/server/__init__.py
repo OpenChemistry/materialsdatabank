@@ -39,7 +39,7 @@ def move_to_curated_assetStore(event):
     assetstore = get_currated_assetstore()
 
     for file_id in to_move:
-	file = File().load(file_id, force=True)
+        file = File().load(file_id, force=True)
         Upload().moveFileToAssetstore(file, approver, assetstore)
 
 def load(info):

@@ -42,24 +42,19 @@ class Structure(BaseAccessControlledModel):
             input_format = 'cjson'
             file_id = cjson_file_id
         elif xyz_file_id is not None:
-            print('xyz')
             input_format = 'xyz'
             file_id = xyz_file_id
         else:
             raise ValidationException('No valid input format provided.')
 
         if cjson_file_id is None or xyz_file_id is None or cml_file_id is None:
-            print(file_id)
             file = self.model('file').load(file_id, user=user)
-            print(file)
             with self.model('file').open(file) as fp:
                 input = fp.read().decode()
 
             # Get folder
-            print('item: %s' % file['itemId'])
             item = Item().load(file['itemId'], user=user)
             folder_id = item['folderId']
-            print(folder_id)
 
             # See what we need to generate
             if cjson_file_id is None:
