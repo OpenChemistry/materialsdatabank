@@ -84,7 +84,7 @@ class Dataset(AccessControlledModel):
                     break
                 except SlugUpdateException:
                     if retry_count == 0:
-                        raise Exception('Update to create new slug.')
+                        raise Exception('Unable to create new slug after 5 retries.')
                     retry_count -= 1
 
             # Now we have allocated the slug add it to the dataset model
