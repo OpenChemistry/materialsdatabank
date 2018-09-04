@@ -6,7 +6,11 @@ class SlugUpdateException(Exception):
     pass
 
 class Slug(Model):
-
+    """
+    Singleton model used to hold a list of the slugs used by datasets. This
+    allows use to atomically allocate slugs. By having a single document we
+    can make use of mongodb's single document update atomicity.
+    """
     def __init__(self):
         super(Slug, self).__init__()
 

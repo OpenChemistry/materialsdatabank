@@ -33,7 +33,6 @@ class Dataset(AccessControlledModel):
         return dataset
 
     def _generate_slug_prefix(self, species):
-        print(species)
         prefix = []
 
         def _chars_left():
