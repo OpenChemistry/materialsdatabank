@@ -92,10 +92,40 @@ class Dataset(Resource):
         .jsonParam('updates', 'Update document', required=True, paramType='body')
     )
     def update_dataset(self, id, updates):
+        # Datasets are only editable if the current user is a curator,
+        # or if the editable field on the dataset is true
+
+        isCurator = False
+
+        curatorGroup = list(Group().find({
+            'name': 'curator',
+        }))
+
+        if len(curatorGroup) > 0:
+            user = self.getCurrentUser()
+            groups = user['groups']
+
+            if curatorGroup[0]['_id'] in groups:
+                isCurator = True
+        else:
+            raise RestException('Unable to load group. Please check correct groups have been configured.')
+
         model = DatasetModel()
         dataset = model.load(id, user=self.getCurrentUser(), level=AccessType.WRITE)
 
-        dataset = DatasetModel().update(dataset, user=self.getCurrentUser(),
+        editable = dataset.get('editable', False)
+        if not isCurator and not editable:
+            raise RestException('Only a curator can edit a locked dataset')
+
+        if not isCurator and 'editable' in updates:
+            del updates['editable']
+
+        authors = updates.get('authors', None)
+        if authors is not None and not isinstance(authors, list):
+            authors = authors.split(' and ')
+            updates['authors'] = authors
+
+        dataset = DatasetModel().update(dataset, updates, user=self.getCurrentUser(),
                                         public=updates.get('public'),
                                         validation=updates.get('validation'))
 
@@ -186,10 +216,9 @@ class Dataset(Resource):
         .jsonParam('updates', 'Update document', required=True, paramType='body')
     )
     def update_reconstruction(self, id, reconstruction, updates):
-        if 'public' in updates:
-            reconstruction = ReconstructionModel().update(reconstruction, user=self.getCurrentUser(),
-                                                          public=updates['public'])
-
+        public = updates.get('public', None)
+        reconstruction = ReconstructionModel().update(reconstruction, updates, user=self.getCurrentUser(),
+                                                        public=public)
         return reconstruction
 
     @access.public(scope=TokenScope.DATA_READ)
