@@ -30,8 +30,7 @@ class Structure(BaseAccessControlledModel):
         output = Upload().uploadFromFile(
             output, size=size, name=output_name, parentType='folder',
             parent={'_id': output_parent_id},
-            user=user, mimeType='application/octet-stream',
-            attachParent=True)
+            user=user, mimeType='application/octet-stream')
 
         return output
 
