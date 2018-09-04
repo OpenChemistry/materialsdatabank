@@ -289,14 +289,6 @@ class Deposit extends Component {
                 />
                 <Field
                   className={classes.field}
-                  name="slug"
-                  component={TextField}
-                  label="URL slug ( human readable identifier )"
-                  error={!!this.props.slugError}
-                  helperText={this.props.slugError}
-                />
-                <Field
-                  className={classes.field}
                   name="url"
                   component={TextField}
                   label="DOI"
@@ -457,14 +449,6 @@ function mapStateToPropsDeposit(state, ownProps) {
   let props = {
     isLoggedIn: !_.isNil(me)
   };
-  let slugError = '';
-  if (_.has(error, 'response')) {
-    error = error.response;
-    if (error.status === 400 && error.data.field === 'slug') {
-      slugError = 'This identifier has already been taken.';
-    }
-  }
-  props['slugError'] = slugError;
 
   if (!_.isNil(newDataSet)) {
     props['newDataSet'] = newDataSet;

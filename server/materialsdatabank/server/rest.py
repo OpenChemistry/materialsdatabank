@@ -75,11 +75,10 @@ class Dataset(Resource):
         url = dataset.get('url')
         microscope = dataset.get('microscope')
         image_file_id = dataset.get('imageFileId')
-        slug = dataset.get('slug')
 
         dataset = DatasetModel().create(
             authors, title=title, url=url, microscope=microscope, image_file_id=image_file_id,
-            slug=slug, user=self.getCurrentUser())
+            user=self.getCurrentUser())
 
         cherrypy.response.status = 201
         cherrypy.response.headers['Location'] = '/datasets/%s' % dataset['_id']

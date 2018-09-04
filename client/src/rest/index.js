@@ -101,12 +101,11 @@ export function searchByFields(title, authors, atomicSpecies) {
   .then(response => response.data )
 }
 
-export function createDataSet(title, authors, url, slug, imageFileId) {
+export function createDataSet(title, authors, url, imageFileId) {
   const dataset = {
       title,
       authors,
       url,
-      slug,
       imageFileId
   }
 
