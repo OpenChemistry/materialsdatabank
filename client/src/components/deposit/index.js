@@ -12,7 +12,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
 import ClearIcon from '@material-ui/icons/Clear';
-import SearchIcon from '@material-ui/icons/Search';
+import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser';
 
 import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
@@ -335,7 +335,7 @@ class Deposit extends Component {
                 <Typography className={classes.divider} variant="subheading" color="textPrimary">
                   Reconstruction file metadata
                 </Typography>
-                
+
                 <Tooltip
                   title='Resolution of the projections. It should have units consistent with the atomic coordinates of the model (Usually px/Angstrom)'
                 >
@@ -346,7 +346,7 @@ class Deposit extends Component {
                     label='Resolution'
                   />
                 </Tooltip>
-                
+
                 <Tooltip
                   title='This value should be changed based on the pixel size and B factor.'
                 >
@@ -424,7 +424,7 @@ class Deposit extends Component {
                   type='submit'
                   color='primary'
                 >
-                  <SearchIcon/>
+                  <OpenInBrowserIcon/>
                   Deposit
                 </Button>
                 <Button
