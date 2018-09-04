@@ -42,7 +42,7 @@ class Dataset(AccessControlledModel):
         }
 
         if image_file_id is not None:
-            dataset['imageFileId'] = image_file_id
+            dataset['imageFileId'] = ObjectId(image_file_id)
 
         if slug is not None:
             dataset['slug'] = slug

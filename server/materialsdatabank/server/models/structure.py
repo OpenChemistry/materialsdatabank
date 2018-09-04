@@ -82,9 +82,9 @@ class Structure(BaseAccessControlledModel):
 
         structure = {
             'datasetId': dataset['_id'],
-            'cjsonFileId': cjson_file_id,
-            'xyzFileId': xyz_file_id,
-            'cmlFileId': cml_file_id
+            'cjsonFileId': cjson_file['_id'],
+            'xyzFileId': ObjectId(xyz_file_id),
+            'cmlFileId': cml_file['_id']
         }
 
         cjson_file = self.model('file').load(cjson_file_id, user=user)
