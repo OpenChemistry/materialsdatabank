@@ -68,7 +68,7 @@ function mapStateToProps(state, ownProps) {
 
   if (!_.isNull(ownProps._id)) {
     let dataset = selectors.datasets.getDatasetById(state, ownProps._id);
-    props['dataset'] = dataset;
+    props.dataset = dataset;
   }
 
   return props;

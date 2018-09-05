@@ -140,7 +140,7 @@ class Dataset extends Component {
     const species = this.props.atomicSpecies.map((an) => symbols[an]).join(', ');
     const authors = this.props.authors.join(' and ');
 
-    let isPublic = !_.isNil(this.props.public) && this.props.public ? true : false;
+    let isPublic = this.props.public;
     
     let {
       structure, reconstruction, projection, title,

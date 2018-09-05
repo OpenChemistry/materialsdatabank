@@ -13,6 +13,8 @@ from girder.plugins.materialsdatabank.models.reconstruction import Reconstructio
 from girder.plugins.materialsdatabank.models.structure import Structure as StructureModel
 from girder.plugins.materialsdatabank.models.projection import Projection as ProjectionModel
 
+from girder.plugins.materialsdatabank.utils import is_user_curator
+
 from materialsdatabank.tasks import r1, R1FactorResultTransform
 from girder_worker_utils.transforms.girder_io import GirderFileId
 import tempfile
@@ -95,29 +97,17 @@ class Dataset(Resource):
         # Datasets are only editable if the current user is a curator,
         # or if the editable field on the dataset is true
 
-        isCurator = False
-
-        curatorGroup = list(Group().find({
-            'name': 'curator',
-        }))
-
-        if len(curatorGroup) > 0:
-            user = self.getCurrentUser()
-            groups = user['groups']
-
-            if curatorGroup[0]['_id'] in groups:
-                isCurator = True
-        else:
-            raise RestException('Unable to load group. Please check correct groups have been configured.')
+        user = self.getCurrentUser()
+        is_curator = is_user_curator(user)
 
         model = DatasetModel()
         dataset = model.load(id, user=self.getCurrentUser(), level=AccessType.WRITE)
 
         editable = dataset.get('editable', False)
-        if not isCurator and not editable:
+        if not is_curator and not editable:
             raise RestException('Only a curator can edit a locked dataset')
 
-        if not isCurator and 'editable' in updates:
+        if not is_curator and 'editable' in updates:
             del updates['editable']
 
         authors = updates.get('authors', None)
@@ -532,18 +522,11 @@ class Dataset(Resource):
     )
     def validate(self, dataset):
 
-        curator = list(Group().find({
-            'name': 'curator',
-        }))
+        user = self.getCurrentUser()
+        is_curator = is_user_curator(user)
 
-        if len(curator) > 0:
-            user = self.getCurrentUser()
-            groups = user['groups']
-
-            if curator[0]['_id'] not in groups:
-                raise RestException('Insufficient permissions to validate dataset.')
-        else:
-            raise RestException('Unable to load group. Please check correct groups have been configured.')
+        if not is_curator:
+            raise RestException('Insufficient permissions to validate dataset.')
 
         structure = list(StructureModel().find(dataset['_id']))
         assert len(structure) > 0
