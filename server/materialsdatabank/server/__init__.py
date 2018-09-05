@@ -16,7 +16,7 @@ def get_currated_assetstore():
 
     raise Exception('Unable to load curated assetstore.')
 
-def move_to_curated_assetStore(event):
+def move_to_curated_assetstore(event):
     info = event.info
     dataset = info['dataset']
     approver = info['approver']
@@ -47,4 +47,4 @@ def load(info):
     info['apiRoot'].mdb.datasets = Dataset()
 
     events.bind('mdb.dataset.approved', 'moveToCuratedAssetStore',
-                move_to_curated_assetStore)
+                move_to_curated_assetstore)
