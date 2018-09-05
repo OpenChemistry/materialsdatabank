@@ -144,7 +144,7 @@ class Dataset extends Component {
     
     let {
       structure, reconstruction, projection, title,
-      isCurator, url, _id, editable
+      isCurator, url, _id, editable, isOwner
     } = this.props;
 
     editable = _.isNil(editable) ? false : editable;
@@ -347,6 +347,7 @@ class Dataset extends Component {
               <Typography color="textSecondary" style={{flexGrow: 1}}>* This dataset is awaiting approval.</Typography>
               }
             </CardContent>
+            { (isCurator || isOwner) &&
             <CardActions style={{display: 'flex'}}>
               <Button
                 style={{marginLeft: 'auto'}}
@@ -359,6 +360,7 @@ class Dataset extends Component {
                 Edit
               </Button>
             </CardActions>
+            }
           </Card>
           { isCurator &&
           <div style={curatorCardStyle}>
@@ -392,6 +394,7 @@ class Dataset extends Component {
 
 Dataset.propTypes = {
   _id: PropTypes.string,
+  userId: PropTypes.string,
   title: PropTypes.string,
   authors: PropTypes.array,
   imageFileId:  PropTypes.string,
@@ -399,11 +402,13 @@ Dataset.propTypes = {
   isCurator: PropTypes.bool,
   public: PropTypes.bool,
   reconstruction:PropTypes.object,
-  projection:PropTypes.object
+  projection:PropTypes.object,
+  isOwner: PropTypes.bool
 }
 
 Dataset.defaultProps = {
   title: '',
+  userId: null,
   authors: [],
   imageFileId:  null,
   atomicSpecies: [],
@@ -411,7 +416,8 @@ Dataset.defaultProps = {
   isCurator: false,
   public: false,
   reconstruction: {},
-  projection: {}
+  projection: {},
+  isOwner: false
 }
 
 
@@ -464,11 +470,18 @@ function mapStateToProps(state, ownProps) {
     }
   }
 
+  const me = selectors.girder.getMe(state);
+
   const curatorGroup = selectors.girder.getCuratorGroup(state);
   if (!_.isNil(curatorGroup)) {
-    const me = selectors.girder.getMe(state);
     if (!_.isNil(me)) {
       props['isCurator'] = _.includes(me.groups, curatorGroup['_id'])
+    }
+  }
+
+  if (!_.isNil(me)) {
+    if (me._id === ownProps.userId) {
+      props['isOwner'] = true;
     }
   }
 

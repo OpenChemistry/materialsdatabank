@@ -267,13 +267,13 @@ class Deposit extends Component {
   }
 
   render = () => {
-    const {handleSubmit, pristine, submitting, invalid, error, classes} = this.props;
+    const {handleSubmit, pristine, submitting, invalid, error, classes, create} = this.props;
 
     return (
       <div>
         <PageHead>
           <Typography  color="inherit" gutterBottom variant="display1">
-            Deposit a new structure
+            {create ? 'Deposit a new structure' : 'Edit structure'}
           </Typography>
           <Typography  color="inherit" variant="subheading" paragraph>
             We currently only accept the atomic structural information published in peer-reviewed journal.
@@ -461,7 +461,7 @@ class Deposit extends Component {
                   color='primary'
                 >
                   <OpenInBrowserIcon/>
-                  Deposit
+                  {create ? 'Deposit' : 'Save'}
                 </Button>
                 <Button
                   variant="raised"
