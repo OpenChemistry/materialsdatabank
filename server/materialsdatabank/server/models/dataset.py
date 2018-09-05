@@ -7,7 +7,9 @@ from girder.models.model_base import ValidationException
 from girder.models.group import Group
 from girder import events
 
-from ..constants import ELEMENT_SYMBOLS_LOWER
+from girder.plugins.materialsdatabank.models.slug import Slug, SlugUpdateException
+
+from ..constants import ELEMENT_SYMBOLS_LOWER, ELEMENT_SYMBOLS
 
 
 class Dataset(AccessControlledModel):
@@ -32,8 +34,67 @@ class Dataset(AccessControlledModel):
 
         return dataset
 
+    def _generate_slug_prefix(self, species):
+        prefix = []
+
+        def _chars_left():
+            return 4 - sum([len(x) for x in prefix])
+
+        for s in species:
+            if len(s) <= _chars_left():
+                prefix.append(s)
+
+        prefix += ['X'] * _chars_left()
+
+        return ''.join(prefix)
+
+    def _generate_slug_postfix(self, prefix):
+        # Search for existing datasets with this prefix
+        regex = re.compile('^%s(\d{5})' % prefix)
+        query = {
+            'slug': {
+                '$regex': regex
+            }
+        }
+
+        cursor = super(Dataset, self).find(query, fields=['slug'])
+        postfix = 0
+        for d in cursor:
+            match = regex.match(d['slug'])
+            p = int(match.group(1))
+            if  p > postfix:
+                postfix = p
+
+        postfix += 1
+
+        return str(postfix).zfill(5)
+
+    def ensure_slug(self, dataset, species, updates):
+        species = [ELEMENT_SYMBOLS[n] for n in species]
+
+        if 'slug' not in dataset:
+            prefix = self._generate_slug_prefix(species)
+
+            # Try up to 5 times, in case we have overlapping updates
+            retry_count = 5
+            while True:
+                postfix = self._generate_slug_postfix(prefix)
+                slug = '%s%s' % (prefix, postfix)
+                # Now update atomically the slugs document
+                try:
+                    Slug().add(slug)
+                    break
+                except SlugUpdateException:
+                    if retry_count == 0:
+                        raise Exception('Unable to create new slug after 5 retries.')
+                    retry_count -= 1
+
+            # Now we have allocated the slug add it to the dataset model
+            updates.setdefault('$set', {})['slug'] = slug
+
+
     def create(self, authors, title=None, url=None, microscope=None, image_file_id=None,
-                   slug=None, user=None, public=False):
+               user=None, public=False):
 
         dataset = {
             'authors': authors,
@@ -43,9 +104,6 @@ class Dataset(AccessControlledModel):
 
         if image_file_id is not None:
             dataset['imageFileId'] = ObjectId(image_file_id)
-
-        if slug is not None:
-            dataset['slug'] = slug
 
         self.setPublic(dataset, public=public)
 
@@ -63,7 +121,7 @@ class Dataset(AccessControlledModel):
         return self.save(dataset)
 
     def update(self, dataset, user=None, atomic_species=None, validation=None,
-               public=None):
+               slug=None, public=None):
         query = {
             '_id': dataset['_id']
         }
@@ -74,6 +132,7 @@ class Dataset(AccessControlledModel):
             new_atomic_species.update(atomic_species)
             if atomic_species is not None:
                 updates.setdefault('$set', {})['atomicSpecies'] = list(new_atomic_species)
+            self.ensure_slug(dataset, new_atomic_species, updates)
 
         if public is not None:
             updates.setdefault('$set', {})['public'] = public

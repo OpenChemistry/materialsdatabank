@@ -12,7 +12,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
 import ClearIcon from '@material-ui/icons/Clear';
-import SearchIcon from '@material-ui/icons/Search';
+import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser';
 
 import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
@@ -289,14 +289,6 @@ class Deposit extends Component {
                 />
                 <Field
                   className={classes.field}
-                  name="slug"
-                  component={TextField}
-                  label="URL slug ( human readable identifier )"
-                  error={!!this.props.slugError}
-                  helperText={this.props.slugError}
-                />
-                <Field
-                  className={classes.field}
                   name="url"
                   component={TextField}
                   label="DOI"
@@ -335,7 +327,7 @@ class Deposit extends Component {
                 <Typography className={classes.divider} variant="subheading" color="textPrimary">
                   Reconstruction file metadata
                 </Typography>
-                
+
                 <Tooltip
                   title='Resolution of the projections. It should have units consistent with the atomic coordinates of the model (Usually px/Angstrom)'
                 >
@@ -346,7 +338,7 @@ class Deposit extends Component {
                     label='Resolution'
                   />
                 </Tooltip>
-                
+
                 <Tooltip
                   title='This value should be changed based on the pixel size and B factor.'
                 >
@@ -424,7 +416,7 @@ class Deposit extends Component {
                   type='submit'
                   color='primary'
                 >
-                  <SearchIcon/>
+                  <OpenInBrowserIcon/>
                   Deposit
                 </Button>
                 <Button
@@ -457,14 +449,6 @@ function mapStateToPropsDeposit(state, ownProps) {
   let props = {
     isLoggedIn: !_.isNil(me)
   };
-  let slugError = '';
-  if (_.has(error, 'response')) {
-    error = error.response;
-    if (error.status === 400 && error.data.field === 'slug') {
-      slugError = 'This identifier has already been taken.';
-    }
-  }
-  props['slugError'] = slugError;
 
   if (!_.isNil(newDataSet)) {
     props['newDataSet'] = newDataSet;

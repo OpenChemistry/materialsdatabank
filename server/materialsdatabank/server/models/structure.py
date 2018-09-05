@@ -9,6 +9,7 @@ from girder.models.upload import Upload
 from girder.models.item import Item
 from girder.models.group import Group
 
+from girder.plugins.materialsdatabank.models.dataset import Dataset
 
 from .base import BaseAccessControlledModel
 from .. import avogadro
@@ -98,7 +99,7 @@ class Structure(BaseAccessControlledModel):
         structure['cjson'] = cjson
 
         # Update the species at the dataset level
-        self.model('dataset', 'materialsdatabank').update(dataset,
+        Dataset().update(dataset,
             user=user,atomic_species=species)
 
         self.setPublic(structure, public)

@@ -55,7 +55,6 @@ export function* upload(action) {
   const {
     title,
     authors,
-    slug,
     url,
     structureFile,
     reconstructionFile,
@@ -73,7 +72,7 @@ export function* upload(action) {
     bFactor,
     hFactor,
     axisConvention,
-    
+
     resolve,
     reject
   } = action.payload;
@@ -108,7 +107,7 @@ export function* upload(action) {
     } = yield all(filesToUpload)
 
     // Now create the data set
-    const dataSet = yield call(rest.createDataSet, title, authors, url, slug,
+    const dataSet = yield call(rest.createDataSet, title, authors, url,
         imageFileModel ? imageFileModel['_id'] : null)
 
     // Structure
