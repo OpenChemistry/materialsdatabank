@@ -31,7 +31,8 @@ services:
     ports:
           - 8081:8080
     volumes:
-      - /assetstore:/assetstore
+      - localassetstore:/localassetstore
+      - curatedassetstore:/curatedassetstore
     links:
       - mongodb
       - rabbit
@@ -54,6 +55,7 @@ services:
       - girder
 
 volumes:
-    assetstore:
+    localassetstore:
+    curatedassetstore:
     mongodb:
 

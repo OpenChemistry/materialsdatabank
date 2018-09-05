@@ -5,6 +5,8 @@ from girder.models.model_base import AccessControlledModel
 from girder.constants import AccessType
 from girder.models.model_base import ValidationException
 from girder.models.group import Group
+from girder import events
+
 from girder.plugins.materialsdatabank.models.slug import Slug, SlugUpdateException
 
 from ..constants import ELEMENT_SYMBOLS_LOWER, ELEMENT_SYMBOLS
@@ -101,7 +103,7 @@ class Dataset(AccessControlledModel):
         }
 
         if image_file_id is not None:
-            dataset['imageFileId'] = image_file_id
+            dataset['imageFileId'] = ObjectId(image_file_id)
 
         self.setPublic(dataset, public=public)
 
@@ -134,6 +136,12 @@ class Dataset(AccessControlledModel):
 
         if public is not None:
             updates.setdefault('$set', {})['public'] = public
+            # Trigger event if this dataset is being approved ( being made public )
+            if public and not dataset.get('public', False):
+                events.trigger('mdb.dataset.approved', {
+                    'dataset': dataset,
+                    'approver': user
+                })
 
         if validation is not None:
             updates.setdefault('$set', {})['validation'] = validation

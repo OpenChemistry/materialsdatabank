@@ -31,8 +31,7 @@ class Structure(BaseAccessControlledModel):
         output = Upload().uploadFromFile(
             output, size=size, name=output_name, parentType='folder',
             parent={'_id': output_parent_id},
-            user=user, mimeType='application/octet-stream',
-            attachParent=True)
+            user=user, mimeType='application/octet-stream')
 
         return output
 
@@ -44,24 +43,19 @@ class Structure(BaseAccessControlledModel):
             input_format = 'cjson'
             file_id = cjson_file_id
         elif xyz_file_id is not None:
-            print('xyz')
             input_format = 'xyz'
             file_id = xyz_file_id
         else:
             raise ValidationException('No valid input format provided.')
 
         if cjson_file_id is None or xyz_file_id is None or cml_file_id is None:
-            print(file_id)
             file = self.model('file').load(file_id, user=user)
-            print(file)
             with self.model('file').open(file) as fp:
                 input = fp.read().decode()
 
             # Get folder
-            print('item: %s' % file['itemId'])
             item = Item().load(file['itemId'], user=user)
             folder_id = item['folderId']
-            print(folder_id)
 
             # See what we need to generate
             if cjson_file_id is None:
@@ -84,9 +78,9 @@ class Structure(BaseAccessControlledModel):
 
         structure = {
             'datasetId': dataset['_id'],
-            'cjsonFileId': cjson_file_id,
-            'xyzFileId': xyz_file_id,
-            'cmlFileId': cml_file_id
+            'cjsonFileId': cjson_file['_id'],
+            'xyzFileId': ObjectId(xyz_file_id),
+            'cmlFileId': cml_file['_id']
         }
 
         cjson_file = self.model('file').load(cjson_file_id, user=user)

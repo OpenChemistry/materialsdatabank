@@ -49,7 +49,7 @@
           - materialsdatabank
         state: present
 
-    - name: Create filesystem assetstore
+    - name: Create local filesystem assetstore
       girder:
         host: "{{girder_host}}"
         port: "{{girder_port}}"
@@ -57,10 +57,23 @@
         username: "mdbadmin"
         password: "{{ mdb_password }}"
         assetstore:
-          name: "Filesystem Assetstore"
+          name: "Local Filesystem Assetstore"
           type: "filesystem"
-          root: "/assetstore"
+          root: "/localassetstore"
           current: true
+        state: present
+
+    - name: Create curated filesystem assetstore
+      girder:
+        host: "{{girder_host}}"
+        port: "{{girder_port}}"
+        scheme: "{{girder_scheme}}"
+        username: "mdbadmin"
+        password: "{{ mdb_password }}"
+        assetstore:
+          name: "Curated Filesystem Assetstore"
+          type: "filesystem"
+          root: "/curatedassetstore"
         state: present
 
     - name: Enable OAuth plugin
