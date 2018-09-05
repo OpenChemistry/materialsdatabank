@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { TextField } from 'redux-form-material-ui'
-import { reduxForm, Field, reset} from 'redux-form'
+import { reduxForm, Field, reset, SubmissionError} from 'redux-form'
 
 import withStyles from '@material-ui/core/styles/withStyles';
 import Button from '@material-ui/core/Button';
@@ -20,9 +20,10 @@ import { push } from 'connected-react-router'
 import _ from 'lodash'
 import filesize from 'filesize'
 
+import { loadDatasetById } from '../../redux/ducks/datasets';
+import { loadReconstructions } from '../../redux/ducks/reconstructions';
 import { upload } from '../../redux/ducks/upload'
 import selectors from  '../../redux/selectors'
-import { clearNewDataSet } from '../../redux/ducks/upload';
 import { setProgress } from '../../redux/ducks/app';
 
 import PageHead from '../page-head';
@@ -35,7 +36,7 @@ const style = (theme) => (
     field: {
       width: '100%',
       display: 'flex',
-      marginBottom: 2 * theme.spacing.unit,
+      marginBottom: 3 * theme.spacing.unit,
     },
     divider: {
       marginTop:  4 * theme.spacing.unit,
@@ -142,48 +143,21 @@ function mapStateToPropsFileInputField(state, ownProps) {
 }
 
 FileInputField = withStyles(style)(FileInputField);
-FileInputField = connect(mapStateToPropsFileInputField)(FileInputField)
-
-
-const deposit = (values, dispatch) => {
-
-  const {
-    structureFile,
-    reconstructionFile,
-    imageFile,
-    projectionFile
-  } = values;
-
-  if (!_.isNil(structureFile)) {
-    structureFile.id = 'structureFile';
-  }
-  if (!_.isNil(reconstructionFile)) {
-    reconstructionFile.id = 'reconstructionFile';
-  }
-  if (!_.isNil(imageFile)) {
-    imageFile.id = 'imageFile';
-  }
-  if (!_.isNil(projectionFile)) {
-    projectionFile.id = 'projectionFile';
-  }
-
-  dispatch(setProgress(true));
-
-  return new Promise((resolve, reject) => {
-    dispatch(upload({...values, resolve, reject}));
-  }).then(() => dispatch(setProgress(false)));
-
-//    this.props.dispatch(push('/'));
-}
+FileInputField = connect(mapStateToPropsFileInputField)(FileInputField);
 
 const validate = values => {
+  const { create } = values;
   const errors = {}
   const requiredFields = [
     'title',
-    'authors',
-    'structureFile',
-    'url'
-  ]
+    'authors'
+  ];
+  if ( create ) {
+    requiredFields.push('url');
+    requiredFields.push('structureFile');
+    requiredFields.push('reconstructionFile');
+    requiredFields.push('projectionFile');
+  }
   requiredFields.forEach(field => {
     if (!values[ field ]) {
       errors[ field ] = 'Required'
@@ -230,19 +204,60 @@ const validate = values => {
 class Deposit extends Component {
 
   constructor(props) {
-    super(props)
-  }
+    super(props);
 
-  componentWillReceiveProps = (nextProps) => {
-    if (!_.isNil(nextProps.newDataSet)) {
-      const id = nextProps.newDataSet._id;
-      this.props.dispatch(clearNewDataSet());
-      this.props.dispatch(push(`dataset/${id}`));
+    const { create, dataSet, dataSetId, dispatch } = props;
+    if (!create && !dataSet) {
+      dispatch(loadDatasetById(dataSetId));
+      dispatch(loadReconstructions(dataSetId));
     }
   }
 
   reset = () => {
     this.props.dispatch(reset('deposit'));
+  }
+
+  deposit = (values, dispatch) => {
+
+    const {
+      structureFile,
+      reconstructionFile,
+      imageFile,
+      projectionFile
+    } = values;
+  
+    const { create, dataSetId } = this.props;
+    const actionCreator = create ? upload : upload;
+  
+    if (!_.isNil(structureFile)) {
+      structureFile.id = 'structureFile';
+    }
+    if (!_.isNil(reconstructionFile)) {
+      reconstructionFile.id = 'reconstructionFile';
+    }
+    if (!_.isNil(imageFile)) {
+      imageFile.id = 'imageFile';
+    }
+    if (!_.isNil(projectionFile)) {
+      projectionFile.id = 'projectionFile';
+    }
+  
+    dispatch(setProgress(true));
+  
+    let depositPromise = new Promise((resolve, reject) => {
+      dispatch(actionCreator({...values, dataSetId, resolve, reject}));
+    }).then((dataSet) =>{
+      dispatch(setProgress(false));
+      const id = dataSet._id;
+      dispatch(push(`/dataset/${id}`));
+    }).catch((err) => {
+      if (_.has(err, 'response.data.message')) {
+        throw new SubmissionError({_error: err.response.data.message});
+      } else {
+        throw new SubmissionError({_error: 'An error has occurred while uploading the dataset'});
+      }
+    });
+    return depositPromise;
   }
 
   onKeyDown = e => {
@@ -252,13 +267,13 @@ class Deposit extends Component {
   }
 
   render = () => {
-    const {handleSubmit, pristine, submitting, invalid, classes} = this.props;
+    const {handleSubmit, pristine, submitting, invalid, error, classes, create} = this.props;
 
     return (
       <div>
         <PageHead>
           <Typography  color="inherit" gutterBottom variant="display1">
-            Deposit a new structure
+            {create ? 'Deposit a new structure' : 'Edit structure'}
           </Typography>
           <Typography  color="inherit" variant="subheading" paragraph>
             We currently only accept the atomic structural information published in peer-reviewed journal.
@@ -273,25 +288,34 @@ class Deposit extends Component {
         { this.props.isLoggedIn &&
         <PageBody>
           <Card>
-            <form onSubmit={handleSubmit(deposit)}>
+            <form onSubmit={handleSubmit(this.deposit)}>
               <CardContent>
                 <Field
                   className={classes.field}
                   name="title"
                   component={TextField}
                   label="Title"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
                 />
                 <Field
                   className={classes.field}
                   name="authors"
                   component={TextField}
                   label='Authors ( "and" separated )'
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
                 />
                 <Field
                   className={classes.field}
                   name="url"
                   component={TextField}
                   label="DOI"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
                 />
                 <Field
                   className={classes.field}
@@ -336,6 +360,9 @@ class Deposit extends Component {
                     name='resolution'
                     component={TextField}
                     label='Resolution'
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
                   />
                 </Tooltip>
 
@@ -347,6 +374,9 @@ class Deposit extends Component {
                     name='cropHalfWidth'
                     component={TextField}
                     label='Crop Half Width'
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
                   />
                 </Tooltip>
 
@@ -358,7 +388,10 @@ class Deposit extends Component {
                     name='volumeSize'
                     component={TextField}
                     label='Number of pixels in each direction'
-                    placeHolder='[256, 256, 256]'
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    placeholder='Example: [256, 256, 256]'
                   />
                 </Tooltip>
 
@@ -370,7 +403,9 @@ class Deposit extends Component {
                     name='zDirection'
                     component={TextField}
                     label='Z Direction'
-                    placeHolder='2'
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
                   />
                 </Tooltip>
 
@@ -382,6 +417,9 @@ class Deposit extends Component {
                     name='bFactor'
                     component={TextField}
                     label='B Factor Array'
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
                   />
                 </Tooltip>
 
@@ -393,6 +431,9 @@ class Deposit extends Component {
                     name='hFactor'
                     component={TextField}
                     label='H Factor Array'
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
                   />
                 </Tooltip>
 
@@ -404,10 +445,13 @@ class Deposit extends Component {
                     name='axisConvention'
                     component={TextField}
                     label='Axis Convention'
-                    placeHolder='[[1, 0, 0], [0, 1, 0], [0, 0, 1]]'
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    placeholder='Example: [[1, 0, 0], [0, 1, 0], [0, 0, 1]]'
                   />
                 </Tooltip>
-
+                <Typography color='error'>{error}</Typography>
               </CardContent>
               <CardActions className={classes.actions}>
                 <Button
@@ -417,7 +461,7 @@ class Deposit extends Component {
                   color='primary'
                 >
                   <OpenInBrowserIcon/>
-                  Deposit
+                  {create ? 'Deposit' : 'Save'}
                 </Button>
                 <Button
                   variant="raised"
@@ -439,30 +483,61 @@ class Deposit extends Component {
 }
 
 function mapStateToPropsDeposit(state, ownProps) {
+  let dataSet = null;
+  let dataSetId = null;
+  let reconstruction = null;
+  const create = ownProps.match.params.action === 'deposit';
+  let initialValues = { create };
+  if (!create) {
+    dataSetId = ownProps.match.params.id;
+    dataSet = selectors.datasets.getDatasetById(state, dataSetId);
+    let reconstructions = selectors.reconstructions.getReconstructionsByDataSetId(state, dataSetId);
+    if (!_.isNil(reconstructions) && reconstructions.length > 0) {
+      reconstruction = reconstructions[0];
+    }
+    initialValues = {...initialValues, ...((values) => {
+      // Convert the model data into suitable form data
+      if (_.has(values, 'authors')) {
+        values['authors'] = values['authors'].join(' and ');
+      }
+      const arrayFields = [
+        'volumeSize',
+        'bFactor',
+        'hFactor',
+        'axisConvention'
+      ]
+      for (let field of arrayFields) {
+        if (_.has(values, field)) {
+          values[field] = JSON.stringify(values[field]);
+        }
+      }
+      return values;
+    })({...dataSet, ...reconstruction})};
+  }
 
-  const newDataSet = selectors.upload.getNewDataSet(state);
   let error = selectors.upload.getError(state);
-  console.log(error)
 
   const me = selectors.girder.getMe(state);
 
   let props = {
-    isLoggedIn: !_.isNil(me)
+    isLoggedIn: !_.isNil(me),
+    create,
+    dataSet,
+    reconstruction,
+    dataSetId,
+    initialValues
   };
-
-  if (!_.isNil(newDataSet)) {
-    props['newDataSet'] = newDataSet;
-  }
 
   return props;
 }
 
 Deposit = withStyles(style)(Deposit);
-Deposit = connect(mapStateToPropsDeposit)(Deposit)
-
-
-export default reduxForm({
+Deposit = reduxForm({
   form: 'deposit',
   destroyOnUnmount: false,
+  enableReinitialize: true,
   validate
 })(Deposit)
+Deposit = connect(mapStateToPropsDeposit)(Deposit)
+
+export default Deposit;

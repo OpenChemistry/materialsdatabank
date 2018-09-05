@@ -8,8 +8,6 @@ export const UPLOAD_PROGRESS = 'UPLOAD_PROGRESS';
 export const UPLOAD_COMPLETE =  'UPLOAD_COMPLETE';
 export const REQUEST_MDB_FOLDER = 'REQUEST_MDB_FOLDER';
 export const RECEIVE_MDB_FOLDER = 'RECEIVE_MDB_FOLDER';
-export const NEW_DATASET = 'NEW_DATASET';
-export const CLEAR_NEW_DATASET = 'CLEAR_NEW_DATASET';
 export const APPROVE_DATASET = 'APPROVE_DATASET';
 export const APPROVE_DATASET_REQUEST = 'APPROVE_DATASET_REQUEST';
 export const VALIDATE_DATASET = 'VALIDATE_DATASET';
@@ -19,7 +17,6 @@ export const initialState = {
     byId: {},
     fileToId: {},
     mdbFolder: null,
-    newDataSet: null,
     error: null,
   };
 
@@ -54,8 +51,7 @@ const reducer = handleActions({
 
       const fileToId = {
           ...state.fileToId,
-          [file.id]: id,
-          newDataSet: null,
+          [file.id]: id
       }
 
       return {...state, byId, fileToId};
@@ -97,16 +93,6 @@ const reducer = handleActions({
 
     return {...state,  mdbFolder };
   },
-  NEW_DATASET: (state, action) => {
-    const newDataSet = action.payload.dataSet;
-
-    return {...state,  newDataSet };
-  },
-  CLEAR_NEW_DATASET: (state, action) => {
-    const newDataSet = null;
-
-    return {...state,  newDataSet };
-  },
   APPROVE_DATASET_REQUEST: (state, action) => {
     if (action.error) {
       return {...state, error: action.payload.error};
@@ -134,8 +120,6 @@ export const uploadComplete = createAction(UPLOAD_COMPLETE,
 export const requestMdbFolder = createAction(REQUEST_MDB_FOLDER);
 export const receiveMdbFolder = createAction(RECEIVE_MDB_FOLDER, (folder) =>({folder}));
 
-export const newDataSet = createAction(NEW_DATASET, (dataSet) =>({dataSet}));
-export const clearNewDataSet = createAction(CLEAR_NEW_DATASET);
 export const approveDataSetRequest = createAction(APPROVE_DATASET_REQUEST, (id) => ({id}));
 export const approveDataSet = createAction(APPROVE_DATASET, (id) => ({id}));
 

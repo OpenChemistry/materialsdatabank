@@ -78,10 +78,11 @@ ReactDOM.render(
                 <Switch>
                   <Route exact path='/' component={Welcome}/>
                   <Route exact path='/dataset/:id' component={DatasetContainer}/>
+                  <Route exact path='/dataset/:id/:action(edit)' component={Deposit}/>
                   <Route exact path='/welcome' component={Welcome}/>
                   <Route exact path='/search' component={Search}/>
                   <Route exact path='/results' component={Main}/>
-                  <Route exact path='/deposit' component={Deposit}/>
+                  <Route exact path='/:action(deposit)' component={Deposit}/>
                 </Switch>
               </div>
               <div className="footer-container">

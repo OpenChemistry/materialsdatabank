@@ -3,7 +3,8 @@ import { fork } from 'redux-saga/effects'
 import {
   watchSearchDatasetsByText,
   watchLoadDatasetById,
-  watchSearchDatasetsByFields
+  watchSearchDatasetsByFields,
+  watchToggleEditable
 } from './datasets'
 
 import {
@@ -56,4 +57,5 @@ export default function* root() {
   yield fork(watchApproveDataSet)
   yield fork(watchLoadJob)
   yield fork(watchValidateDataSet)
+  yield fork(watchToggleEditable)
 }

@@ -41,11 +41,17 @@ class Reconstruction(BaseAccessControlledModel):
 
         return self.save(reconstruction)
 
-    def update(self, reconstruction, user=None, public=None):
+    def update(self, reconstruction, reconstruction_updates, user=None, public=None):
         query = {
             '_id': reconstruction['_id']
         }
+
         updates = {}
+
+        mutable_props = ['resolution', 'zDirection', 'volumeSize', 'axisConvention']
+        for prop in reconstruction_updates:
+            if prop in mutable_props:
+                updates.setdefault('$set', {})[prop] = reconstruction_updates[prop]
 
         if public is not None:
             updates.setdefault('$set', {})['public'] = public

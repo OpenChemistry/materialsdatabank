@@ -99,7 +99,8 @@ class Dataset(AccessControlledModel):
         dataset = {
             'authors': authors,
             'title': title,
-            'url': url
+            'url': url,
+            'editable': False
         }
 
         if image_file_id is not None:
@@ -120,12 +121,22 @@ class Dataset(AccessControlledModel):
 
         return self.save(dataset)
 
-    def update(self, dataset, user=None, atomic_species=None, validation=None,
-               slug=None, public=None):
+    def update(self, dataset, dataset_updates=None, user=None, atomic_species=None, validation=None,
+               public=None):
         query = {
             '_id': dataset['_id']
         }
+
+        if dataset_updates is None:
+            dataset_updates = {}
+
         updates = {}
+
+        mutable_props = ['authors', 'title', 'url', 'editable']
+        for prop in dataset_updates:
+            if prop in mutable_props:
+                updates.setdefault('$set', {})[prop] = dataset_updates[prop]
+
 
         if atomic_species is not None:
             new_atomic_species = set(dataset.get('atomicSpecies', {}))

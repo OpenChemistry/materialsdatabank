@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux'
+import _ from 'lodash';
 
 import { loadDatasetById } from '../redux/ducks/datasets'
 import { loadReconstructions } from '../redux/ducks/reconstructions'
@@ -38,9 +39,9 @@ function mapStateToProps(state, ownProps) {
       _id: id
   }
 
-  if (id != null) {
+  if (!_.isNil(id)) {
     const dataset = selectors.datasets.getDatasetById(state, id);
-    if (dataset !== null) {
+    if (!_.isNil(dataset)) {
       // Avoid overriding the id, it could be a slug. TODO be more consistent about
       // where we use slug vs ids.
       const {_id, ...dataSetProps} = dataset;

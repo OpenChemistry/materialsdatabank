@@ -13,6 +13,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 
+import EditIcon from '@material-ui/icons/Edit';
 import DoneIcon from '@material-ui/icons/Done';
 import DownloadIcon from '@material-ui/icons/CloudDownload';
 
@@ -31,9 +32,11 @@ import PageHead from '../page-head';
 import PageBody from '../page-body';
 
 import ValidateTable from './validate';
+import EditToggle from './editToggle';
 
 import './index.css'
 import { CardActions } from '@material-ui/core';
+import { push } from 'connected-react-router';
 
 const privateColor = '#FFEBEE'
 
@@ -106,6 +109,10 @@ class Dataset extends Component {
     })
   }
 
+  edit = () => {
+    this.props.dispatch(push(`/dataset/${this.props._id}/edit`));
+  }
+
   componentWillReceiveProps = (nextProps) => {
     if (nextProps.public && this.state.approving) {
       this.props.dispatch(setProgress(false));
@@ -133,31 +140,40 @@ class Dataset extends Component {
     const species = this.props.atomicSpecies.map((an) => symbols[an]).join(', ');
     const authors = this.props.authors.join(' and ');
 
+    let isPublic = this.props.public;
+    
+    let {
+      structure, reconstruction, projection, title,
+      isCurator, url, _id, editable, isOwner
+    } = this.props;
+
+    editable = _.isNil(editable) ? false : editable;
+
 
     let structureUrl =  '';
-    if (!_.isNil(this.props.structure)) {
-        structureUrl = `${window.location.origin}/api/v1/mdb/datasets/_/structures/${this.props.structure._id}`
+    if (!_.isNil(structure)) {
+        structureUrl = `${window.location.origin}/api/v1/mdb/datasets/_/structures/${structure._id}`
     }
 
     let reconEmdUrl = '';
     let reconTiffUrl = '';
-    if (!_.isNil(this.props.reconstruction)) {
-      reconEmdUrl = `${window.location.origin}/api/v1/mdb/datasets/_/reconstructions/${this.props.reconstruction._id}/emd`
-      reconTiffUrl = `${window.location.origin}/api/v1/mdb/datasets/_/reconstructions/${this.props.reconstruction._id}/tiff`
+    if (!_.isNil(reconstruction)) {
+      reconEmdUrl = `${window.location.origin}/api/v1/mdb/datasets/_/reconstructions/${reconstruction._id}/emd`
+      reconTiffUrl = `${window.location.origin}/api/v1/mdb/datasets/_/reconstructions/${reconstruction._id}/tiff`
     }
 
     let projEmdUrl = '';
     let projTiffUrl = '';
-    if (!_.isNil(this.props.projection)) {
-      projEmdUrl = `${window.location.origin}/api/v1/mdb/datasets/_/projections/${this.props.projection._id}/emd`
-      projTiffUrl = `${window.location.origin}/api/v1/mdb/datasets/_/projections/${this.props.projection._id}/tiff`
+    if (!_.isNil(projection)) {
+      projEmdUrl = `${window.location.origin}/api/v1/mdb/datasets/_/projections/${projection._id}/emd`
+      projTiffUrl = `${window.location.origin}/api/v1/mdb/datasets/_/projections/${projection._id}/tiff`
     }
 
     return (
       <div>
         <PageHead>
           <Typography  color="inherit" gutterBottom variant="display1">
-            {this.props.title}
+            {title}
           </Typography>
           <Typography variant="subheading" paragraph color="inherit">
             {authors}
@@ -191,14 +207,14 @@ class Dataset extends Component {
                       DOI
                     </TableCell>
                     <TableCell style={{...tableStyle}}>
-                      <a href={`https://dx.doi.org/${this.props.url}`}>
-                        {this.props.url}
+                      <a href={`https://dx.doi.org/${url}`}>
+                        {url}
                       </a>
                     </TableCell>
                   </TableRow>
-                  { ( !_.isNil(this.props.reconstruction) &&
-                     (!_.isNil(this.props.reconstruction.tiffFileId) ||
-                      !_.isNil(this.props.reconstruction.emdFileId))
+                  { ( !_.isNil(reconstruction) &&
+                     (!_.isNil(reconstruction.tiffFileId) ||
+                      !_.isNil(reconstruction.emdFileId))
                     ) &&
                   <TableRow>
                     <TableCell style={{...tableLabelStyle}}>
@@ -219,7 +235,7 @@ class Dataset extends Component {
                         open={Boolean(this.state.reconstructionMenu.anchor)}
                         onClose={this.handleClose}
                       >
-                        { !_.isNil(this.props.reconstruction.tiffFileId) &&
+                        { !_.isNil(reconstruction.tiffFileId) &&
                         <MenuItem
                           value="tiff"
                           onClick={this.handleClose}
@@ -227,7 +243,7 @@ class Dataset extends Component {
                           <a href={reconTiffUrl}>TIFF</a>
                         </MenuItem>
                         }
-                        { !_.isNil(this.props.reconstruction.emdFileId) &&
+                        { !_.isNil(reconstruction.emdFileId) &&
                         <MenuItem
                           value="emd"
                           onClick={this.handleClose}
@@ -239,9 +255,9 @@ class Dataset extends Component {
                     </TableCell>
                   </TableRow>
                   }
-                  { ( !_.isNil(this.props.projection) &&
-                      (!_.isNil(this.props.projection.tiffFileId) ||
-                       !_.isNil(this.props.projection.emdFileId))
+                  { ( !_.isNil(projection) &&
+                      (!_.isNil(projection.tiffFileId) ||
+                       !_.isNil(projection.emdFileId))
                     ) &&
                   <TableRow>
                     <TableCell style={{...tableLabelStyle}}>
@@ -262,7 +278,7 @@ class Dataset extends Component {
                         open={Boolean(this.state.projectionMenu.anchor)}
                         onClose={this.handleClose}
                       >
-                        { !_.isNil(this.props.projection.tiffFileId) &&
+                        { !_.isNil(projection.tiffFileId) &&
                         <MenuItem
                           value="tiff"
                           onClick={this.handleClose}
@@ -270,7 +286,7 @@ class Dataset extends Component {
                           <a href={projTiffUrl}>TIFF</a>
                         </MenuItem>
                         }
-                        { !_.isNil(this.props.projection.emdFileId) &&
+                        { !_.isNil(projection.emdFileId) &&
                         <MenuItem
                           value="emd"
                           onClick={this.handleClose}
@@ -325,21 +341,36 @@ class Dataset extends Component {
                 </TableBody>
               </Table>
               <div style={{width: '100%', height: '30rem'}}>
-                <StructureContainer _id={this.props._id}/>
+                <StructureContainer _id={_id}/>
               </div>
-              { !this.props.public &&
+              { isPublic &&
               <Typography color="textSecondary" style={{flexGrow: 1}}>* This dataset is awaiting approval.</Typography>
               }
             </CardContent>
+            { (isCurator || isOwner) &&
+            <CardActions style={{display: 'flex'}}>
+              <Button
+                style={{marginLeft: 'auto'}}
+                variant="contained"
+                color="primary"
+                disabled={!editable && !isCurator}
+                onClick={() => this.edit()}
+              >
+                <EditIcon/>
+                Edit
+              </Button>
+            </CardActions>
+            }
           </Card>
-          { this.props.isCurator &&
+          { isCurator &&
           <div style={curatorCardStyle}>
             <Card>
               <CardContent>
-                <ValidateTable _id={this.props._id} />
+                <ValidateTable _id={_id} />
+                <EditToggle _id={_id} />
               </CardContent>
               <CardActions style={{display: 'flex'}}>
-                { !this.props.public &&
+                { !isPublic &&
                 <Button
                   style={{marginLeft: 'auto'}}
                   variant="contained"
@@ -363,6 +394,7 @@ class Dataset extends Component {
 
 Dataset.propTypes = {
   _id: PropTypes.string,
+  userId: PropTypes.string,
   title: PropTypes.string,
   authors: PropTypes.array,
   imageFileId:  PropTypes.string,
@@ -370,11 +402,13 @@ Dataset.propTypes = {
   isCurator: PropTypes.bool,
   public: PropTypes.bool,
   reconstruction:PropTypes.object,
-  projection:PropTypes.object
+  projection:PropTypes.object,
+  isOwner: PropTypes.bool
 }
 
 Dataset.defaultProps = {
   title: '',
+  userId: null,
   authors: [],
   imageFileId:  null,
   atomicSpecies: [],
@@ -382,7 +416,8 @@ Dataset.defaultProps = {
   isCurator: false,
   public: false,
   reconstruction: {},
-  projection: {}
+  projection: {},
+  isOwner: false
 }
 
 
@@ -435,11 +470,18 @@ function mapStateToProps(state, ownProps) {
     }
   }
 
+  const me = selectors.girder.getMe(state);
+
   const curatorGroup = selectors.girder.getCuratorGroup(state);
   if (!_.isNil(curatorGroup)) {
-    const me = selectors.girder.getMe(state);
     if (!_.isNil(me)) {
       props['isCurator'] = _.includes(me.groups, curatorGroup['_id'])
+    }
+  }
+
+  if (!_.isNil(me)) {
+    if (me._id === ownProps.userId) {
+      props['isOwner'] = true;
     }
   }
 
