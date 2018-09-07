@@ -13,7 +13,7 @@ import _ from 'lodash'
 import { push } from 'connected-react-router'
 
 import './index.css'
-import logo from './OpenChemistry_Logo.svg';
+import logo from './mdb_logo.svg';
 import { searchDatasetsByText } from '../../redux/ducks/datasets'
 import Menu from './menu'
 import Login from './login'
@@ -110,7 +110,7 @@ class Header extends Component {
     <div>
       <AppBar color="default" position="static">
         <Toolbar>
-        <Button color="inherit" aria-label="Logo" style={{marginRight: 9, paddingTop: 0, paddingBottom: 0}}>
+        <Button color="inherit" aria-label="Logo" style={{marginRight: 9, paddingTop: 5, paddingBottom: 5}}>
           <img className='mdb-logo' src={logo} alt="logo" />
         </Button>
         <Typography variant="title" color="inherit" style={{flexGrow: 0}}>
