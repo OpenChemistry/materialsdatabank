@@ -8,6 +8,10 @@ import Typography from '@material-ui/core/Typography';
 import HomeIcon from '@material-ui/icons/Home';
 import SearchIcon from '@material-ui/icons/Search';
 import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser';
+import DownloadIcon from '@material-ui/icons/SaveAlt';
+import SoftwareIcon from '@material-ui/icons/DesktopMac';
+import TutorialIcon from '@material-ui/icons/Forum';
+import AboutIcon from '@material-ui/icons/PermIdentity';
 
 import { push } from 'connected-react-router'
 
@@ -46,6 +50,34 @@ class SideBar extends Component {
         >
           <SearchIcon color="primary" />&nbsp;
           <Typography color="inherit" variant="subheading">Search</Typography>
+        </MenuItem>
+        <MenuItem
+          style={style.menu}
+          onClick={() => this.pushRoute('/download') }
+        >
+          <DownloadIcon color="primary" />&nbsp;
+          <Typography color="inherit" variant="subheading">Download</Typography>
+        </MenuItem>
+        <MenuItem
+          style={style.menu}
+          onClick={() => this.pushRoute('/software') }
+        >
+          <SoftwareIcon color="primary" />&nbsp;
+          <Typography color="inherit" variant="subheading">Software</Typography>
+        </MenuItem>
+        <MenuItem
+          style={style.menu}
+          onClick={() => this.pushRoute('/tutorials') }
+        >
+          <TutorialIcon color="primary" />&nbsp;
+          <Typography color="inherit" variant="subheading">Tutorials</Typography>
+        </MenuItem>
+        <MenuItem
+          style={style.menu}
+          onClick={() => this.pushRoute('/about') }
+        >
+          <AboutIcon color="primary" />&nbsp;
+          <Typography color="inherit" variant="subheading">About Us</Typography>
         </MenuItem>
       </MenuList>
     );
