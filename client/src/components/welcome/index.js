@@ -145,20 +145,20 @@ class Welcome extends Component {
             <Grid item xs={12} md={4} className={classes.evenColumns}>
               <div className={classes.columnTitle}>
                 <Typography gutterBottom variant="title" color="textSecondary">
-                  <ContactsIcon />&nbsp;Blog
+                  <ContactsIcon />&nbsp;Recent Publications
                 </Typography>
               </div>
             </Grid>
             <Grid item xs={12} md={4} className={classes.oddColumns}>
               <div className={classes.columnTitle}>
                 <Typography gutterBottom variant="title" color="textSecondary">
-                  <ChromeReaderIcon />&nbsp;Feed
+                  <ChromeReaderIcon />&nbsp;Feed/News
                 </Typography>
               </div>
               <Paper>
                 <TwitterTimelineEmbed
                   sourceType="profile"
-                  screenName="materialsdatabank"
+                  screenName="materdatabank"
                   options={{height: 800}}
                 />
               </Paper>
@@ -166,7 +166,7 @@ class Welcome extends Component {
             <Grid item xs={12} md={4} className={classes.evenColumns}>
               <div className={classes.columnTitle}>
                 <Typography variant="title" color="textSecondary">
-                  <GroupIcon />&nbsp;Structures
+                  <GroupIcon />&nbsp;Structure Spotlight
                 </Typography>
               </div>
                 <Card
