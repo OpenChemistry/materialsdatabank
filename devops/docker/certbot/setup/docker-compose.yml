@@ -1,0 +1,27 @@
+version: '2'
+services:
+  web-certbot-setup:
+    labels:
+      io.rancher.container.start_once: true
+    image: certbot/certbot
+    cap_drop:
+      - ALL
+    volumes:
+      - web-certs.mdb:/etc/letsencrypt
+      - web-certbot-webroot.mdb:/data/letsencrypt
+    command:
+      - certonly
+      - "--webroot" 
+      - "-m chris.harris@kitware.com"
+      - "--agree-tos"
+      - "--no-eff-email" 
+      - "--webroot-path=/data/letsencrypt"
+      - "-d www.materialsdatabank.org"
+    
+volumes:
+  web-certs.mdb:
+    external: true
+    driver: rancher-nfs
+  web-certbot-webroot.mdb:
+    external: true
+    driver: rancher-nfs

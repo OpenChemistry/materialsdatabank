@@ -10,7 +10,7 @@
       set_fact:
         girder_host: "{{girder_host|default('localhost')}}"
         girder_port: "{{girder_port|default(8080)}}"
-        girder_scheme: "http"
+        girder_scheme: "https"
 
     - name: Create Girder mdb user
       girder:
@@ -148,7 +148,7 @@
         password: "{{ mdb_password }}"
         setting:
           key: "core.server_root"
-          value: "http://girder:8080/"
+          value: "https://www.materialsdatabank.org/"
 
     - name: Restart the server
       girder:

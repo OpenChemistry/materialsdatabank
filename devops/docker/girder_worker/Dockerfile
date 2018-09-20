@@ -15,4 +15,4 @@ USER worker
 
 ENV PYTHON_BIN=python3
 
-ENTRYPOINT ["/wait-for-it.sh", "rabbit:5672", "--", "/docker-entrypoint.sh"]
+ENTRYPOINT ["/wait-for-it.sh", "app-rabbit:5672", "--", "/docker-entrypoint.sh"]
