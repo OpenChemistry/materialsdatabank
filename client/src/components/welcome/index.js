@@ -120,16 +120,15 @@ class Welcome extends Component {
                   Materials Data Bank
                 </Typography>
                 <Typography variant="title" paragraph color="inherit">
-                  An Information Portal for 3D atomic electron tomography data
+                  3D atomic views of real materials
                 </Typography>
                 <Typography color="inherit" gutterBottom variant="body2">
-                  Materials Data Bank (MDB) archives the information about the 3D atomic structures (3D atomic coordinates and chemical species)
-                  determined by atomic electron tomography (AET).
-                </Typography>
-                <Typography color="inherit" gutterBottom variant="body2">
-                  This databank is designed to provide useful resources for research and education in studying the true 3D atomic structure and
-                  associated materials properties arising from non-crystalline structures such as defects, dislocations, strain, complex grain structure,
-                  local chemical ordering, and phase boundaries.
+                  The Materials Data Bank (MDB) archives the 3D coordinates and chemical species of individual atoms in materials without assuming
+                  crystallinity determined by atomic electron tomography (AET). The databank is designed to provide useful resources for research
+                  and education in studying the 3D atomic arrangements and associated material properties arising from non-crystalline structures,
+                  such as point defects, dislocations, grain boundaries, stacking faults and disorders. The MDB aims to serve the broad physical
+                  science community and also bridge the gap between the experimental measurements and computational methods such as density
+                  functional theory and molecular dynamics.
                 </Typography>
               </Grid>
               <Grid item xs={12} md={5}>
@@ -159,7 +158,7 @@ class Welcome extends Component {
               <Paper>
                 <TwitterTimelineEmbed
                   sourceType="profile"
-                  screenName="openchem"
+                  screenName="materialsdatabank"
                   options={{height: 800}}
                 />
               </Paper>
