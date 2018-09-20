@@ -7,24 +7,15 @@ import teal from '@material-ui/core/colors/teal';
 import pink from '@material-ui/core/colors/pink';
 
 import { Provider } from 'react-redux';
-import { ConnectedRouter } from 'connected-react-router'
-import { Route, Switch } from 'react-router'
 import Cookies from 'universal-cookie';
 import _ from 'lodash'
 
 import './index.css';
 import configureStore from './store/configureStore'
 import rootSaga from './sagas'
-import Header from './components/header';
-import Footer from './components/footer';
-import Main from './components/main';
-import SideBar from './components/sidebar';
-import DatasetContainer from './containers/dataset'
-import Welcome from './components/welcome'
-import Search from './components/search'
-import { SelectLoginProvider, OauthRedirect } from './components/oauth'
-import { authenticate, loadCuratorGroup } from './redux/ducks/girder'
-import Deposit from './components/deposit'
+import { authenticate } from './redux/ducks/girder'
+
+import App from './App';
 
 import * as Molecule from  '@openchemistry/molecule-moljs';
 
@@ -49,7 +40,13 @@ const theme = createMuiTheme({
     marginTop: -13
   },
   pageContent: {
-    width: 120
+    width: 150,
+    paddingLeft: 3,
+    paddingRight: 3
+  },
+  drawer: {
+    width: 240,
+    backgroundColor: '#37474F'
   }
 });
 
@@ -60,43 +57,12 @@ if (!_.isNil(cookieToken)) {
 }
 
 ReactDOM.render(
-  <MuiThemeProvider theme={theme}>
-    <div className="fill">
+  <Provider store={store}>
+    <MuiThemeProvider theme={theme}>
       <CssBaseline/>
-      <Provider store={store}>
-        <ConnectedRouter history={store.history}>
-        <div className="app-container">
-          <div className="header-container">
-            <Header />
-          </div>
-          <div className="body-container">
-            <div className="sidebar-container">
-              <SideBar />
-            </div>
-            <div className="content-wrapper">
-              <div className="content-container">
-                <Switch>
-                  <Route exact path='/' component={Welcome}/>
-                  <Route exact path='/dataset/:id' component={DatasetContainer}/>
-                  <Route exact path='/dataset/:id/:action(edit)' component={Deposit}/>
-                  <Route exact path='/welcome' component={Welcome}/>
-                  <Route exact path='/search' component={Search}/>
-                  <Route exact path='/results' component={Main}/>
-                  <Route exact path='/:action(deposit)' component={Deposit}/>
-                </Switch>
-              </div>
-              <div className="footer-container">
-                <Footer />
-              </div>
-            </div>
-          </div>
-          <OauthRedirect/>
-          <SelectLoginProvider/>
-        </div>
-        </ConnectedRouter>
-      </Provider>
-    </div>
-  </MuiThemeProvider>
+      <App/>
+    </MuiThemeProvider>
+  </Provider>
   ,
   document.getElementById('root')
 );

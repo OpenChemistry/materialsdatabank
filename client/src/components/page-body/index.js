@@ -6,15 +6,21 @@ const style = theme => (
   {
     body: {
       width: '100%',
-      backgroundColor: 'transparent',
-      marginTop: theme.spacing.unit * theme.pageBody.marginTop
+      height: '100%',
+      backgroundColor: 'transparent'
     },
     content: {
       position: 'relative',
       width: '100%',
+      height: '100%',
       maxWidth: theme.spacing.unit * theme.pageContent.width,
       left: '50%',
-      transform: 'translateX(-50%)'
+      transform: 'translateX(-50%)',
+      paddingLeft: theme.spacing.unit * theme.pageContent.paddingLeft,
+      paddingRight: theme.spacing.unit * theme.pageContent.paddingRight
+    },
+    overlap: {
+      marginTop: theme.spacing.unit * theme.pageBody.marginTop
     }
   }
 )
@@ -22,9 +28,15 @@ const style = theme => (
 class PageBody extends Component {
   
   render() {
-    const { classes } = this.props;
+    const { classes, noOverlap } = this.props;
+    let bodyClasses;
+    if (noOverlap) {
+      bodyClasses = classes.body;
+    } else {
+      bodyClasses = `${classes.body} ${classes.overlap}`
+    }
     return (
-      <div className={classes.body}>
+      <div className={bodyClasses}>
         <div className={classes.content}>
           {this.props.children}
         </div>
@@ -34,4 +46,3 @@ class PageBody extends Component {
 }
 
 export default withStyles(style)(PageBody);
-

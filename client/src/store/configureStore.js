@@ -5,7 +5,7 @@ import createSagaMiddleware from 'redux-saga'
 import logger from 'redux-logger'
 import { routerMiddleware, connectRouter } from 'connected-react-router'
 
-const history = createBrowserHistory();
+export const history = createBrowserHistory();
 
 const reducers = connectRouter(history)(reducersIn);
 const reduxRouterMiddleware = routerMiddleware(history)
