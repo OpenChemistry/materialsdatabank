@@ -4,6 +4,7 @@ import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import React, { Component } from 'react';
 
 import './index.css'
+import uclaLogo from './ucla.png';
 import kitwareLogo from './Kitware_Full_Logo.png';
 import strobeLogo from './strobe.png';
 import berkeleyLogo from './berkeley.jpg';
@@ -17,6 +18,11 @@ export default class Footer extends Component {
   render = () => {
     return (
       <BottomNavigation style={style}>
+        <BottomNavigationAction
+          icon={<img className='bottom-logo' src={uclaLogo} alt="UCLA" />}
+          onClick={() => this.select(0)} href="http://www.ucla.edu/"
+          target="_blank"
+        />
         <BottomNavigationAction
           icon={<img className='bottom-logo' src={kitwareLogo} alt="Kitware" />}
           onClick={() => this.select(0)} href="http://www.kitware.com"
