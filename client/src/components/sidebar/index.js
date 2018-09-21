@@ -19,7 +19,9 @@ import './index.css'
 
 const style = {
   menu: {
-    color: 'white'
+    color: 'white',
+    paddingTop: '1rem',
+    paddingBottom: '1rem',
   }
 }
 

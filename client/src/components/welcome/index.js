@@ -77,7 +77,11 @@ class Welcome extends Component {
     super(props);
 
     this.state = {
-      molecule: {
+      molecule0: {
+        cjson: null,
+        slug: null
+      },
+      molecule1: {
         cjson: null,
         slug: null
       },
@@ -86,19 +90,23 @@ class Welcome extends Component {
     }
   }
 
-  // Fake fetch of a molecule of the week
-  componentDidMount() {
-    fetch('/api/v1/mdb/datasets/tungsten/structures')
+  fetchMolecule(slug, key) {
+    fetch(`/api/v1/mdb/datasets/${slug}/structures`)
     .then((res) => {
       return res.json();
     })
     .then((structures) => {
       if (Array.isArray(structures) && structures.length > 0 && has(structures[0], 'cjson')) {
-        console.log('STRUCTURE', structures)
-        this.setState({...this.state, molecule: {cjson: structures[0].cjson, slug: 'tungsten'}});
+        this.setState({...this.state, [key]: {cjson: structures[0].cjson, slug: slug}});
       }
     })
     .catch((e) => {console.log(e)});
+  }
+
+  // Fake fetch of a molecule of the week
+  componentDidMount() {
+    this.fetchMolecule('FePt00001', 'molecule0');
+    this.fetchMolecule('WXXX00001', 'molecule1');
   }
 
   onMoleculeInteract() {
@@ -109,7 +117,7 @@ class Welcome extends Component {
   
   render = () => {
     const { classes } = this.props;
-    const { molecule, rotate } = this.state;
+    const { molecule0, molecule1, rotate } = this.state;
     return (
       <div className={classes.root}>
         <div className={classes.header}>
@@ -170,6 +178,7 @@ class Welcome extends Component {
                 </Typography>
               </div>
                 <Card
+                  style={{marginBottom: '2rem'}}
                   onMouseEnter={(e) => {this.onMoleculeInteract()}}
                 >
                   <div className={classes.molecule}>
@@ -177,7 +186,7 @@ class Welcome extends Component {
                       ref={wc(
                         {},
                         {
-                          cjson: molecule.cjson,
+                          cjson: molecule0.cjson,
                           rotate: rotate,
                           options: {
                             style: {
@@ -190,11 +199,43 @@ class Welcome extends Component {
                       )}
                     />
                   </div>
-                  {molecule.slug &&
+                  {molecule0.slug &&
                   <CardActions>
                     <Button
                       color="primary"
-                      onClick={() => {this.props.dispatch(push(`/dataset/${molecule.slug}`))}}
+                      onClick={() => {this.props.dispatch(push(`/dataset/${molecule0.slug}`))}}
+                    >
+                      View Dataset
+                    </Button>
+                  </CardActions>
+                  }
+                </Card>
+                <Card
+                  onMouseEnter={(e) => {this.onMoleculeInteract()}}
+                >
+                  <div className={classes.molecule}>
+                    <oc-molecule-moljs
+                      ref={wc(
+                        {},
+                        {
+                          cjson: molecule0.cjson,
+                          rotate: rotate,
+                          options: {
+                            style: {
+                              sphere: {
+                                scale: 0.5
+                              }
+                            }
+                          }
+                        }
+                      )}
+                    />
+                  </div>
+                  {molecule0.slug &&
+                  <CardActions>
+                    <Button
+                      color="primary"
+                      onClick={() => {this.props.dispatch(push(`/dataset/${molecule0.slug}`))}}
                     >
                       View Dataset
                     </Button>
