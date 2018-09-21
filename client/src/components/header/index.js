@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
 
+import { withStyles } from '@material-ui/core/styles';
+
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
+import Hidden from '@material-ui/core/Hidden';
+import IconButton from '@material-ui/core/IconButton';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import LinearProgress from '@material-ui/core/LinearProgress';
+
+import MenuIcon from '@material-ui/icons/Menu';
 
 import SearchBar from 'material-ui-search-bar'
 
@@ -75,13 +81,15 @@ class RightElement extends Component {
   render = () => {
     return (
       <div style={divStyle}>
-        <SearchBar
-          placeholder={'Search by author, paper, microscope, atomic species'}
-          onChange={this.onChange}
-          onRequestSearch={this.onRequestSearch}
-          style={searchBarStyle}
-          className={'mdb-searchbar'}
-        />
+        <Hidden mdDown>
+          <SearchBar
+            placeholder={'Search by author, paper, microscope, atomic species'}
+            onChange={this.onChange}
+            onRequestSearch={this.onRequestSearch}
+            style={searchBarStyle}
+            className={'mdb-searchbar'}
+          />
+        </Hidden>
         <div style={loginMenuStyle}>
           {!this.props.isAuthenticated ? <Login/> : <Menu/>}
         </div>
@@ -99,6 +107,17 @@ function mapStateToProps(state) {
 
 RightElement = connect(mapStateToProps)(RightElement)
 
+const appBarStyles = theme => ({
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1,
+  },
+  navIconHide: {
+    [theme.breakpoints.up('md')]: {
+      display: 'none',
+    },
+  },
+});
+
 class Header extends Component {
   render = () => {
   const progressStyle = {}
@@ -106,22 +125,33 @@ class Header extends Component {
   if (!this.props.progress) {
     progressStyle['display'] = 'none';
   }
+  const {classes, onToggleMenu} = this.props;
   return (
     <div>
-      <AppBar color="default" position="static">
+      <AppBar color="default" position="static" className={classes.appBar}>
         <Toolbar>
-        <Button color="inherit" aria-label="Logo" style={{marginRight: 9, paddingTop: 5, paddingBottom: 5}}>
-          <img className='mdb-logo' src={logo} alt="logo" />
-        </Button>
-        <Typography variant="title" color="inherit" style={{flexGrow: 0}}>
-          Materials Data Bank
-          <Typography variant="caption" color="textSecondary">
-            An Information Portal for 3D atomic electron tomography data
-          </Typography>
-        </Typography>
-        <div style={{flexGrow: 1}}>
-          <RightElement/>
-        </div>
+          <IconButton
+            color="inherit"
+            aria-label="Open drawer"
+            onClick={onToggleMenu}
+            className={classes.navIconHide}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Button color="inherit" aria-label="Logo" style={{marginRight: 9, paddingTop: 5, paddingBottom: 5}}>
+            <img className='mdb-logo' src={logo} alt="logo" />
+          </Button>
+          <Hidden smDown>
+            <Typography variant="title" color="inherit" style={{flexGrow: 0}}>
+              Materials Data Bank
+              <Typography variant="caption" color="textSecondary">
+                An Information Portal for 3D atomic electron tomography data
+              </Typography>
+            </Typography>
+          </Hidden>
+          <div style={{flexGrow: 1}}>
+            <RightElement/>
+          </div>
         </Toolbar>
       </AppBar>
       <LinearProgress
@@ -133,7 +163,6 @@ class Header extends Component {
   }
 }
 
-
 function mapStateToPropsHeader(state) {
 
   const progress = selectors.app.progress(state);
@@ -142,5 +171,7 @@ function mapStateToPropsHeader(state) {
     progress,
   }
 }
+
+Header = withStyles(appBarStyles)(Header);
 
 export default connect(mapStateToPropsHeader)(Header)
