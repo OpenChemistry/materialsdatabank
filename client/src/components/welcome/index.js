@@ -180,7 +180,7 @@ class Welcome extends Component {
               </div>
                 <Card
                   style={{marginBottom: '2rem'}}
-                  onMouseDown={(e) => {this.onMoleculeInteract()}}
+                  onMouseDown={(e) => {this.onMoleculeInteract('molecule0')}}
                 >
                   <div className={classes.molecule}>
                     <oc-molecule-moljs
@@ -212,7 +212,7 @@ class Welcome extends Component {
                   }
                 </Card>
                 <Card
-                  onMouseDown={(e) => {this.onMoleculeInteract()}}
+                  onMouseDown={(e) => {this.onMoleculeInteract('molecule1')}}
                 >
                   <div className={classes.molecule}>
                     <oc-molecule-moljs
