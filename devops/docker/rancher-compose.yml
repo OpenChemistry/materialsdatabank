@@ -1,7 +1,6 @@
-verision: '2'
+version: '2'
 services:
   db-mongodb:
     scale: 1
   app-girder:
     scale: 1
-
