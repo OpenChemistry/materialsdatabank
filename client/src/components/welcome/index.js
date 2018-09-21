@@ -79,13 +79,14 @@ class Welcome extends Component {
     this.state = {
       molecule0: {
         cjson: null,
-        slug: null
+        slug: null,
+        rotate: true,
       },
       molecule1: {
         cjson: null,
-        slug: null
+        slug: null,
+        rotate: true
       },
-      rotate: true,
       posts: null
     }
   }
@@ -97,7 +98,7 @@ class Welcome extends Component {
     })
     .then((structures) => {
       if (Array.isArray(structures) && structures.length > 0 && has(structures[0], 'cjson')) {
-        this.setState({...this.state, [key]: {cjson: structures[0].cjson, slug: slug}});
+        this.setState({...this.state, [key]: { ...this.state[key], cjson: structures[0].cjson, slug: slug}});
       }
     })
     .catch((e) => {console.log(e)});
@@ -109,15 +110,15 @@ class Welcome extends Component {
     this.fetchMolecule('WXXX00001', 'molecule1');
   }
 
-  onMoleculeInteract() {
-    if (this.state.rotate) {
-      this.setState({...this.state, rotate: false});
+  onMoleculeInteract(key) {
+    if (this.state[key].rotate) {
+      this.setState({...this.state, [key]: { ...this.state[key], rotate: false}});
     }
   }
   
   render = () => {
     const { classes } = this.props;
-    const { molecule0, molecule1, rotate } = this.state;
+    const { molecule0, molecule1 } = this.state;
     return (
       <div className={classes.root}>
         <div className={classes.header}>
@@ -179,7 +180,7 @@ class Welcome extends Component {
               </div>
                 <Card
                   style={{marginBottom: '2rem'}}
-                  onMouseEnter={(e) => {this.onMoleculeInteract()}}
+                  onMouseDown={(e) => {this.onMoleculeInteract()}}
                 >
                   <div className={classes.molecule}>
                     <oc-molecule-moljs
@@ -187,7 +188,7 @@ class Welcome extends Component {
                         {},
                         {
                           cjson: molecule0.cjson,
-                          rotate: rotate,
+                          rotate: molecule0.rotate,
                           options: {
                             style: {
                               sphere: {
@@ -211,7 +212,7 @@ class Welcome extends Component {
                   }
                 </Card>
                 <Card
-                  onMouseEnter={(e) => {this.onMoleculeInteract()}}
+                  onMouseDown={(e) => {this.onMoleculeInteract()}}
                 >
                   <div className={classes.molecule}>
                     <oc-molecule-moljs
@@ -219,7 +220,7 @@ class Welcome extends Component {
                         {},
                         {
                           cjson: molecule1.cjson,
-                          rotate: rotate,
+                          rotate: molecule1.rotate,
                           options: {
                             style: {
                               sphere: {
