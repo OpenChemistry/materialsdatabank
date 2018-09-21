@@ -53,12 +53,13 @@ services:
       - app-rabbit
 
   app-girder:
-    image: openchemistry/girder:mdb
+    image: openchemistry/girder:mdbv0.0.1
 #    build:
 #      context: ../../
 #      dockerfile: devops/docker/girder/Dockerfile
     labels:
       io.rancher.container.pull_image: always
+    retain_ip: true
     cap_drop:
       - ALL
     cap_add:
