@@ -218,7 +218,7 @@ class Welcome extends Component {
                       ref={wc(
                         {},
                         {
-                          cjson: molecule0.cjson,
+                          cjson: molecule1.cjson,
                           rotate: rotate,
                           options: {
                             style: {
@@ -231,11 +231,11 @@ class Welcome extends Component {
                       )}
                     />
                   </div>
-                  {molecule0.slug &&
+                  {molecule1.slug &&
                   <CardActions>
                     <Button
                       color="primary"
-                      onClick={() => {this.props.dispatch(push(`/dataset/${molecule0.slug}`))}}
+                      onClick={() => {this.props.dispatch(push(`/dataset/${molecule1.slug}`))}}
                     >
                       View Dataset
                     </Button>
