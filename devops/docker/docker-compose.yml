@@ -85,12 +85,14 @@ services:
       - db-mongodb
 
   web-nginx:
-    image: openchemistry/nginx:mdb_nersc
+    image: openchemistry/nginx:mdb-v0.0.3
 #    build:
 #      context: ../../
 #      dockerfile: devops/docker/nginx/Dockerfile
     labels:
       io.rancher.container.pull_image: always
+      cron.schedule: 0  8  *  *  *
+      cron.action: restart
     cap_drop:
       - ALL
     cap_add:
