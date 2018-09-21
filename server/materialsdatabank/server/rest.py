@@ -538,9 +538,9 @@ class Dataset(Resource):
         assert len(reconstruction) > 0
         reconstruction = reconstruction[0]
 
-        result = r1.delay(reconstruction, GirderFileId(projection['emdFileId']),
-            GirderFileId(structure['xyzFileId']), girder_result_hooks=[
-            R1FactorResultTransform(dataset['_id'])
+        result = r1.delay(reconstruction, GirderFileId(str(projection['emdFileId'])),
+            GirderFileId(str(structure['xyzFileId'])), girder_result_hooks=[
+            R1FactorResultTransform(str(dataset['_id']))
         ])
 
         validation = {
