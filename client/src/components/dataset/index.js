@@ -343,7 +343,7 @@ class Dataset extends Component {
               <div style={{width: '100%', height: '30rem'}}>
                 <StructureContainer _id={_id}/>
               </div>
-              { isPublic &&
+              { !isPublic &&
               <Typography color="textSecondary" style={{flexGrow: 1}}>* This dataset is awaiting approval.</Typography>
               }
             </CardContent>
