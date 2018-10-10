@@ -76,7 +76,7 @@ const reducer = handleActions({
 // Fetch datasets
 export const searchDatasetsByText = createAction(SEARCH_DATASETS_BY_TEXT, (terms) => ({terms}));
 export const searchDatasetsByFields = createAction(SEARCH_DATASETS_BY_FIELDS,
-    (title, authors, atomicSpecies) => ({title, authors, atomicSpecies}));
+    (title, authors, atomicSpecies, slug) => ({title, authors, atomicSpecies, slug}));
 
 export const requestDatasetsByText = createAction(REQUEST_DATASETS_BY_TEXT);
 export const requestDatasetsByFields = createAction(REQUEST_DATASETS_BY_FIELDS);
