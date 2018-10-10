@@ -186,6 +186,10 @@ class Dataset(AccessControlledModel):
                         }
                 })
 
+                filters.append({
+                    'slug': search
+                })
+
                 try:
                     atomic_number = self._normalize_element(search)
 

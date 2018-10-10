@@ -60,7 +60,8 @@ class Search extends Component {
         searchDatasetsByFields(
             this.props.title,
             authors,
-            atomicSpecies
+            atomicSpecies,
+            this.props.slug
         )
     );
 
@@ -113,6 +114,13 @@ class Search extends Component {
                   className={classes.field}
                   component={TextField}
                   label="Atomic Species"
+                />
+                <Field
+                  fullWidth
+                  name="slug"
+                  className={classes.field}
+                  component={TextField}
+                  label="MDB ID"
                 />
               </CardContent>
               <CardActions className={classes.actions}>
