@@ -56,7 +56,7 @@ class ContactComponent extends Component {
       <div>
         <PageHead>
           <Typography  color="inherit" gutterBottom variant="display1">
-            Contact us
+            About Us
           </Typography>
           <Typography variant="subheading" paragraph color="inherit">
           </Typography>
@@ -73,8 +73,8 @@ class ContactComponent extends Component {
           </Typography>
         </PageHead>
         <PageBody>
-          <Grid container style={{height: '100%'}} alignItems="stretch">
-            <Grid item xs={12} md={4} lg={3} className={classes.columns}>
+          <Grid container style={{height: '100%'}} alignItems="stretch" spacing={8}>
+            <Grid item xs className={classes.columns}>
               <Card>
                 <CardActionArea className={classes.cardActionArea} href="http://www.pa.ucla.edu/directory/jianwei-john-miao" target="_blank">
                   <CardMedia className={classes.cardImage}>
@@ -84,17 +84,17 @@ class ContactComponent extends Component {
                     <Typography>
                       Prof. Jianwei (John) Miao
                     </Typography>
-                    <Typography>
+                    <Typography variant="caption">
                       <i>Founder</i>
                     </Typography>
-                    <Typography color="textSecondary">
+                    <Typography variant="caption">
                       UCLA
                     </Typography>
                   </CardContent>
                 </CardActionArea>
               </Card>
             </Grid>
-            <Grid item xs={12} md={4} lg={3} className={classes.columns}>
+            <Grid item xs className={classes.columns}>
               <Card>
                 <CardActionArea className={classes.cardActionArea} href="https://www.kitware.com/marcus-hanwell/" target="_blank">
                   <CardMedia className={classes.cardImage}>
@@ -104,17 +104,17 @@ class ContactComponent extends Component {
                     <Typography>
                       Dr. Marcus D. Hanwell
                     </Typography>
-                    <Typography>
-                      <i>Data & Software Architect</i>
+                    <Typography variant="caption">
+                      <i>Data &amp; Software Architect</i>
                     </Typography>
-                    <Typography color="textSecondary">
-                      Kitware, Inc.
+                    <Typography variant="caption">
+                      Kitware
                     </Typography>
                   </CardContent>
                 </CardActionArea>
               </Card>
             </Grid>
-            <Grid item xs={12} md={4} lg={3} className={classes.columns}>
+            <Grid item xs className={classes.columns}>
               <Card>
                 <CardActionArea className={classes.cardActionArea} href="https://foundry.lbl.gov/people/peter_ercius.html" target="_blank">
                   <CardMedia className={classes.cardImage}>
@@ -124,17 +124,17 @@ class ContactComponent extends Component {
                     <Typography>
                       Dr. Peter Ercius
                     </Typography>
-                    <Typography>
+                    <Typography variant="caption">
                       <i>Staff Researcher</i>
                     </Typography>
-                    <Typography color="textSecondary">
+                    <Typography variant="caption">
                       LBNL
                     </Typography>
                   </CardContent>
                 </CardActionArea>
               </Card>
             </Grid>
-            <Grid item xs={12} md={4} lg={3} className={classes.columns}>
+            <Grid item xs className={classes.columns}>
               <Card>
                 <CardActionArea className={classes.cardActionArea} href="https://foundry.lbl.gov/people/colin_ophus.html" target="_blank">
                   <CardMedia className={classes.cardImage}>
@@ -144,17 +144,17 @@ class ContactComponent extends Component {
                     <Typography>
                       Dr. Colin Ophus
                     </Typography>
-                    <Typography>
+                    <Typography variant="caption">
                       <i>Research Scientist</i>
                     </Typography>
-                    <Typography color="textSecondary">
+                    <Typography variant="caption">
                       LBNL
                     </Typography>
                   </CardContent>
                 </CardActionArea>
               </Card>
             </Grid>
-            <Grid item xs={12} md={4} lg={3} className={classes.columns}>
+            <Grid item xs className={classes.columns}>
               <Card>
                 <CardActionArea className={classes.cardActionArea} href="http://www.physics.ucla.edu/research/imaging/people.html" target="_blank">
                   <CardMedia className={classes.cardImage}>
@@ -164,10 +164,10 @@ class ContactComponent extends Component {
                     <Typography>
                       Dr. Dennis S. Kim
                     </Typography>
-                    <Typography>
+                    <Typography variant="caption">
                       <i>Postdoctoral Researcher</i>
                     </Typography>
-                    <Typography color="textSecondary">
+                    <Typography variant="caption">
                       UCLA
                     </Typography>
                   </CardContent>
