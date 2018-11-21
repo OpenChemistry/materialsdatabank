@@ -145,7 +145,7 @@ class Header extends Component {
             <Typography variant="title" color="inherit" style={{flexGrow: 0}}>
               Materials Data Bank
               <Typography variant="caption" color="textSecondary">
-                An Information Portal for 3D atomic electron tomography data
+                3D atomic views of real materials
               </Typography>
             </Typography>
           </Hidden>
