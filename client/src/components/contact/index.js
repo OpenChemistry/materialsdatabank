@@ -13,7 +13,6 @@ import HanwellImg from './hanwell.jpg';
 import ErciusImg from './ercius.jpg';
 import OphusImg from './ophus.jpg';
 import KimImg from './kim.jpg';
-import TianImg from './tian.jpg';
 
 const style = (theme) => (
   {
@@ -49,7 +48,7 @@ const Image = (src) => {
   }
 }
 
-class AboutComponent extends Component {
+class ContactComponent extends Component {
 
   render() {
     const { classes } = this.props;
@@ -57,16 +56,20 @@ class AboutComponent extends Component {
       <div>
         <PageHead>
           <Typography  color="inherit" gutterBottom variant="display1">
-            About us
+            Contact us
           </Typography>
           <Typography variant="subheading" paragraph color="inherit">
           </Typography>
           <Typography color="inherit" gutterBottom variant="body2">
-            We all believe that a true understanding of materials first requires we know where they are.
-            The Materials Data Bank team are very excited about the outlook of scientific progress and benefit for the Materials Science community at large that comes from a free-centralized data bank for atomic structures from experiments.
+            To understand material properties and functionality at the fundamental level,
+            one must know the 3D positions of atoms with high precision. The MDB team has
+            committed to make the MDB of experimentally determined 3D atomic structures
+            freely accessible to the broad physical science community.
           </Typography>
           <Typography color="inherit" gutterBottom variant="body2">
-            The team is comprised of Professors, Scientists, and Software Engineers stationed at the University of California, Los Angeles (UCLA), Lawrence Berkeley National Laboratory, Kitware, and the NSF STC STROBE. 
+            The team is comprised of professors, scientists, and software engineers
+            stationed at the University of California, Los Angeles (UCLA), Lawrence
+            Berkeley National Laboratory, Kitware, and the NSF STC STROBE.
           </Typography>
         </PageHead>
         <PageBody>
@@ -171,26 +174,6 @@ class AboutComponent extends Component {
                 </CardActionArea>
               </Card>
             </Grid>
-            <Grid item xs={12} md={4} lg={3} className={classes.columns}>
-              <Card>
-                <CardActionArea className={classes.cardActionArea} href="http://www.physics.ucla.edu/research/imaging/people.html" target="_blank">
-                  <CardMedia className={classes.cardImage}>
-                    {Image(TianImg)}
-                  </CardMedia>
-                  <CardContent>
-                    <Typography>
-                      Dr. Xuezeng Tian
-                    </Typography>
-                    <Typography>
-                      <i>Postdoctoral Researcher</i>
-                    </Typography>
-                    <Typography color="textSecondary">
-                      UCLA
-                    </Typography>
-                  </CardContent>
-                </CardActionArea>
-              </Card>
-            </Grid>
           </Grid>
         </PageBody>
       </div>
@@ -198,6 +181,6 @@ class AboutComponent extends Component {
   }
 }
 
-AboutComponent = withStyles(style)(AboutComponent);
+ContactComponent = withStyles(style)(ContactComponent);
 
-export default AboutComponent;
+export default ContactComponent;

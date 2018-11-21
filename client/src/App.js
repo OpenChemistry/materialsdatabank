@@ -17,7 +17,7 @@ import Welcome from './components/welcome'
 import Search from './components/search'
 import { SelectLoginProvider, OauthRedirect } from './components/oauth'
 import Deposit from './components/deposit'
-import About from './components/about';
+import Contact from './components/contact';
 import Software from './components/software';
 import Tutorials from './components/tutorials';
 
@@ -115,7 +115,7 @@ class App extends Component {
                   <Route exact path='/search' component={Search}/>
                   <Route exact path='/results' component={Main}/>
                   <Route exact path='/:action(deposit)' component={Deposit}/>
-                  <Route exact path='/about' component={About}/>
+                  <Route exact path='/contact' component={Contact}/>
                   <Route exact path='/software' component={Software}/>
                   <Route exact path='/tutorials/aet' component={Aet}/>
                   <Route exact path='/tutorials/validation' component={Validation}/>
