@@ -50,6 +50,28 @@ class TutorialsComponent extends Component {
   }
   render() {
     const { classes } = this.props;
+    const tutorials = [
+      {
+        'title': 'AET videos for a general audience',
+        'url': '/tutorials/aet-general'
+      },
+      {
+        'title': 'AET video tutorials and slides',
+        'url': '/tutorials/aet'
+      },
+      {
+        'title': 'The MDB validation process',
+        'url': '/tutorials/validation'
+      },
+      {
+        'title': 'Visualizing structures',
+        'url': '/tutorials/visualizing'
+      },
+      {
+        'title': 'References',
+        'url': '/tutorials/references'
+      }
+    ];
     return (
       <div>
         <PageHead>
@@ -72,29 +94,18 @@ class TutorialsComponent extends Component {
         <PageBody>
           <Paper>
             <List>
-              <ListItem disabled button onClick={() => {this.navigate(null)}}>
-                Creating a new account
-              </ListItem>
-              <Divider></Divider>
-              <ListItem disabled button onClick={() => {this.navigate(null)}}>
-                Depositing a structure
-              </ListItem>
-              <Divider></Divider>
-              <ListItem button onClick={() => {this.navigate('/tutorials/aet')}}>
-                AET video tutorials and slides
-              </ListItem>
-              <Divider></Divider>
-              <ListItem button onClick={() => {this.navigate('/tutorials/validation')}}>
-                The MDB validation process
-              </ListItem>
-              <Divider></Divider>
-              <ListItem disabled button onClick={() => {this.navigate(null)}}>
-                Visualizing structures
-              </ListItem>
-              <Divider></Divider>
-              <ListItem disabled button onClick={() => {this.navigate(null)}}>
-                References
-              </ListItem>
+              {
+                tutorials.map((tutorial, i) => (
+                  <div>
+                    <ListItem disabled={!tutorial.url} button onClick={() => {this.navigate(tutorial.url)}}>
+                      {tutorial.title}
+                    </ListItem>
+                    {i < tutorials.length - 1 &&
+                    <Divider></Divider>
+                    }
+                  </div>
+                ))
+              }
             </List>
           </Paper>
         </PageBody>

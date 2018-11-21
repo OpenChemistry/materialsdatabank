@@ -25,6 +25,9 @@ import { withStyles } from '@material-ui/core/styles';
 import Aet from './components/tutorials/aet';
 import Validation from './components/tutorials/validation';
 import Download from './components/download';
+import AetGeneralComponent from './components/tutorials/aetGeneral';
+import VisualizingComponent from './components/tutorials/visualizing';
+import ReferencesComponent from './components/tutorials/references';
 
 const appStyles = theme => ({
   root: {
@@ -117,8 +120,11 @@ class App extends Component {
                   <Route exact path='/:action(deposit)' component={Deposit}/>
                   <Route exact path='/contact' component={Contact}/>
                   <Route exact path='/software' component={Software}/>
+                  <Route exact path='/tutorials/aet-general' component={AetGeneralComponent}/>
                   <Route exact path='/tutorials/aet' component={Aet}/>
+                  <Route exact path='/tutorials/references' component={ReferencesComponent}/>
                   <Route exact path='/tutorials/validation' component={Validation}/>
+                  <Route exact path='/tutorials/visualizing' component={VisualizingComponent}/>
                   <Route exact path='/tutorials' component={Tutorials}/>
                   <Route exact path='/download' component={Download}/>
                 </Switch>
