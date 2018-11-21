@@ -128,9 +128,6 @@ class Welcome extends Component {
                 <Typography color="inherit" gutterBottom variant="display1">
                   Materials Data Bank
                 </Typography>
-                <Typography variant="title" paragraph color="inherit">
-                  3D atomic views of real materials
-                </Typography>
                 <Typography color="inherit" gutterBottom variant="body2">
                   The Materials Data Bank (MDB) archives the 3D coordinates and chemical species of individual atoms in materials without assuming
                   crystallinity determined by atomic electron tomography (AET). The databank is designed to provide useful resources for research
