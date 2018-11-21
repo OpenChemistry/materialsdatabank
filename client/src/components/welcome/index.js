@@ -68,7 +68,7 @@ let EmbeddedVideo = () => {
   return (
     <Card>
       <div className="intrinsic-container intrinsic-container-4x3">
-        <iframe src="https://player.vimeo.com/video/202250016" frameBorder="0" allowFullScreen></iframe>
+        <iframe src="https://player.vimeo.com/video/202250016" frameBorder="0" allowFullScreen title='mdb video'></iframe>
       </div>
     </Card>
   );

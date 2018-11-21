@@ -25,7 +25,7 @@ class EditToggle extends Component {
       editable = false;
     }
 
-    this.props.dispatch(toggleEditable({id: _id, editable: !editable}));
+    dispatch(toggleEditable({id: _id, editable: !editable}));
   }
 
   render() {

@@ -3,12 +3,10 @@ import { connect } from 'react-redux';
 import { push } from 'connected-react-router'
 import withStyles from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography';
-import ImageIcon from '@material-ui/icons/Image';
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
+
 import PageHead from '../page-head';
 import PageBody from '../page-body';
-import { CardHeader, CardMedia, CardContent, Paper, List, ListItem, Divider } from '@material-ui/core';
+import { Paper, List, ListItem, Divider } from '@material-ui/core';
 
 
 const style = (theme) => (
@@ -24,24 +22,6 @@ const style = (theme) => (
   }
 );
 
-const Image = (src) => {
-  if (src) {
-    return (
-      <img style={{objectFit: 'cover', width: '100%', height: '100%'}} src={src} />
-    );
-  } else {
-    return (
-      <div style={{width: '100%', height: '100%'}}>
-        <div style={{top: '50%', position: 'relative', transform: 'translateY(-50%)'}}>
-          <Typography align="center" variant="headline" color="textSecondary">
-            <ImageIcon/>
-          </Typography>
-        </div>
-      </div>
-    );
-  }
-}
-
 class TutorialsComponent extends Component {
   navigate = (route) => {
     if (route) {
@@ -49,7 +29,6 @@ class TutorialsComponent extends Component {
     }
   }
   render() {
-    const { classes } = this.props;
     const tutorials = [
       {
         'title': 'AET videos for a general audience',

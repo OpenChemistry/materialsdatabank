@@ -33,7 +33,7 @@ const style = (theme) => (
 const Image = (src) => {
   if (src) {
     return (
-      <img style={{objectFit: 'cover', width: '100%', height: '100%'}} src={src} />
+      <img style={{objectFit: 'cover', width: '100%', height: '100%'}} src={src} alt='program-logo'/>
     );
   } else {
     return (

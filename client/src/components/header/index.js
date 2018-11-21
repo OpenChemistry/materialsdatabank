@@ -30,10 +30,6 @@ const searchBarStyle = {
   maxWidth: '30rem'
 };
 
-const iconStyleRight = {
-  width: '50%'
-}
-
 const divStyle = {
   width: '100%',
   display: 'flex',

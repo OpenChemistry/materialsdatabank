@@ -24,7 +24,6 @@ R_1 = \\frac{\\sum_{i = 1}^N R_1^i}{N}
 
 class ValidationComponent extends Component {
   render() {
-    const { classes } = this.props;
     return (
       <div>
         <PageHead noOverlap>

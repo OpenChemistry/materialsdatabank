@@ -3,7 +3,6 @@ import React, {Component} from 'react';
 import { ConnectedRouter } from 'connected-react-router'
 import { Route, Switch } from 'react-router'
 import { history } from './store/configureStore';
-import _ from 'lodash'
 
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
