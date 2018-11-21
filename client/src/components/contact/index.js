@@ -71,6 +71,12 @@ class ContactComponent extends Component {
             stationed at the University of California, Los Angeles (UCLA), Lawrence
             Berkeley National Laboratory, Kitware, and the NSF STC STROBE.
           </Typography>
+          <Typography  color="inherit" gutterBottom variant="display1">
+            Contact Us
+          </Typography>
+          <Typography color="inherit" gutterBottom variant="body2">
+            Please send us any questions or comments by <a href="mailto:MaterialsDataBank@gmail.com" target="_top">email</a>.
+          </Typography>
         </PageHead>
         <PageBody>
           <Grid container style={{height: '100%'}} alignItems="stretch" spacing={8}>
