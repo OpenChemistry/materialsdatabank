@@ -83,7 +83,7 @@ class RightElement extends Component {
       <div style={divStyle}>
         <Hidden mdDown>
           <SearchBar
-            placeholder={'Search by author, paper, microscope, atomic species'}
+            placeholder={'Search by MDB ID, name of the structure, atomic species'}
             onChange={this.onChange}
             onRequestSearch={this.onRequestSearch}
             style={searchBarStyle}
