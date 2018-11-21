@@ -1,0 +1,34 @@
+[
+  {
+    "authors": "J. Zhou, Y. Yang, Y. Yang, D. S. Kim, A. Yuan, X. Tian, C. Ophus, F. Sun, A. K. Schmid, M. Nathanson, H. Heinz, Q. An, H. Zeng, P. Ercius and Jianwei Miao",
+    "title": "Capturing nucleation at 4D atomic resolution",
+    "journal": "arXiv",
+    "volume": "1807",
+    "page": "10709",
+    "year": "2018"
+  },
+  {
+    "authors": "Y. Yang, C.-C. Chen, M. C. Scott, C. Ophus, R. Xu, A. Pryor Jr, L. Wu, F. Sun, W. Theis, J. Zhou, M. Eisenbach, P. R. C. Kent, R. F. Sabirianov, H. Zeng, P. Ercius and J. Miao",
+    "title": "Deciphering chemical order/disorder and material properties at the single-atom level.",
+    "journal": "Nature",
+    "volume": "542",
+    "page": "75",
+    "year": "2017"
+  },
+  {
+    "authors": "A. Pryor, Jr., Y. Yang, A. Rana, M. Gallagher-Jones, J. Zhou, Y. H. Lo, G. Melinte, W. Chiu, J. A. Rodriguez and J. Miao",
+    "title": "GENFIRE: A generalized Fourier iterative reconstruction algorithm for high-resolution 3D imaging.",
+    "journal": "Sci. Rep.",
+    "volume": "7",
+    "page": "10409",
+    "year": "2017"
+  },
+  {
+    "authors": "J. Miao, P. Ercius and S. J. L. Billinge",
+    "title": "Atomic electron tomography: 3D structures without crystals.",
+    "journal": "Science",
+    "volume": "353",
+    "page": "aaf2157",
+    "year": "2016"
+  }
+]
