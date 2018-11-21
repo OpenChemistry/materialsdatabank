@@ -1,4 +1,5 @@
-from avogadro2 import *
+from avogadro.core import Molecule
+from avogadro.io import FileFormatManager
 import json
 
 
