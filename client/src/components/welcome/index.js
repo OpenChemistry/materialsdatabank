@@ -171,7 +171,8 @@ class Welcome extends Component {
                             options: {
                               style: {
                                 sphere: {
-                                  scale: 0.5
+                                  scale: 0.5,
+                                  colorscheme: 'Jmol'
                                 }
                               }
                             }
@@ -203,7 +204,8 @@ class Welcome extends Component {
                             options: {
                               style: {
                                 sphere: {
-                                  scale: 0.5
+                                  scale: 0.5,
+                                  colorscheme: 'Jmol'
                                 }
                               }
                             }
