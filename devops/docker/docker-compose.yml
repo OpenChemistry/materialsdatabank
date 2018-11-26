@@ -1,61 +1,126 @@
 version: '2'
 services:
-  mongodb:
+  db-mongodb:
     image: mongo:3.6
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - SETUID
+      - SETGID
+      - NET_BIND_SERVICE
+
     volumes:
-        - /mongodb:/data/db
+        - db-mongodb.mdb:/data/db
 
-  rabbit:
+  app-rabbit:
     image: rabbitmq:latest
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - SETUID
+      - SETGID
+      - NET_BIND_SERVICE
 
-  girder_worker:
+  app-girder-worker:
     image: openchemistry/girder_worker:mdb
-    build:
-      context: ../../
-      dockerfile: devops/docker/girder_worker/Dockerfile
+#    build:
+#      context: ../../
+#      dockerfile: devops/docker/girder_worker/Dockerfile
+    labels:
+      io.rancher.container.pull_image: always
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - SETUID
+      - SETGID
+      - NET_BIND_SERVICE
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
     links:
-      - rabbit
-      - girder
+      - app-rabbit
+      - app-girder
     environment:
-      - GIRDER_WORKER_BROKER=amqp://guest:guest@rabbit/
-      - GIRDER_WORKER_BACKEND=amqp://guest:guest@rabbit/
+      - GIRDER_WORKER_BROKER=amqp://guest:guest@app-rabbit/
+      - GIRDER_WORKER_BACKEND=amqp://guest:guest@app-rabbit/
     depends_on:
-      - rabbit
+      - app-rabbit
 
-  girder:
-    image: openchemistry/girder:mdb
-    build:
-      context: ../../
-      dockerfile: devops/docker/girder/Dockerfile
-    command: -d mongodb://mongodb:27017/girder
+  app-girder:
+    image: openchemistry/girder:mdbv0.0.1
+#    build:
+#      context: ../../
+#      dockerfile: devops/docker/girder/Dockerfile
+    labels:
+      io.rancher.container.pull_image: always
+    retain_ip: true
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - SETUID
+      - SETGID
+      - NET_BIND_SERVICE
+
+    command: -d mongodb://db-mongodb:27017/girder
     ports:
           - 8081:8080
     volumes:
-      - localassetstore:/localassetstore
-      - curatedassetstore:/curatedassetstore
+      - app-localassetstore.mdb:/assetstore
+      - app-curatedassetstore.mdb:/curatedassetstore
     links:
-      - mongodb
-      - rabbit
+      - db-mongodb
+      - app-rabbit
     environment:
-      - GIRDER_WORKER_BROKER=amqp://guest:guest@rabbit/
-      - GIRDER_WORKER_BACKEND=amqp://guest:guest@rabbit/
+      - GIRDER_WORKER_BROKER=amqp://guest:guest@app-rabbit/
+      - GIRDER_WORKER_BACKEND=amqp://guest:guest@app-rabbit/
     depends_on:
-      - mongodb
+      - db-mongodb
 
-  nginx:
-    image: openchemistry/nginx:mdb
-    build:
-      context: ../../
-      dockerfile: devops/docker/nginx/Dockerfile
-    ports:
-      - 80:80
+  web-nginx:
+    image: openchemistry/nginx:mdb-v0.0.3
+#    build:
+#      context: ../../
+#      dockerfile: devops/docker/nginx/Dockerfile
+    labels:
+      io.rancher.container.pull_image: always
+      cron.schedule: 0  8  *  *  *
+      cron.action: restart
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - SETUID
+      - SETGID
+      - NET_BIND_SERVICE
+    group_add:
+      - nginx
+    volumes:
+      - web-certs.mdb:/etc/letsencrypt
+      - web-certbot-webroot.mdb:/data/letsencrypt
     links:
-      - girder
+      - app-girder
     depends_on:
-      - girder
+      - app-girder
 
 volumes:
-    localassetstore:
-    curatedassetstore:
-    mongodb:
+  app-localassetstore.mdb:
+    db-mongodb.mdb:
+    external: true
+    driver: rancher-nfs
+  app-curatedassetstore.mdb:
+    db-mongodb.mdb:
+    external: true
+    driver: rancher-nfs
+  db-mongodb.mdb:
+    external: true
+    driver: rancher-nfs
 

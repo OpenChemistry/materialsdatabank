@@ -83,7 +83,7 @@ def cli():
               help='the url for the dataset', type=str)
 @click.option('-g', '--slug', default=None,
               help='the url slug', type=str)
-@click.option('-u', '--api-url', default=None,
+@click.option('-a', '--api-url', default=None,
               help='RESTful API URL '
                    '(e.g https://girder.example.com:443/%s)' % GirderClient.DEFAULT_API_ROOT)
 @click.option('-k', '--api-key', envvar='GIRDER_API_KEY', default=None,

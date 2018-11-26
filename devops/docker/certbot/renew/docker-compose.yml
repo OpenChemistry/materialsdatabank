@@ -1,0 +1,23 @@
+version: '2'
+services:
+  web-certbot-renew:
+    labels:
+      io.rancher.container.start_once: true
+      cron.schedule: 0  7  *  *  *
+    image: certbot/certbot
+    cap_drop:
+      - ALL
+    volumes:
+      - web-certs.mdb:/etc/letsencrypt
+      - web-certbot-webroot.mdb:/data/letsencrypt
+    command:
+      - renew 
+      - "--webroot-path=/data/letsencrypt"
+    
+volumes:
+  web-certs.mdb:
+    external: true
+    driver: rancher-nfs
+  web-certbot-webroot.mdb:
+    external: true
+    driver: rancher-nfs
