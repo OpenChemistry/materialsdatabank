@@ -85,7 +85,7 @@ services:
       - db-mongodb
 
   web-nginx:
-    image: openchemistry/nginx:mdb-v0.0.3
+    image: openchemistry/nginx:mdb-v0.0.10
 #    build:
 #      context: ../../
 #      dockerfile: devops/docker/nginx/Dockerfile
