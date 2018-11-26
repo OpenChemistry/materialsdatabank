@@ -17,9 +17,9 @@ import { authenticate } from './redux/ducks/girder'
 
 import App from './App';
 
-import * as Molecule from  '@openchemistry/molecule-moljs';
+import { defineCustomElements as defineMolecule } from  '@openchemistry/molecule-moljs';
 
-Molecule.defineCustomElements(window);
+defineMolecule(window);
 
 
 const store = configureStore()
