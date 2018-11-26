@@ -11,7 +11,7 @@ import berkeleyLogo from './berkeley.jpg';
 
 
 const style = {
-  height: '5rem'
+  height: '2.5rem'
 }
 
 export default class Footer extends Component {

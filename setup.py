@@ -37,7 +37,8 @@ setup(
         'numpy',
         'scipy',
         'periodictable',
-        'h5py'
+        'h5py',
+        'avogadro'
     ],
     entry_points= {
         'girder_worker_plugins': [

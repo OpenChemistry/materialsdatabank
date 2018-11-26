@@ -76,7 +76,7 @@ const getJobId = (dataset) => {
 class ValidateTable extends Component {
   
   fetchJobInfo = () => {
-    const { dataset, job } = this.props;
+    const { dataset } = this.props;
     const jobId = getJobId(dataset);
     if (!_.isNil(jobId)) {
       this.props.dispatch(loadJob(jobId));

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
@@ -38,35 +37,10 @@ import './index.css'
 import { CardActions } from '@material-ui/core';
 import { push } from 'connected-react-router';
 
-const privateColor = '#FFEBEE'
-
-const cardHeaderStyle = {
-  textAlign: 'left'
-}
-
-const infoStyle = {
-    textAlign: 'left'
-}
-
 const tableLabelStyle = {
   fontSize: '18px',
   color: '#9E9E9E'
 }
-
-const cardMediaStyle = {
-    textAlign: 'right',
-    display: 'inline-block',
-    margin: 20,
-    width: '100%'
-  }
-
-const style = {
-    //height: '100%',
-    width: '90%',
-    margin: 20,
-    textAlign: 'center',
-    //display: 'inline-block',
-  };
 
 const tableStyle = {
     fontSize: '18px'
@@ -74,10 +48,6 @@ const tableStyle = {
 
 const curatorCardStyle = {
   marginTop: '2rem'
-}
-
-const approvalDivStyle = {
-  display: 'inline'
 }
 
 class Dataset extends Component {

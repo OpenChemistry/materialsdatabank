@@ -2,52 +2,42 @@ import React, { Component } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
-import VideoIcon from '@material-ui/icons/Videocam';
 import PageHead from '../page-head';
 import PageBody from '../page-body';
-import { CardContent, CardActionArea } from '@material-ui/core';
+import VideoItem from './videoItem';
 
 
 const style = (theme) => (
   {
     columns: {
       padding: theme.spacing.unit * 3
-    },
-    cardImage: {
-      width: '100%',
-      height: 24 * theme.spacing.unit,
-      backgroundColor: theme.palette.grey[300]
-    },
-    cardActionArea: {
-      width: '100%'
     }
   }
 );
 
 
-const Image = (src) => {
-  if (src) {
-    return (
-      <img style={{objectFit: 'cover', width: '100%', height: '100%'}} src={src} />
-    );
-  } else {
-    return (
-      <div style={{width: '100%', height: '100%'}}>
-        <div style={{top: '50%', position: 'relative', transform: 'translateY(-50%)'}}>
-          <Typography align="center" variant="headline" color="textSecondary">
-            <VideoIcon/>
-          </Typography>
-        </div>
-      </div>
-    );
-  }
-}
-
-
 class AetComponent extends Component {
   render() {
     const { classes } = this.props;
+    const videos = [
+      {
+        title: 'Electron Tomography I',
+        description: 'Dr. Yongsoo Yang',
+        url: 'https://www.youtube.com/watch?v=2sk0xe8k_uI',
+        img: 'https://i1.ytimg.com/vi/2sk0xe8k_uI/mqdefault.jpg'
+      },
+      {
+        title: 'Electron Tomography II',
+        description: 'Dr. Yongsoo Yang',
+        url: 'https://www.youtube.com/watch?v=AtD2v3XVJjk',
+        img: 'https://i1.ytimg.com/vi/AtD2v3XVJjk/mqdefault.jpg'
+      },
+      {
+        title: 'FET Short Courses',
+        description: '2017',
+        url: 'https://sites.google.com/lbl.gov/fet2017-short-course/home'
+      }
+    ];
     return (
       <div>
         <PageHead>
@@ -57,62 +47,20 @@ class AetComponent extends Component {
           <Typography variant="subheading" paragraph color="inherit">
           </Typography>
           <Typography color="inherit" gutterBottom variant="body2">
-            In recent years atomic electron tomography has gained traction in the scientific community.
-            And with the gained traction a need for tutorials and short courses.
+            In recent years AET has gained traction in the scientific community.
+            With the gained traction there is a need for tutorials and short courses.
             Below are links to a few of them either in video form or with slides available for download. 
           </Typography>
         </PageHead>
         <PageBody>
           <Grid container style={{height: '100%'}} alignItems="stretch">
-            <Grid item xs={12} md={4} className={classes.columns}>
-              <CardActionArea className={classes.cardActionArea} href="https://www.youtube.com/watch?v=2sk0xe8k_uI" target="_blank">
-                <Card>
-                  <div className={classes.cardImage}>
-                    {Image('https://i1.ytimg.com/vi/2sk0xe8k_uI/mqdefault.jpg')}
-                  </div>
-                  <CardContent>
-                    <Typography>
-                      Electron Tomography I
-                    </Typography>
-                    <Typography color="textSecondary">
-                      Prof. Yongsoo Yang
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </CardActionArea>
-            </Grid>
-            <Grid item xs={12} md={4} className={classes.columns}>
-              <Card>
-                <CardActionArea className={classes.cardActionArea} href="https://www.youtube.com/watch?v=AtD2v3XVJjk" target="_blank">
-                  <div className={classes.cardImage}>
-                    {Image('https://i1.ytimg.com/vi/AtD2v3XVJjk/mqdefault.jpg')}
-                  </div>
-                  <CardContent>
-                    <Typography>
-                      Electron Tomography II
-                    </Typography>
-                    <Typography color="textSecondary">
-                      Prof. Yongsoo Yang
-                    </Typography>
-                  </CardContent>
-                </CardActionArea>
-              </Card>
-            </Grid>
-            <Grid item xs={12} md={4} className={classes.columns}>
-              <Card>
-                <div className={classes.cardImage}>
-                  {Image()}
-                </div>
-                <CardContent>
-                  <Typography>
-                    FET Short Courses
-                  </Typography>
-                  <Typography color="textSecondary">
-                    2017
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
+            {
+              videos.map((video,i) => (
+                <Grid item key={i} xs={12} md={4} className={classes.columns}>
+                  <VideoItem {...video}/>
+                </Grid>
+              ))
+            }
           </Grid>
         </PageBody>
       </div>

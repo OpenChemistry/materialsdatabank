@@ -3,12 +3,10 @@ import { connect } from 'react-redux';
 import { push } from 'connected-react-router'
 import withStyles from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography';
-import ImageIcon from '@material-ui/icons/Image';
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
+
 import PageHead from '../page-head';
 import PageBody from '../page-body';
-import { CardHeader, CardMedia, CardContent, Paper, List, ListItem, Divider } from '@material-ui/core';
+import { Paper, List, ListItem, Divider } from '@material-ui/core';
 
 
 const style = (theme) => (
@@ -24,24 +22,6 @@ const style = (theme) => (
   }
 );
 
-const Image = (src) => {
-  if (src) {
-    return (
-      <img style={{objectFit: 'cover', width: '100%', height: '100%'}} src={src} />
-    );
-  } else {
-    return (
-      <div style={{width: '100%', height: '100%'}}>
-        <div style={{top: '50%', position: 'relative', transform: 'translateY(-50%)'}}>
-          <Typography align="center" variant="headline" color="textSecondary">
-            <ImageIcon/>
-          </Typography>
-        </div>
-      </div>
-    );
-  }
-}
-
 class TutorialsComponent extends Component {
   navigate = (route) => {
     if (route) {
@@ -49,7 +29,28 @@ class TutorialsComponent extends Component {
     }
   }
   render() {
-    const { classes } = this.props;
+    const tutorials = [
+      {
+        'title': 'AET videos for a general audience',
+        'url': '/tutorials/aet-general'
+      },
+      {
+        'title': 'AET video tutorials and slides',
+        'url': '/tutorials/aet'
+      },
+      {
+        'title': 'The MDB validation process',
+        'url': '/tutorials/validation'
+      },
+      {
+        'title': 'Visualizing structures',
+        'url': '/tutorials/visualizing'
+      },
+      {
+        'title': 'References',
+        'url': '/tutorials/references'
+      }
+    ];
     return (
       <div>
         <PageHead>
@@ -72,29 +73,18 @@ class TutorialsComponent extends Component {
         <PageBody>
           <Paper>
             <List>
-              <ListItem disabled button onClick={() => {this.navigate(null)}}>
-                Creating a new account
-              </ListItem>
-              <Divider></Divider>
-              <ListItem disabled button onClick={() => {this.navigate(null)}}>
-                Depositing a structure
-              </ListItem>
-              <Divider></Divider>
-              <ListItem button onClick={() => {this.navigate('/tutorials/aet')}}>
-                AET video tutorials and slides
-              </ListItem>
-              <Divider></Divider>
-              <ListItem button onClick={() => {this.navigate('/tutorials/validation')}}>
-                The MDB validation process
-              </ListItem>
-              <Divider></Divider>
-              <ListItem disabled button onClick={() => {this.navigate(null)}}>
-                Visualizing structures
-              </ListItem>
-              <Divider></Divider>
-              <ListItem disabled button onClick={() => {this.navigate(null)}}>
-                References
-              </ListItem>
+              {
+                tutorials.map((tutorial, i) => (
+                  <div>
+                    <ListItem disabled={!tutorial.url} button onClick={() => {this.navigate(tutorial.url)}}>
+                      {tutorial.title}
+                    </ListItem>
+                    {i < tutorials.length - 1 &&
+                    <Divider></Divider>
+                    }
+                  </div>
+                ))
+              }
             </List>
           </Paper>
         </PageBody>

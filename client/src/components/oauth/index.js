@@ -11,7 +11,6 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 
 import google from './google.svg';
-import github from './github.svg';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
@@ -53,10 +52,6 @@ function redirectMapStateToProps(state, ownProps) {
   }
 }
 OauthRedirect = connect(redirectMapStateToProps)(OauthRedirect);
-
-const contentStyle = {
-  maxWidth: '300px'
-}
 
 class SelectLoginProvider extends Component {
   constructor(props) {
