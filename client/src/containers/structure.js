@@ -43,10 +43,12 @@ class StructureContainer extends Component {
             options: {
               style: {
                 stick: {
-                  radius: 0
+                  radius: 0,
+                  colorscheme: 'Jmol'
                 },
                 sphere: {
-                  scale: 0.7
+                  scale: 0.7,
+                  colorscheme: 'Jmol'
                 }
               }
             }
