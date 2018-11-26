@@ -17,7 +17,7 @@ import { authenticate } from './redux/ducks/girder'
 
 import App from './App';
 
-import { defineCustomElements as defineMolecule } from  '@openchemistry/molecule-moljs';
+import { defineCustomElements as defineMolecule } from  '@openchemistry/molecule-moljs/dist/loader';
 
 defineMolecule(window);
 
