@@ -25,6 +25,9 @@ import { wc } from '../../utils/webcomponent';
 import PageHead from '../page-head';
 import PageBody from '../page-body';
 
+import recentPublications from './recentPublications.json';
+import Publications from './publications';
+
 import './index.css'
 import { CardActions } from '@material-ui/core';
 
@@ -65,7 +68,7 @@ let EmbeddedVideo = () => {
   return (
     <Card>
       <div className="intrinsic-container intrinsic-container-4x3">
-        <iframe src="https://player.vimeo.com/video/202250016" frameBorder="0" allowFullScreen></iframe>
+        <iframe src="https://player.vimeo.com/video/202250016" frameBorder="0" allowFullScreen title='mdb video'></iframe>
       </div>
     </Card>
   );
@@ -128,9 +131,6 @@ class Welcome extends Component {
                 <Typography color="inherit" gutterBottom variant="display1">
                   Materials Data Bank
                 </Typography>
-                <Typography variant="title" paragraph color="inherit">
-                  3D atomic views of real materials
-                </Typography>
                 <Typography color="inherit" gutterBottom variant="body2">
                   The Materials Data Bank (MDB) archives the 3D coordinates and chemical species of individual atoms in materials without assuming
                   crystallinity determined by atomic electron tomography (AET). The databank is designed to provide useful resources for research
@@ -150,101 +150,102 @@ class Welcome extends Component {
         </div>
         <div className={classes.body}>
           <PageBody noOverlap>
-          <Grid container style={{height: '100%'}} alignItems="stretch">
+            <Grid container style={{height: '100%'}} alignItems="stretch">
             <Grid item xs={12} md={4} className={classes.evenColumns}>
-              <div className={classes.columnTitle}>
-                <Typography gutterBottom variant="title" color="textSecondary">
-                  <ContactsIcon />&nbsp;Recent Publications
-                </Typography>
-              </div>
-            </Grid>
-            <Grid item xs={12} md={4} className={classes.oddColumns}>
-              <div className={classes.columnTitle}>
-                <Typography gutterBottom variant="title" color="textSecondary">
-                  <ChromeReaderIcon />&nbsp;Feed/News
-                </Typography>
-              </div>
-              <Paper>
-                <TwitterTimelineEmbed
-                  sourceType="profile"
-                  screenName="materdatabank"
-                  options={{height: 800}}
-                />
-              </Paper>
-            </Grid>
-            <Grid item xs={12} md={4} className={classes.evenColumns}>
-              <div className={classes.columnTitle}>
-                <Typography variant="title" color="textSecondary">
-                  <GroupIcon />&nbsp;Structure Spotlight
-                </Typography>
-              </div>
-                <Card
-                  style={{marginBottom: '2rem'}}
-                  onMouseDown={(e) => {this.onMoleculeInteract('molecule0')}}
-                >
-                  <div className={classes.molecule}>
-                    <oc-molecule-moljs
-                      ref={wc(
-                        {},
-                        {
-                          cjson: molecule0.cjson,
-                          rotate: molecule0.rotate,
-                          options: {
-                            style: {
-                              sphere: {
-                                scale: 0.5
+                <div className={classes.columnTitle}>
+                  <Typography variant="title" color="textSecondary">
+                    <GroupIcon />&nbsp;Recent Entries
+                  </Typography>
+                </div>
+                  <Card
+                    style={{marginBottom: '2rem'}}
+                    onMouseDown={(e) => {this.onMoleculeInteract('molecule0')}}
+                  >
+                    <div className={classes.molecule}>
+                      <oc-molecule-moljs
+                        ref={wc(
+                          {},
+                          {
+                            cjson: molecule0.cjson,
+                            rotate: molecule0.rotate,
+                            options: {
+                              style: {
+                                sphere: {
+                                  scale: 0.5
+                                }
                               }
                             }
                           }
-                        }
-                      )}
-                    />
-                  </div>
-                  {molecule0.slug &&
-                  <CardActions>
-                    <Button
-                      color="primary"
-                      onClick={() => {this.props.dispatch(push(`/dataset/${molecule0.slug}`))}}
-                    >
-                      View Dataset
-                    </Button>
-                  </CardActions>
-                  }
-                </Card>
-                <Card
-                  onMouseDown={(e) => {this.onMoleculeInteract('molecule1')}}
-                >
-                  <div className={classes.molecule}>
-                    <oc-molecule-moljs
-                      ref={wc(
-                        {},
-                        {
-                          cjson: molecule1.cjson,
-                          rotate: molecule1.rotate,
-                          options: {
-                            style: {
-                              sphere: {
-                                scale: 0.5
+                        )}
+                      />
+                    </div>
+                    {molecule0.slug &&
+                    <CardActions>
+                      <Button
+                        color="primary"
+                        onClick={() => {this.props.dispatch(push(`/dataset/${molecule0.slug}`))}}
+                      >
+                        View Dataset
+                      </Button>
+                    </CardActions>
+                    }
+                  </Card>
+                  <Card
+                    onMouseDown={(e) => {this.onMoleculeInteract('molecule1')}}
+                  >
+                    <div className={classes.molecule}>
+                      <oc-molecule-moljs
+                        ref={wc(
+                          {},
+                          {
+                            cjson: molecule1.cjson,
+                            rotate: molecule1.rotate,
+                            options: {
+                              style: {
+                                sphere: {
+                                  scale: 0.5
+                                }
                               }
                             }
                           }
-                        }
-                      )}
-                    />
-                  </div>
-                  {molecule1.slug &&
-                  <CardActions>
-                    <Button
-                      color="primary"
-                      onClick={() => {this.props.dispatch(push(`/dataset/${molecule1.slug}`))}}
-                    >
-                      View Dataset
-                    </Button>
-                  </CardActions>
-                  }
-                </Card>
+                        )}
+                      />
+                    </div>
+                    {molecule1.slug &&
+                    <CardActions>
+                      <Button
+                        color="primary"
+                        onClick={() => {this.props.dispatch(push(`/dataset/${molecule1.slug}`))}}
+                      >
+                        View Dataset
+                      </Button>
+                    </CardActions>
+                    }
+                  </Card>
+              </Grid>
+              <Grid item xs={12} md={4} className={classes.oddColumns}>
+                <div className={classes.columnTitle}>
+                  <Typography gutterBottom variant="title" color="textSecondary">
+                    <ChromeReaderIcon />&nbsp;Feed/News
+                  </Typography>
+                </div>
+                <Paper>
+                  <TwitterTimelineEmbed
+                    sourceType="profile"
+                    screenName="materdatabank"
+                    options={{height: 800}}
+                  />
+                </Paper>
+              </Grid>
+              <Grid item xs={12} md={4} className={classes.evenColumns}>
+                <div className={classes.columnTitle}>
+                  <Typography gutterBottom variant="title" color="textSecondary">
+                    <ContactsIcon />&nbsp;Recent Publications
+                  </Typography>
+                </div>
+                <Publications publications={recentPublications}/>
+              </Grid>
             </Grid>
-          </Grid>
           </PageBody>
         </div>
       </div>

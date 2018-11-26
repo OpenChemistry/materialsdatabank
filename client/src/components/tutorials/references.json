@@ -1,0 +1,138 @@
+[
+  {
+    "authors": "J. Zhou, Y. Yang, Y. Yang, D. S. Kim, A. Yuan, X. Tian, C. Ophus, F. Sun, A. K. Schmid, M. Nathanson, H. Heinz, Q. An, H. Zeng, P. Ercius and Jianwei Miao",
+    "title": "Capturing nucleation at 4D atomic resolution",
+    "journal": "arXiv",
+    "volume": "1807",
+    "page": "10709",
+    "year": "2018"
+  },
+  {
+    "authors": "Y. Yang, C.-C. Chen, M. C. Scott, C. Ophus, R. Xu, A. Pryor Jr, L. Wu, F. Sun, W. Theis, J. Zhou, M. Eisenbach, P. R. C. Kent, R. F. Sabirianov, H. Zeng, P. Ercius and J. Miao",
+    "title": "Deciphering chemical order/disorder and material properties at the single-atom level.",
+    "journal": "Nature",
+    "volume": "542",
+    "page": "75",
+    "year": "2017"
+  },
+  {
+    "authors": "A. Pryor, Jr., Y. Yang, A. Rana, M. Gallagher-Jones, J. Zhou, Y. H. Lo, G. Melinte, W. Chiu, J. A. Rodriguez and J. Miao",
+    "title": "GENFIRE: A generalized Fourier iterative reconstruction algorithm for high-resolution 3D imaging.",
+    "journal": "Sci. Rep.",
+    "volume": "7",
+    "page": "10409",
+    "year": "2017"
+  },
+  {
+    "authors": "J. Miao, P. Ercius and S. J. L. Billinge",
+    "title": "Atomic electron tomography: 3D structures without crystals.",
+    "journal": "Science",
+    "volume": "353",
+    "page": "aaf2157",
+    "year": "2016"
+  },
+  {
+    "authors": "S. Bals, B. Goris, A. De Backer, and S. Van Aert",
+    "title": "Atomic resolution electron tomography.",
+    "journal": "MRS Bulletin",
+    "volume": "41",
+    "page": "525",
+    "year": "2016"
+  },
+  {
+    "authors": "S. M. Collins, R. K. Leary, P. A. Midgley, R. Tovey, M. Benning, C. B. Schönlieb, P. Rez, and M. M. J. Treacy",
+    "title": "Entropic Comparison of Atomic-Resolution Electron Tomography of Crystals and Amorphous Materials.",
+    "journal": "Phys. Rev. Lett.",
+    "volume": "119",
+    "page": "1166101",
+    "year": "2017"
+  },
+  {
+    "authors": "R. Xu, C.-C. Chen, L. Wu, M. C. Scott, W. Theis, C. Ophus, M. Bartels, Y. Yang, H. Ramezani-Dakhel, M. R. Sawaya, H. Heinz, L. D. Marks, P. Ercius and J. Miao",
+    "title": "Three-Dimensional Coordinates of Individual Atoms in Materials Revealed by Electron Tomography.",
+    "journal": " Nature Mater.",
+    "volume": "14",
+    "page": "1099",
+    "year": "2015"
+  },
+  {
+    "authors": "J. Park, H. Elmlund, P. Ercius, J. M. Yuk, D. T. Limmer, Q. Chen, K. Kim, S. H. Han, D. A. Weitz, A. Zettl, and A. P. Alivisatos",
+    "title": "3D structure of individual nanocrystals in solution by electron microscopy.",
+    "journal": "Science",
+    "volume": "349",
+    "page": "290",
+    "year": "2015"
+  },
+  {
+    "authors": "B. Goris, J. De Beenhouwer, A. De Backer, D. Zanaga, K. J. Batenburg, A. Sánchez-Iglesias, L. M. Liz-Marzán, S. Van Aert, S. Bals, J. Sijbers, G. Van Tendeloo",
+    "title": "Measuring lattice strain in three dimensions through electron microscopy.",
+    "journal": "Nano Lett.",
+    "volume": "15",
+    "page": "6996",
+    "year": "2015"
+  },
+  {
+    "authors": "G. Haberfehlner, P. Thaler, D. Knez, A. Volk, F. Hofer, W. E. Ernst, G. Kothleitner",
+    "title": "Formation of bimetallic clusters in superfluid helium nanodroplets analysed by atomic resolution electron tomography.",
+    "journal": "Nat. Commun.",
+    "volume": "6",
+    "page": "8779",
+    "year": "2015"
+  },
+  {
+    "authors": "M. Azubel, J. Koivisto, S. Malola, D. Bushnell, G. L. Hura, A. L. Koh, H. Tsunoyama, T. Tsukuda, M. Pettersson, H. Häkkinen, R. D. Kornberg",
+    "title": "Electron microscopy of gold nanoparticles at atomic resolution.",
+    "journal": "Science",
+    "volume": "345",
+    "page": "909",
+    "year": "2014"
+  },
+  {
+    "authors": "C. C. Chen, C. Zhu, E. R. White, C.-Y. Chiu, M. C. Scott, B. C. Regan, L. D. Marks, Y. Huang and J. Miao",
+    "title": "Three-dimensional imaging of dislocations in a nanoparticle at atomic resolution.",
+    "journal": "Nature",
+    "volume": "496",
+    "page": "74",
+    "year": "2013"
+  },
+  {
+    "authors": "B. Goris, A. De Backer, S. Van Aert, S. Gómez-Graña, L. M. Liz-Marzán, G. Van Tendeloo, S. Bals",
+    "title": "Three-dimensional elemental mapping at the atomic scale in bimetallic nanocrystals.",
+    "journal": "Nano Lett.",
+    "volume": "13",
+    "page": "4236",
+    "year": "2013"
+  },
+  {
+    "authors": "C. Zhu, C.-C. Chen, J. Du, M. R. Sawaya, M. C. Scott, P. Ercius, J. Ciston, and J. Miao",
+    "title": "Towards three-dimensional structural determination of amorphous materials at atomic resolution.",
+    "journal": "Phys. Rev. B (Rapid Commun.)",
+    "volume": "88",
+    "page": "100201",
+    "year": "2013"
+  },
+  {
+    "authors": "D. Van Dyck, J. R. Jinschek, F.-R. Chen",
+    "title": "‘Big Bang’ tomography as a new route to atomic-resolution electron tomography.",
+    "journal": "Nature",
+    "volume": "486",
+    "page": "243",
+    "year": "2012"
+  },
+  {
+    "authors": "B. Goris, S. Bals, W. Van den Broek, E. Carbó-Argibay, S. Gómez-Graña, L. M. Liz-Marzán, G. Van Tendeloo",
+    "title": "Atomic-scale determination of surface facets in gold nanorods.",
+    "journal": "Nat. Mater.",
+    "volume": "11",
+    "page": "930",
+    "year": "2012"
+  },
+  {
+    "authors": "M. C. Scott, C. C. Chen, M. Mecklenburg, C. Zhu, R. Xu, P. Ercius, U. Dahmen, B. C. Regan, and J. Miao",
+    "title": "Electron tomography at 2.4-ångström resolution.",
+    "journal": "Nature",
+    "volume": "483",
+    "page": "444",
+    "year": "2012"
+  }
+]

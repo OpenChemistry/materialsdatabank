@@ -525,7 +525,8 @@ function mapStateToPropsDeposit(state, ownProps) {
     dataSet,
     reconstruction,
     dataSetId,
-    initialValues
+    initialValues,
+    error
   };
 
   return props;

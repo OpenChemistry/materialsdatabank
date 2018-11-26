@@ -37,7 +37,7 @@ const style = (theme) => ({
 let Image = (src) => {
   if (src) {
     return (
-      <img style={{objectFit: 'cover', width: '100%', height: '100%'}} src={src} />
+      <img style={{objectFit: 'cover', width: '100%', height: '100%'}} src={src} alt=''/>
     );
   } else {
     return (

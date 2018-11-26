@@ -30,10 +30,6 @@ const searchBarStyle = {
   maxWidth: '30rem'
 };
 
-const iconStyleRight = {
-  width: '50%'
-}
-
 const divStyle = {
   width: '100%',
   display: 'flex',
@@ -83,7 +79,7 @@ class RightElement extends Component {
       <div style={divStyle}>
         <Hidden mdDown>
           <SearchBar
-            placeholder={'Search by author, paper, microscope, atomic species'}
+            placeholder={'Search by MDB ID, name of the structure, atomic species'}
             onChange={this.onChange}
             onRequestSearch={this.onRequestSearch}
             style={searchBarStyle}
@@ -145,7 +141,7 @@ class Header extends Component {
             <Typography variant="title" color="inherit" style={{flexGrow: 0}}>
               Materials Data Bank
               <Typography variant="caption" color="textSecondary">
-                An Information Portal for 3D atomic electron tomography data
+                3D atomic views of real materials
               </Typography>
             </Typography>
           </Hidden>

@@ -12,7 +12,7 @@ class Login extends Component {
     return (
         <Button onClick={this.handleTouchTap}>
           <InputIcon/>
-          Log in
+          Log in / Register
         </Button>
     );
   }

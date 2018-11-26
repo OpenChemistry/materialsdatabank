@@ -1,6 +1,6 @@
 import { call, put, take, select, takeEvery, all } from 'redux-saga/effects';
 import { buffers, eventChannel, END } from 'redux-saga';
-import { requestUpload, uploadProgress, uploadComplete, requestMdbFolder,
+import { requestUpload, uploadProgress,
   receiveMdbFolder, UPLOAD, REQUEST_MDB_FOLDER,
   approveDataSetRequest, APPROVE_DATASET, VALIDATE_DATASET, requestValidateDataSet
 } from '../../redux/ducks/upload';
@@ -243,7 +243,7 @@ function* loadCuratorGroup() {
     yield put(requestCuratorGroup());
     let curatorGroup = yield call(girder.group.get, 'curator');
 
-    if (curatorGroup.length == 0) {
+    if (curatorGroup.length === 0) {
       curatorGroup = null;
     }
     else {
@@ -264,8 +264,8 @@ export  function* watchLoadCuratorGroup() {
 
 function* approveDataSet(action) {
   try {
-    yield put( approveDataSetRequest(id) );
     const {id} = action.payload;
+    yield put( approveDataSetRequest(id) );
 
     const {
       structures,

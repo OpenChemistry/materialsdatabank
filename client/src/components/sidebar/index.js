@@ -76,10 +76,10 @@ class SideBar extends Component {
         </MenuItem>
         <MenuItem
           style={style.menu}
-          onClick={() => this.pushRoute('/about') }
+          onClick={() => this.pushRoute('/contact') }
         >
           <AboutIcon color="primary" />&nbsp;
-          <Typography color="inherit" variant="subheading">About Us</Typography>
+          <Typography color="inherit" variant="subheading">Contact Us</Typography>
         </MenuItem>
       </MenuList>
     );

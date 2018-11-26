@@ -87,7 +87,7 @@ export function validateDataSet(id) {
           .then(response => response.data )
 }
 
-export function searchByFields(title, authors, atomicSpecies) {
+export function searchByFields(title, authors, atomicSpecies, slug) {
   authors = _.isNil(authors) ? null : JSON.stringify(authors);
   atomicSpecies = _.isNil(atomicSpecies) ? null : JSON.stringify(atomicSpecies);
 
@@ -96,6 +96,7 @@ export function searchByFields(title, authors, atomicSpecies) {
       title,
       authors,
       atomicSpecies,
+      slug
     }
   })
   .then(response => response.data )
