@@ -28,6 +28,7 @@ import AetGeneralComponent from './components/tutorials/aetGeneral';
 import VisualizingComponent from './components/tutorials/visualizing';
 import ReferencesComponent from './components/tutorials/references';
 import MyDataSetsComponent from './containers/my-datasets';
+import PrivateRoute from './containers/private-route';
 
 const appStyles = theme => ({
   root: {
@@ -112,13 +113,13 @@ class App extends Component {
               <div className={classes.content}>
                 <Switch>
                   <Route exact path='/' component={Welcome}/>
-                  <Route exact path='/my-datasets' component={MyDataSetsComponent}/>
+                  <PrivateRoute exact path='/my-datasets' component={MyDataSetsComponent}/>
                   <Route exact path='/dataset/:id' component={DatasetContainer}/>
                   <Route exact path='/dataset/:id/:action(edit)' component={Deposit}/>
                   <Route exact path='/welcome' component={Welcome}/>
                   <Route exact path='/search' component={Search}/>
                   <Route exact path='/results' component={SearchResults}/>
-                  <Route exact path='/:action(deposit)' component={Deposit}/>
+                  <PrivateRoute exact path='/:action(deposit)' component={Deposit}/>
                   <Route exact path='/contact' component={Contact}/>
                   <Route exact path='/software' component={Software}/>
                   <Route exact path='/tutorials/aet-general' component={AetGeneralComponent}/>
