@@ -1,5 +1,6 @@
 import re
 from bson.objectid import ObjectId, InvalidId
+import datetime
 
 from girder.models.model_base import AccessControlledModel
 from girder.constants import AccessType
@@ -100,7 +101,8 @@ class Dataset(AccessControlledModel):
             'authors': authors,
             'title': title,
             'url': url,
-            'editable': False
+            'editable': False,
+            'deposited': datetime.datetime.utcnow()
         }
 
         if image_file_id is not None:
@@ -153,6 +155,7 @@ class Dataset(AccessControlledModel):
                     'dataset': dataset,
                     'approver': user
                 })
+                updates.setdefault('$set', {})['released'] = datetime.datetime.utcnow()
 
         if validation is not None:
             updates.setdefault('$set', {})['validation'] = validation
