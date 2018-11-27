@@ -264,7 +264,6 @@ class Dataset(AccessControlledModel):
         cursor = super(Dataset, self).find(query=query, sort=sort, user=user)
 
         if not force:
-            print('not force')
             for r in self.filterResultsByPermission(cursor=cursor, user=user,
                                                     level=AccessType.READ,
                                                     limit=limit, offset=offset):
