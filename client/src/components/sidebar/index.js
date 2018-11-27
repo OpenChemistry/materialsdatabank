@@ -8,7 +8,6 @@ import Typography from '@material-ui/core/Typography';
 import HomeIcon from '@material-ui/icons/Home';
 import SearchIcon from '@material-ui/icons/Search';
 import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser';
-import DownloadIcon from '@material-ui/icons/SaveAlt';
 import SoftwareIcon from '@material-ui/icons/DesktopMac';
 import TutorialIcon from '@material-ui/icons/Forum';
 import AboutIcon from '@material-ui/icons/PermIdentity';
@@ -51,14 +50,7 @@ class SideBar extends Component {
           onClick={() => this.pushRoute('/search') }
         >
           <SearchIcon color="primary" />&nbsp;
-          <Typography color="inherit" variant="subheading">Search</Typography>
-        </MenuItem>
-        <MenuItem
-          style={style.menu}
-          onClick={() => this.pushRoute('/download') }
-        >
-          <DownloadIcon color="primary" />&nbsp;
-          <Typography color="inherit" variant="subheading">Download</Typography>
+          <Typography color="inherit" variant="subheading">Search & Download</Typography>
         </MenuItem>
         <MenuItem
           style={style.menu}
