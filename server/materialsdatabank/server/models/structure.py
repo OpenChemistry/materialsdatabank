@@ -95,6 +95,7 @@ class Structure(BaseAccessControlledModel):
             raise ValidationException('%s doesn\'t exist.' % path)
 
         species = species
+        structure['numberOfAtoms'] = len(species)
         structure['atomicSpecies'] = list(set(species))
         structure['cjson'] = cjson
 
