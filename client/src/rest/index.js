@@ -87,16 +87,18 @@ export function validateDataSet(id) {
           .then(response => response.data )
 }
 
-export function searchByFields(title, authors, atomicSpecies, slug) {
+export function searchByFields(title=null, authors=null, atomicSpecies=null, slug=null, user=null) {
   authors = _.isNil(authors) ? null : JSON.stringify(authors);
   atomicSpecies = _.isNil(atomicSpecies) ? null : JSON.stringify(atomicSpecies);
+  const owner = _.isNil(user) ? null : user['_id'];
 
   return get('mdb/datasets', {
     params: {
       title,
       authors,
       atomicSpecies,
-      slug
+      slug,
+      owner
     }
   })
   .then(response => response.data )

@@ -9,7 +9,7 @@ import Hidden from '@material-ui/core/Hidden';
 
 import Header from './components/header';
 import Footer from './components/footer';
-import Main from './components/main';
+import SearchResults from './containers/searchresults';
 import SideBar from './components/sidebar';
 import DatasetContainer from './containers/dataset'
 import Welcome from './components/welcome'
@@ -27,6 +27,7 @@ import Download from './components/download';
 import AetGeneralComponent from './components/tutorials/aetGeneral';
 import VisualizingComponent from './components/tutorials/visualizing';
 import ReferencesComponent from './components/tutorials/references';
+import MyDataSetsComponent from './containers/my-datasets';
 
 const appStyles = theme => ({
   root: {
@@ -111,11 +112,12 @@ class App extends Component {
               <div className={classes.content}>
                 <Switch>
                   <Route exact path='/' component={Welcome}/>
+                  <Route exact path='/my-datasets' component={MyDataSetsComponent}/>
                   <Route exact path='/dataset/:id' component={DatasetContainer}/>
                   <Route exact path='/dataset/:id/:action(edit)' component={Deposit}/>
                   <Route exact path='/welcome' component={Welcome}/>
                   <Route exact path='/search' component={Search}/>
-                  <Route exact path='/results' component={Main}/>
+                  <Route exact path='/results' component={SearchResults}/>
                   <Route exact path='/:action(deposit)' component={Deposit}/>
                   <Route exact path='/contact' component={Contact}/>
                   <Route exact path='/software' component={Software}/>

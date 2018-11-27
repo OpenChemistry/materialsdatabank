@@ -4,10 +4,7 @@ import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import Typography from '@material-ui/core/Typography';
 
-import { connect } from 'react-redux'
-
 import SearchResult from '../searchresult'
-import selectors from '../../redux/selectors';
 
 import PageHead from '../page-head';
 import PageBody from '../page-body';
@@ -15,14 +12,17 @@ import PageBody from '../page-body';
 
 class SearchResults extends Component {
   render = () => {
+    let { results, title } = this.props;
+    results = results || [];
+    title = title || 'Search Results';
     return (
       <div>
         <PageHead>
           <Typography  color="inherit" gutterBottom variant="display1">
-            Search Results
+            {title}
           </Typography>
           <Typography variant="subheading" paragraph color="inherit">
-            {this.props.results.length} matches
+            {results.length} matches
           </Typography>
         </PageHead>
         <PageBody>
@@ -30,7 +30,7 @@ class SearchResults extends Component {
             cellHeight={'auto'}
             cols={2}
           >
-            {this.props.results.map((dataset) => (
+            {results.map((dataset) => (
               <GridListTile
                 key={dataset._id}
               >
@@ -52,17 +52,4 @@ class SearchResults extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  let props = {
-    results: selectors.datasets.getSearchResults(state),
-  }
-
-  let error = selectors.datasets.getSearchError(state);
-  if (error != null) {
-    console.error(error);
-  }
-
-  return props;
-}
-
-export default connect(mapStateToProps)(SearchResults)
+export default SearchResults;

@@ -6,14 +6,16 @@ import {
   requestDatasetsByFields,
   requestDatasetById,
   requestToggleEditable,
+  requestDatasetsByMe,
   receiveDataset,
-  SEARCH_DATASETS_BY_TEXT,
-  SEARCH_DATASETS_BY_FIELDS,
+  searchDatasetsByFields,
+  searchDatasetsByText,
+  searchDatasetsByMe,
   LOAD_DATASET_BY_ID,
   TOGGLE_EDITABLE
 } from '../../redux/ducks/datasets.js'
 
-export function* searchDatasetsByText(action) {
+export function* onSearchDatasetsByText(action) {
   try {
     yield put( requestDatasetsByText() )
     const searchResult = yield call(rest.searchByText, action.payload.terms)
@@ -25,9 +27,24 @@ export function* searchDatasetsByText(action) {
 }
 
 export function* watchSearchDatasetsByText() {
-  yield takeLatest(SEARCH_DATASETS_BY_TEXT, searchDatasetsByText)
+  yield takeLatest(searchDatasetsByText.toString(), onSearchDatasetsByText)
 }
 
+export function* onSearchDatasetsByMe(action) {
+  try {
+    const me = action.payload;
+    yield put( requestDatasetsByMe() )
+    const searchResult = yield call(rest.searchByFields, null, null, null, null, me);
+    yield put( receiveDatasets(searchResult) )
+  }
+  catch(error) {
+    yield put( requestDatasetsByText(error) )
+  }
+}
+
+export function* watchSearchDatasetsByMe() {
+  yield takeLatest(searchDatasetsByMe.toString(), onSearchDatasetsByMe)
+}
 
 export function* fetchDatasetById(action) {
   try {
@@ -44,7 +61,7 @@ export function* watchLoadDatasetById() {
   yield takeLatest(LOAD_DATASET_BY_ID, fetchDatasetById)
 }
 
-export function* searchDatasetsByFields(action) {
+export function* onSearchDatasetsByFields(action) {
   try {
     yield put( requestDatasetsByFields() )
     const {title, authors, atomicSpecies, slug} = action.payload;
@@ -58,7 +75,7 @@ export function* searchDatasetsByFields(action) {
 }
 
 export function* watchSearchDatasetsByFields() {
-  yield takeLatest(SEARCH_DATASETS_BY_FIELDS, searchDatasetsByFields)
+  yield takeLatest(searchDatasetsByFields.toString(), onSearchDatasetsByFields)
 }
 
 function* toggleEditable(action) {
