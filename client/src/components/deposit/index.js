@@ -275,10 +275,6 @@ class Deposit extends Component {
           <Typography  color="inherit" gutterBottom variant="display1">
             {create ? 'Deposit a new structure' : 'Edit structure'}
           </Typography>
-          <Typography  color="inherit" variant="subheading" paragraph>
-            We currently only accept the atomic structural information published in peer-reviewed journal.
-          </Typography>
-
           { !this.props.isLoggedIn &&
           <Typography variant="subheading" color="error">
             You need to login before depositing a new material structure.
