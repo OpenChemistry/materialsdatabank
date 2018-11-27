@@ -486,14 +486,16 @@ class Dataset(Resource):
         .jsonParam('atomicSpecies', 'A JSON list of atomic species search terms', required=False,
                    requireArray=True)
         .param('slug', 'The human readable MDB Id', required=False)
+        .param('owner', 'The user id of the owner of the dataset', required=False)
         .pagingParams(defaultSort=None)
     )
-    def find_dataset(self, authors=None, title=None, atomicSpecies=None, slug=None, offset=0, limit=None,
+    def find_dataset(self, authors=None, title=None, atomicSpecies=None, slug=None, owner=None, offset=0, limit=None,
                   sort=None, user=None):
         model = DatasetModel()
         return list(model.find(
             authors=authors, title=title, atomic_species=atomicSpecies, slug=slug,
-            offset=offset, limit=limit, sort=sort, user=self.getCurrentUser()))
+            owner=owner, offset=offset, limit=limit, sort=sort,
+            user=self.getCurrentUser()))
 
     @access.cookie
     @access.public(scope=TokenScope.DATA_READ)

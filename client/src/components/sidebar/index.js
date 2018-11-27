@@ -12,6 +12,9 @@ import DownloadIcon from '@material-ui/icons/SaveAlt';
 import SoftwareIcon from '@material-ui/icons/DesktopMac';
 import TutorialIcon from '@material-ui/icons/Forum';
 import AboutIcon from '@material-ui/icons/PermIdentity';
+import InboxIcon from '@material-ui/icons/Inbox';
+
+import selectors from '../../redux/selectors';
 
 import { push } from 'connected-react-router'
 
@@ -30,6 +33,8 @@ class SideBar extends Component {
   pushRoute = (route) => this.props.dispatch(push(route));
 
   render = () => {
+    const { me } = this.props;
+
     return (
       <MenuList>
         <MenuItem
@@ -39,13 +44,24 @@ class SideBar extends Component {
           <HomeIcon color="primary" />&nbsp;
           <Typography color="inherit" variant="subheading">Welcome</Typography>
         </MenuItem>
+        { me &&
         <MenuItem
           style={style.menu}
-          onClick={() => this.pushRoute('/deposit') }
+          onClick={() => this.pushRoute('/my-datasets')}
+        >
+          <InboxIcon color="primary" />&nbsp;
+          <Typography color="inherit" variant="subheading">My Datasets</Typography>
+        </MenuItem>
+        }
+        { me &&
+        <MenuItem
+          style={style.menu}
+          onClick={() => this.pushRoute('/deposit')}
         >
           <OpenInBrowserIcon color="primary" />&nbsp;
           <Typography color="inherit" variant="subheading">Deposit</Typography>
         </MenuItem>
+        }
         <MenuItem
           style={style.menu}
           onClick={() => this.pushRoute('/search') }
@@ -86,5 +102,12 @@ class SideBar extends Component {
   }
 }
 
-SideBar = connect()(SideBar);
+function mapStateToPros(state, ownProps) {
+  const me = selectors.girder.getMe(state);
+  return {
+    me
+  }
+}
+
+SideBar = connect(mapStateToPros)(SideBar);
 export default SideBar;

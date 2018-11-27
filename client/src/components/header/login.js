@@ -11,7 +11,7 @@ class Login extends Component {
   render = () => {
     return (
         <Button onClick={this.handleTouchTap}>
-          <InputIcon/>
+          <InputIcon/>&nbsp;
           Log in / Register
         </Button>
     );

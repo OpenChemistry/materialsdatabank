@@ -212,7 +212,7 @@ class Dataset(AccessControlledModel):
             yield r
 
     def find(self, authors=None, title=None, atomic_species=None, slug=None,
-             offset=0, limit=None, sort=None, user=None, force=False):
+             owner=None, offset=0, limit=None, sort=None, user=None, force=False):
         query = {}
 
         if authors is not None:
@@ -252,10 +252,18 @@ class Dataset(AccessControlledModel):
         if slug is not None:
             query['slug'] = slug
 
+        if owner is not None:
+            if not isinstance(owner, ObjectId):
+                try:
+                    owner = ObjectId(owner)
+                except InvalidId:
+                    raise ValidationException('Invalid ObjectId: %s' % owner,
+                                              field='owner')
+            query['userId'] = owner
+
         cursor = super(Dataset, self).find(query=query, sort=sort, user=user)
 
         if not force:
-            print('not force')
             for r in self.filterResultsByPermission(cursor=cursor, user=user,
                                                     level=AccessType.READ,
                                                     limit=limit, offset=offset):
