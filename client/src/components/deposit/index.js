@@ -19,6 +19,7 @@ import _ from 'lodash'
 
 import { loadDatasetById } from '../../redux/ducks/datasets';
 import { loadReconstructions } from '../../redux/ducks/reconstructions';
+import { loadProjections } from '../../redux/ducks/projections';
 import { upload } from '../../redux/ducks/upload'
 import selectors from  '../../redux/selectors'
 import { setProgress } from '../../redux/ducks/app';
@@ -63,6 +64,7 @@ class Deposit extends Component {
     const { create, dataSet, dataSetId, dispatch } = props;
     if (!create && !dataSet) {
       dispatch(loadDatasetById(dataSetId));
+      dispatch(loadProjections(dataSetId));
       dispatch(loadReconstructions(dataSetId));
     }
   }
