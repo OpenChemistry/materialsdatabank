@@ -12,6 +12,7 @@ import SoftwareIcon from '@material-ui/icons/DesktopMac';
 import TutorialIcon from '@material-ui/icons/Forum';
 import AboutIcon from '@material-ui/icons/PermIdentity';
 import InboxIcon from '@material-ui/icons/Inbox';
+import CheckIcon from '@material-ui/icons/Check';
 
 import selectors from '../../redux/selectors';
 
@@ -74,6 +75,13 @@ class SideBar extends Component {
         >
           <SoftwareIcon color="primary" />&nbsp;
           <Typography color="inherit" variant="subheading">Software</Typography>
+        </MenuItem>
+        <MenuItem
+          style={style.menu}
+          onClick={() => this.pushRoute('/validation') }
+        >
+          <CheckIcon color="primary" />&nbsp;
+          <Typography color="inherit" variant="subheading">Validation</Typography>
         </MenuItem>
         <MenuItem
           style={style.menu}

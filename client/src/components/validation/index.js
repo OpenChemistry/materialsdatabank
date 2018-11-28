@@ -57,6 +57,21 @@ class ValidationComponent extends Component {
               After successful automated and manual validation, the structure will be deposited to the MDB and will be assigned with a MDB ID.
             </Typography>
           </MathJax.Provider>
+          <br/>
+          <Typography variant='title' gutterBottom>
+            The MDB ID
+          </Typography>
+          <Typography>
+            Each MDB ID consists of first four letters representing the elements, followed by a five-digit number.
+            For example, FePt00001, NiCu00002 and etc.
+            The letters are not case sensitive.
+            When there are fewer than four letters to represent the elements,
+            "X" is used for the remaining letters.
+            For example, the MDB ID for a W tip structure can be WXXX0001.
+            For the five-digit number, it starts with 00001 for the first deposited structure.
+            For example, the MDB ID of the first FePt structure is FePt00001 and the second is FePt00002.
+            If a third FePtNi structure is deposited, its ID is FePt00003.
+          </Typography>
         </PageBody>
       </div>
     );

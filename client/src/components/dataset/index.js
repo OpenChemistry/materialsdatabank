@@ -408,16 +408,6 @@ class Dataset extends Component {
                     </a>
                     </TableCell>
                   </TableRow>
-                  <TableRow>
-                    <TableCell style={{...tableLabelStyle}}>
-                      License
-                    </TableCell>
-                    <TableCell style={{...tableStyle}}>
-                      <a href={"https://creativecommons.org/licenses/by/4.0/"}>
-                        CC BY 4
-                      </a>
-                    </TableCell>
-                  </TableRow>
                 </TableBody>
               </Table>
               <div style={{width: '100%', height: '30rem'}}>

@@ -39,10 +39,6 @@ class TutorialsComponent extends Component {
         'url': '/tutorials/aet'
       },
       {
-        'title': 'The MDB validation process',
-        'url': '/tutorials/validation'
-      },
-      {
         'title': 'Visualizing structures',
         'url': '/tutorials/visualizing'
       },
