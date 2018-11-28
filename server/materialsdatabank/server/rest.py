@@ -74,12 +74,12 @@ class Dataset(Resource):
         if not isinstance(authors, list):
             authors = authors.split(' and ')
         title = dataset.get('title')
-        url = dataset.get('url')
+        doi = dataset.get('doi')
         microscope = dataset.get('microscope')
         image_file_id = dataset.get('imageFileId')
 
         dataset = DatasetModel().create(
-            authors, title=title, url=url, microscope=microscope, image_file_id=image_file_id,
+            authors, title=title, doi=doi, microscope=microscope, image_file_id=image_file_id,
             user=self.getCurrentUser())
 
         cherrypy.response.status = 201
@@ -470,7 +470,7 @@ class Dataset(Resource):
     @access.public(scope=TokenScope.DATA_READ)
     @autoDescribeRoute(
         Description('Get the dataset.')
-        .param('id', 'Object id or slug', paramType='path')
+        .param('id', 'Object id or MDB ID', paramType='path')
         .errorResponse('ID was invalid.')
         .errorResponse('Read permission denied on the item.', 403)
     )
@@ -489,11 +489,11 @@ class Dataset(Resource):
         .param('owner', 'The user id of the owner of the dataset', required=False)
         .pagingParams(defaultSort=None)
     )
-    def find_dataset(self, authors=None, title=None, atomicSpecies=None, slug=None, owner=None, offset=0, limit=None,
+    def find_dataset(self, authors=None, title=None, atomicSpecies=None, mdb_id=None, owner=None, offset=0, limit=None,
                   sort=None, user=None):
         model = DatasetModel()
         return list(model.find(
-            authors=authors, title=title, atomic_species=atomicSpecies, slug=slug,
+            authors=authors, title=title, atomic_species=atomicSpecies, mdb_id=mdb_id,
             owner=owner, offset=offset, limit=limit, sort=sort,
             user=self.getCurrentUser()))
 

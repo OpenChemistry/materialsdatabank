@@ -82,26 +82,26 @@ class Welcome extends Component {
     this.state = {
       molecule0: {
         cjson: null,
-        slug: null,
+        mdbId: null,
         rotate: true,
       },
       molecule1: {
         cjson: null,
-        slug: null,
+        mdbId: null,
         rotate: true
       },
       posts: null
     }
   }
 
-  fetchMolecule(slug, key) {
-    fetch(`/api/v1/mdb/datasets/${slug}/structures`)
+  fetchMolecule(mdbId, key) {
+    fetch(`/api/v1/mdb/datasets/${mdbId}/structures`)
     .then((res) => {
       return res.json();
     })
     .then((structures) => {
       if (Array.isArray(structures) && structures.length > 0 && has(structures[0], 'cjson')) {
-        this.setState({...this.state, [key]: { ...this.state[key], cjson: structures[0].cjson, slug: slug}});
+        this.setState({...this.state, [key]: { ...this.state[key], cjson: structures[0].cjson, mdbId: mdbId}});
       }
     })
     .catch((e) => {console.log(e)});
@@ -180,11 +180,11 @@ class Welcome extends Component {
                         )}
                       />
                     </div>
-                    {molecule0.slug &&
+                    {molecule0.mdbId &&
                     <CardActions>
                       <Button
                         color="primary"
-                        onClick={() => {this.props.dispatch(push(`/dataset/${molecule0.slug}`))}}
+                        onClick={() => {this.props.dispatch(push(`/dataset/${molecule0.mdbId}`))}}
                       >
                         View Dataset
                       </Button>
@@ -213,11 +213,11 @@ class Welcome extends Component {
                         )}
                       />
                     </div>
-                    {molecule1.slug &&
+                    {molecule1.mdbId &&
                     <CardActions>
                       <Button
                         color="primary"
-                        onClick={() => {this.props.dispatch(push(`/dataset/${molecule1.slug}`))}}
+                        onClick={() => {this.props.dispatch(push(`/dataset/${molecule1.mdbId}`))}}
                       >
                         View Dataset
                       </Button>

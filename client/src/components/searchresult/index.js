@@ -57,8 +57,8 @@ class SearchResult extends Component {
   onClickHandler = () => {
 
     let id = this.props._id;
-    if (!_.isNil(this.props.slug)) {
-      id = this.props.slug;
+    if (!_.isNil(this.props.mdbId)) {
+      id = this.props.mdbId;
     }
 
     this.props.dispatch(push(`/dataset/${id}`))
@@ -101,7 +101,7 @@ class SearchResult extends Component {
 
 SearchResult.propTypes = {
   _id: PropTypes.string,
-  slug: PropTypes.string,
+  mdbId: PropTypes.string,
   title: PropTypes.string,
   authors: PropTypes.array,
   imageFileId:  PropTypes.string,
@@ -111,7 +111,7 @@ SearchResult.propTypes = {
 
 SearchResult.defaultProps = {
   public: false,
-  slug: null,
+  mdbId: null,
   atomicSpecies: []
 }
 

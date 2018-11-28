@@ -87,7 +87,7 @@ export function validateDataSet(id) {
           .then(response => response.data )
 }
 
-export function searchByFields(title=null, authors=null, atomicSpecies=null, slug=null, user=null) {
+export function searchByFields(title=null, authors=null, atomicSpecies=null, mdbId=null, user=null) {
   authors = _.isNil(authors) ? null : JSON.stringify(authors);
   atomicSpecies = _.isNil(atomicSpecies) ? null : JSON.stringify(atomicSpecies);
   const owner = _.isNil(user) ? null : user['_id'];
@@ -97,18 +97,18 @@ export function searchByFields(title=null, authors=null, atomicSpecies=null, slu
       title,
       authors,
       atomicSpecies,
-      slug,
+      mdbId,
       owner
     }
   })
   .then(response => response.data )
 }
 
-export function createDataSet(title, authors, url, imageFileId) {
+export function createDataSet(title, authors, doi, imageFileId) {
   const dataset = {
       title,
       authors,
-      url,
+      doi,
       imageFileId
   }
 

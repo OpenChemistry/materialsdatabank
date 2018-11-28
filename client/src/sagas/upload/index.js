@@ -56,7 +56,7 @@ function* upload(action) {
     dataSetId,
     title,
     authors,
-    url,
+    doi,
     structureFile,
     reconstructionFile,
     imageFile,
@@ -112,12 +112,12 @@ function* upload(action) {
     // Now create or update the data set
     let dataSet;
     if (_.isNil(dataSetId)) {
-      dataSet = yield call(rest.createDataSet, title, authors, url,
+      dataSet = yield call(rest.createDataSet, title, authors, doi,
         imageFileModel ? imageFileModel['_id'] : null)
     } else {
       let imageFileId_ = imageFileModel ? imageFileModel['_id'] : imageFileId;
-      dataSet = yield call(rest.updateDataSet, dataSetId, {title, authors, url, imageFileId: imageFileId_});
-    }    
+      dataSet = yield call(rest.updateDataSet, dataSetId, {title, authors, doi, imageFileId: imageFileId_});
+    }
 
     // Create or update structureModel, projectionModel, reconstructionModel
     if (_.isNil(dataSetId)) {

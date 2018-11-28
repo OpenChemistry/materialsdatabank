@@ -61,7 +61,7 @@ class Search extends Component {
             this.props.title,
             authors,
             atomicSpecies,
-            this.props.slug
+            this.props.mdbId
         )
     );
 
@@ -93,7 +93,7 @@ class Search extends Component {
               <CardContent>
                 <Field
                   fullWidth
-                  name="slug"
+                  name="mdbId"
                   className={classes.field}
                   component={TextField}
                   label="MDB ID"

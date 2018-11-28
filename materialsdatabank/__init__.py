@@ -79,10 +79,8 @@ def cli():
 @click.option('-i', '--image-file', default=None,
               help='path to an image to display with document',
               type=click.Path(exists=True, dir_okay=False, readable=True))
-@click.option('-u', '--url', default=None,
-              help='the url for the dataset', type=str)
-@click.option('-g', '--slug', default=None,
-              help='the url slug', type=str)
+@click.option('-u', '--doi', default=None,
+              help='the doi for the dataset', type=str)
 @click.option('-a', '--api-url', default=None,
               help='RESTful API URL '
                    '(e.g https://girder.example.com:443/%s)' % GirderClient.DEFAULT_API_ROOT)
@@ -96,7 +94,7 @@ def cli():
 @click.pass_obj
 def _deposit(ctx, username, password, api_key, api_url, bibtex_file=None,
             recon_file=None, proj_file=None, xyz_file=None, image_file=None,
-            url=None, slug=None, json_file=None):
+            doi=None, json_file=None):
     with open(bibtex_file) as bibtex_file:
         bibtex_database = bibtexparser.load(bibtex_file)
         entry = bibtex_database.entries[0]
@@ -123,8 +121,7 @@ def _deposit(ctx, username, password, api_key, api_url, bibtex_file=None,
     dataset = {
         'authors': authors,
         'title': title,
-        'url': url,
-        'slug': slug
+        'doi': doi
     }
 
     if image_file is not None:
