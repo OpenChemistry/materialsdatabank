@@ -32,6 +32,11 @@ import PageBody from '../page-body';
 
 import ValidateTable from './validate';
 import EditToggle from './editToggle';
+import {
+  generalInformationFields,
+  dataCollectionFields,
+  reconstructionFields
+} from '../deposit/fields'
 
 import './index.css'
 import { CardActions } from '@material-ui/core';
@@ -151,7 +156,13 @@ class Dataset extends Component {
     // Prepare report data
     let jsonReportData = null;
     if (!_.isNil(projection) && !_.isNil(reconstruction)) {
-      const data = {...projection, ...reconstruction};
+      // Filter the ones we want
+      const dataSetProps = _.pick(this.props, Object.keys(generalInformationFields()));
+      const projectionProps = _.pick(projection, Object.keys(dataCollectionFields()));
+      const reconstructionProps = _.pick(reconstruction, Object.keys(reconstructionFields()));
+
+      // Combine and encode
+      const data = {...dataSetProps, ...projectionProps, ...reconstructionProps};
       const jsonReport = encodeURIComponent(JSON.stringify(data,  null, 2));
       jsonReportData = `text/json;charset=utf-8, ${jsonReport}`;
     }
