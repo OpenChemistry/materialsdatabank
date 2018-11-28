@@ -86,9 +86,6 @@ class Search extends Component {
           <Typography  color="inherit" gutterBottom variant="display1">
             Search for structures
           </Typography>
-          <Typography variant="subheading" paragraph color="inherit">
-            Filter by publication title, authors, or atomic species.
-          </Typography>
         </PageHead>
         <PageBody>
           <Card>
@@ -96,10 +93,17 @@ class Search extends Component {
               <CardContent>
                 <Field
                   fullWidth
+                  name="slug"
+                  className={classes.field}
+                  component={TextField}
+                  label="MDB ID"
+                />
+                <Field
+                  fullWidth
                   name="title"
                   className={classes.field}
                   component={TextField}
-                  label="Title"
+                  label="Name of the structure"
                 />
                 <Field
                   fullWidth
@@ -113,15 +117,9 @@ class Search extends Component {
                   name="atomicSpecies"
                   className={classes.field}
                   component={TextField}
-                  label="Atomic Species"
+                  label="Atomic species"
                 />
-                <Field
-                  fullWidth
-                  name="slug"
-                  className={classes.field}
-                  component={TextField}
-                  label="MDB ID"
-                />
+
               </CardContent>
               <CardActions className={classes.actions}>
                 <Button

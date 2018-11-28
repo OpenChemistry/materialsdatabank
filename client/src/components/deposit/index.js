@@ -225,10 +225,10 @@ class Deposit extends Component {
       imageFile,
       projectionFile
     } = values;
-  
+
     const { create, dataSetId } = this.props;
     const actionCreator = create ? upload : upload;
-  
+
     if (!_.isNil(structureFile)) {
       structureFile.id = 'structureFile';
     }
@@ -241,9 +241,9 @@ class Deposit extends Component {
     if (!_.isNil(projectionFile)) {
       projectionFile.id = 'projectionFile';
     }
-  
+
     dispatch(setProgress(true));
-  
+
     let depositPromise = new Promise((resolve, reject) => {
       dispatch(actionCreator({...values, dataSetId, resolve, reject}));
     }).then((dataSet) =>{

@@ -36,6 +36,7 @@ import EditToggle from './editToggle';
 import './index.css'
 import { CardActions } from '@material-ui/core';
 import { push } from 'connected-react-router';
+import moment from 'moment';
 
 const tableLabelStyle = {
   fontSize: '18px',
@@ -109,20 +110,28 @@ class Dataset extends Component {
   render = () => {
     const species = this.props.atomicSpecies.map((an) => symbols[an]).join(', ');
     const authors = this.props.authors.join(' and ');
+    const mdbId = this.props.slug;
+    const deposited = this.props.deposited;
+    const released = this.props.released;
+    const validation = this.props.validation;
+    let r1 = 'N/A';
+    if (!_.isNil(validation)) {
+      r1 = this.props.validation.r1;
+    }
 
     let isPublic = this.props.public;
-    
+
     let {
       structure, reconstruction, projection, title,
       isCurator, url, _id, editable, isOwner
     } = this.props;
 
     editable = _.isNil(editable) ? false : editable;
-
-
+    let numberOfAtoms = -1;
     let structureUrl =  '';
     if (!_.isNil(structure)) {
-        structureUrl = `${window.location.origin}/api/v1/mdb/datasets/_/structures/${structure._id}`
+        structureUrl = `${window.location.origin}/api/v1/mdb/datasets/_/structures/${structure._id}`;
+        numberOfAtoms = structure.numberOfAtoms;
     }
 
     let reconEmdUrl = '';
@@ -156,6 +165,40 @@ class Dataset extends Component {
                 <TableBody>
                   <TableRow>
                     <TableCell style={{...tableLabelStyle}}>
+                      MDB ID
+                    </TableCell>
+                    <TableCell style={{...tableStyle}}>
+                      {mdbId}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell style={{...tableLabelStyle}}>
+                      Name of the structure
+                    </TableCell>
+                    <TableCell style={{...tableStyle}}>
+                      {title}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell style={{...tableLabelStyle}}>
+                      Total number of atoms
+                    </TableCell>
+                    { numberOfAtoms !== -1 &&
+                    <TableCell style={{...tableStyle}}>
+                      {numberOfAtoms}
+                    </TableCell>
+                    }
+                  </TableRow>
+                  <TableRow>
+                    <TableCell style={{...tableLabelStyle}}>
+                      R<sub>1</sub> factor
+                    </TableCell>
+                    <TableCell style={{...tableStyle}}>
+                      {r1}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell style={{...tableLabelStyle}}>
                       Atomic Species
                     </TableCell>
                     <TableCell style={{...tableStyle}}>
@@ -164,74 +207,57 @@ class Dataset extends Component {
                   </TableRow>
                   <TableRow>
                     <TableCell style={{...tableLabelStyle}}>
-                      License
-                    </TableCell>
-                    <TableCell style={{...tableStyle}}>
-                      <a href={"https://creativecommons.org/licenses/by/4.0/"}>
-                        CC BY 4
-                      </a>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell style={{...tableLabelStyle}}>
                       DOI
                     </TableCell>
                     <TableCell style={{...tableStyle}}>
-                      <a href={`https://dx.doi.org/${url}`}>
-                        {url}
-                      </a>
+                      {_.isNil(url) ? (
+                        'N/A'
+                      ) : (
+                        <a href={`https://dx.doi.org/${url}`}>
+                          {url}
+                        </a>
+                      )}
                     </TableCell>
                   </TableRow>
-                  { ( !_.isNil(reconstruction) &&
-                     (!_.isNil(reconstruction.tiffFileId) ||
-                      !_.isNil(reconstruction.emdFileId))
-                    ) &&
                   <TableRow>
                     <TableCell style={{...tableLabelStyle}}>
-                      Reconstruction
+                      Deposition author(s)
                     </TableCell>
                     <TableCell style={{...tableStyle}}>
-                      <IconButton
-                        aria-label="More"
-                        aria-owns={this.state.reconstructionMenu.anchor ? 'reconstruction-menu' : null}
-                        aria-haspopup="true"
-                        onClick={(e) => {this.handleClick('reconstructionMenu', e.currentTarget)}}
-                      >
-                        <DownloadIcon />
-                      </IconButton>
-                      <Menu
-                        id="reconstruction-menu"
-                        anchorEl={this.state.reconstructionMenu.anchor}
-                        open={Boolean(this.state.reconstructionMenu.anchor)}
-                        onClose={this.handleClose}
-                      >
-                        { !_.isNil(reconstruction.tiffFileId) &&
-                        <MenuItem
-                          value="tiff"
-                          onClick={this.handleClose}
-                        >
-                          <a href={reconTiffUrl}>TIFF</a>
-                        </MenuItem>
-                        }
-                        { !_.isNil(reconstruction.emdFileId) &&
-                        <MenuItem
-                          value="emd"
-                          onClick={this.handleClose}
-                        >
-                          <a href={reconEmdUrl}>EMD</a>
-                        </MenuItem>
-                        }
-                      </Menu>
+                      {authors}
                     </TableCell>
                   </TableRow>
-                  }
+                  <TableRow>
+                    <TableCell style={{...tableLabelStyle}}>
+                      Deposited
+                    </TableCell>
+                    <TableCell style={{...tableStyle}}>
+                      {_.isNil(deposited) ? (
+                        'N/A'
+                      ) : (
+                        moment(deposited).calendar()
+                      )}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell style={{...tableLabelStyle}}>
+                      Released
+                    </TableCell>
+                    <TableCell style={{...tableStyle}}>
+                      {_.isNil(released) ? (
+                        'N/A'
+                      ) : (
+                        moment(released).calendar()
+                      )}
+                    </TableCell>
+                  </TableRow>
                   { ( !_.isNil(projection) &&
                       (!_.isNil(projection.tiffFileId) ||
                        !_.isNil(projection.emdFileId))
                     ) &&
                   <TableRow>
                     <TableCell style={{...tableLabelStyle}}>
-                      Projection
+                      Tilt series file
                     </TableCell>
                     <TableCell style={{...tableStyle}}>
                       <IconButton
@@ -268,9 +294,52 @@ class Dataset extends Component {
                     </TableCell>
                   </TableRow>
                   }
+                  { ( !_.isNil(reconstruction) &&
+                     (!_.isNil(reconstruction.tiffFileId) ||
+                      !_.isNil(reconstruction.emdFileId))
+                    ) &&
                   <TableRow>
                     <TableCell style={{...tableLabelStyle}}>
-                      Structure
+                      3D reconstruction file
+                    </TableCell>
+                    <TableCell style={{...tableStyle}}>
+                      <IconButton
+                        aria-label="More"
+                        aria-owns={this.state.reconstructionMenu.anchor ? 'reconstruction-menu' : null}
+                        aria-haspopup="true"
+                        onClick={(e) => {this.handleClick('reconstructionMenu', e.currentTarget)}}
+                      >
+                        <DownloadIcon />
+                      </IconButton>
+                      <Menu
+                        id="reconstruction-menu"
+                        anchorEl={this.state.reconstructionMenu.anchor}
+                        open={Boolean(this.state.reconstructionMenu.anchor)}
+                        onClose={this.handleClose}
+                      >
+                        { !_.isNil(reconstruction.tiffFileId) &&
+                        <MenuItem
+                          value="tiff"
+                          onClick={this.handleClose}
+                        >
+                          <a href={reconTiffUrl}>TIFF</a>
+                        </MenuItem>
+                        }
+                        { !_.isNil(reconstruction.emdFileId) &&
+                        <MenuItem
+                          value="emd"
+                          onClick={this.handleClose}
+                        >
+                          <a href={reconEmdUrl}>EMD</a>
+                        </MenuItem>
+                        }
+                      </Menu>
+                    </TableCell>
+                  </TableRow>
+                  }
+                  <TableRow>
+                    <TableCell style={{...tableLabelStyle}}>
+                      3D atomic structure file
                     </TableCell>
                     <TableCell style={{...tableStyle}}>
                       <IconButton
@@ -306,6 +375,16 @@ class Dataset extends Component {
                           <a href={`${structureUrl}/cml`}>CML</a>
                         </MenuItem>
                       </Menu>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell style={{...tableLabelStyle}}>
+                      License
+                    </TableCell>
+                    <TableCell style={{...tableStyle}}>
+                      <a href={"https://creativecommons.org/licenses/by/4.0/"}>
+                        CC BY 4
+                      </a>
                     </TableCell>
                   </TableRow>
                 </TableBody>
