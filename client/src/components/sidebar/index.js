@@ -66,7 +66,7 @@ class SideBar extends Component {
           onClick={() => this.pushRoute('/search') }
         >
           <SearchIcon color="primary" />&nbsp;
-          <Typography color="inherit" variant="subheading">Search & Download</Typography>
+          <Typography color="inherit" variant="subheading">Search</Typography>
         </MenuItem>
         <MenuItem
           style={style.menu}
