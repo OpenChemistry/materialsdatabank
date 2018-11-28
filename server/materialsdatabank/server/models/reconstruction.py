@@ -48,7 +48,8 @@ class Reconstruction(BaseAccessControlledModel):
 
         updates = {}
 
-        mutable_props = ['resolution', 'zDirection', 'volumeSize', 'axisConvention']
+        mutable_props = ['resolution', 'cropHalfWidth', 'bFactor', 'hFactor',
+                         'zDirection', 'volumeSize', 'axisConvention']
         for prop in reconstruction_updates:
             if prop in mutable_props:
                 updates.setdefault('$set', {})[prop] = reconstruction_updates[prop]
