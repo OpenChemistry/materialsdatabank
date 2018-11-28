@@ -53,6 +53,7 @@ export function* uploadFile(file, folderId, id=null) {
 
 function* upload(action) {
   const {
+    // Dataset
     dataSetId,
     title,
     authors,
@@ -66,6 +67,19 @@ function* upload(action) {
     imageFileId,
     projectionFileId,
 
+    // Projection
+    voltage,
+    convergenceSemiAngle,
+    probeSize,
+    detectorInnerAngle,
+    detectorOuterAngle,
+    depthOfFocus,
+    pixelSize,
+    nProjections,
+    tiltRange,
+    electronDose,
+
+    // Reconstruction
     resolution,
     cropHalfWidth,
     volumeSize,
@@ -77,6 +91,8 @@ function* upload(action) {
     resolve,
     reject
   } = action.payload;
+
+
 
   try {
     let mdbFolder = yield select(selectors.upload.getMdbFolder);
@@ -145,8 +161,21 @@ function* upload(action) {
       if (!_.isNil(projectionFileModel)) {
         // Projection
         let emdFileId = projectionFileModel['_id'];
+        let projection = {
+          emdFileId,
+          voltage,
+          convergenceSemiAngle,
+          probeSize,
+          detectorInnerAngle,
+          detectorOuterAngle,
+          depthOfFocus,
+          pixelSize,
+          nProjections,
+          tiltRange: JSON.parse(tiltRange),
+          electronDose
+        }
 
-        yield call(rest.createProjection, dataSet['_id'], {emdFileId});
+        yield call(rest.createProjection, dataSet['_id'], projection);
       }
     } else {
       let reconstruction = {
@@ -162,6 +191,24 @@ function* upload(action) {
       if (reconstructions.length > 0) {
         let reconstructionModel = reconstructions[0];
         yield call(rest.updateReconstruction, reconstructionModel['_id'], reconstruction);
+      }
+
+      let projection = {
+        voltage,
+        convergenceSemiAngle,
+        probeSize,
+        detectorInnerAngle,
+        detectorOuterAngle,
+        depthOfFocus,
+        pixelSize,
+        nProjections,
+        tiltRange: JSON.parse(tiltRange),
+        electronDose
+      }
+      let projections = yield call(rest.fetchProjections, dataSetId);
+      if (projections.length > 0) {
+        let projectionModel = projections[0];
+        yield call(rest.updateProjection, projectionModel['_id'], projection);
       }
     }
 

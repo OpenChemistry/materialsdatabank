@@ -51,7 +51,7 @@ const reducer = handleActions({
 
       const fileToId = {
           ...state.fileToId,
-          [file.id]: id
+          [file.fieldId]: id
       }
 
       return {...state, byId, fileToId};
