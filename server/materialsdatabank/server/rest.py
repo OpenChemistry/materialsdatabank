@@ -115,8 +115,12 @@ class Dataset(Resource):
             authors = authors.split(' and ')
             updates['authors'] = authors
 
+        public = None
+        if is_curator:
+            public = public=updates.get('public')
+
         dataset = DatasetModel().update(dataset, updates, user=self.getCurrentUser(),
-                                        public=updates.get('public'),
+                                        public=public,
                                         validation=updates.get('validation'))
 
         return dataset
@@ -151,9 +155,13 @@ class Dataset(Resource):
         .jsonParam('updates', 'Update document', required=True, paramType='body')
     )
     def update_structure(self, id, structure, updates):
-        if 'public' in updates:
-            structure = StructureModel().update(structure, user=self.getCurrentUser(),
-                                                public=updates['public'])
+
+        public = None
+        if is_user_curator(self.getCurrentUser()):
+            public = updates.get('public')
+
+        structure = StructureModel().update(structure, user=self.getCurrentUser(),
+                                            public=public)
 
         return structure
 
@@ -206,9 +214,11 @@ class Dataset(Resource):
         .jsonParam('updates', 'Update document', required=True, paramType='body')
     )
     def update_reconstruction(self, id, reconstruction, updates):
-        public = updates.get('public', None)
+        public = None
+        if is_user_curator(self.getCurrentUser()):
+            public = updates.get('public', None)
         reconstruction = ReconstructionModel().update(reconstruction, updates, user=self.getCurrentUser(),
-                                                        public=public)
+                                                      public=public)
         return reconstruction
 
     @access.public(scope=TokenScope.DATA_READ)
@@ -461,7 +471,10 @@ class Dataset(Resource):
         .jsonParam('updates', 'Update document', required=True, paramType='body')
     )
     def update_projection(self, id, projection, updates):
-        public = updates.get('public', None)
+        public = None
+        if is_user_curator(self.getCurrentUser()):
+            public = updates.get('public', None)
+
         projection = ProjectionModel().update(projection, updates, user=self.getCurrentUser(),
                                               public=public)
 
