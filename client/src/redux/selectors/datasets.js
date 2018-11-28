@@ -11,8 +11,8 @@ export const getDatasetById = (state, id) => {
   if (_.has(state.datasets.byId, id)) {
     return state.datasets.byId[id]
   }
-  else if (_.has(state.datasets.slugToId, id)) {
-    return getDatasetById(state, state.datasets.slugToId[id])
+  else if (_.has(state.datasets.mdbIdToId, id)) {
+    return getDatasetById(state, state.datasets.mdbIdToId[id])
   }
 
   return null;

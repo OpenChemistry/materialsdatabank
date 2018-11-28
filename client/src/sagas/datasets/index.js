@@ -64,9 +64,9 @@ export function* watchLoadDatasetById() {
 export function* onSearchDatasetsByFields(action) {
   try {
     yield put( requestDatasetsByFields() )
-    const {title, authors, atomicSpecies, slug} = action.payload;
+    const {title, authors, atomicSpecies, mdbId} = action.payload;
     const searchResult = yield call(rest.searchByFields,
-      title, authors, atomicSpecies, slug)
+      title, authors, atomicSpecies, mdbId)
     yield put( receiveDatasets(searchResult) )
   }
   catch(error) {

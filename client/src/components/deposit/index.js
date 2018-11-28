@@ -153,7 +153,7 @@ const validate = values => {
     'authors'
   ];
   if ( create ) {
-    requiredFields.push('url');
+    requiredFields.push('doi');
     requiredFields.push('structureFile');
     requiredFields.push('reconstructionFile');
     requiredFields.push('projectionFile');
@@ -306,7 +306,7 @@ class Deposit extends Component {
                 />
                 <Field
                   className={classes.field}
-                  name="url"
+                  name="doi"
                   component={TextField}
                   label="DOI"
                   InputLabelProps={{

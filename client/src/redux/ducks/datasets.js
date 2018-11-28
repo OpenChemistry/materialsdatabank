@@ -25,7 +25,7 @@ export const initialState = {
       results: [],
     },
     byId: {},
-    slugToId: {},
+    mdbIdToId: {},
     error: null,
   };
 
@@ -71,12 +71,12 @@ const reducer = handleActions({
   [RECEIVE_DATASET]: (state, action) => {
     const dataset = action.payload.dataset;
     const byId = {...state.byId, [dataset._id]: dataset };
-    let slugToId = state.slugToId;
-    if (!_.isNil(dataset.slug)) {
-      slugToId = {...slugToId, [dataset.slug]: dataset._id };
+    let mdbIdToId = state.mdbIdToId;
+    if (!_.isNil(dataset.mdbId)) {
+      mdbIdToId = {...mdbIdToId, [dataset.mdbId]: dataset._id };
     }
 
-    return {...state, byId, slugToId};
+    return {...state, byId, mdbIdToId};
   }
 }, initialState);
 
@@ -85,7 +85,7 @@ const reducer = handleActions({
 // Fetch datasets
 export const searchDatasetsByText = createAction(SEARCH_DATASETS_BY_TEXT, (terms) => ({terms}));
 export const searchDatasetsByFields = createAction(SEARCH_DATASETS_BY_FIELDS,
-    (title, authors, atomicSpecies, slug) => ({title, authors, atomicSpecies, slug}));
+    (title, authors, atomicSpecies, mdbId) => ({title, authors, atomicSpecies, mdbId}));
 export const searchDatasetsByMe = createAction(SEARCH_DATASETS_BY_ME);
 
 export const requestDatasetsByText = createAction(REQUEST_DATASETS_BY_TEXT);

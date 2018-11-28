@@ -36,7 +36,7 @@ class SearchResults extends Component {
               >
                 <SearchResult
                   _id={dataset._id}
-                  slug={dataset.slug}
+                  mdbId={dataset.mdbId}
                   public={dataset.public}
                   title={dataset.title}
                   authors={dataset.authors}

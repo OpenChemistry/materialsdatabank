@@ -8,8 +8,8 @@ export const getStructureById = (state, id) => {
   if (_.has(state.datasets.byId, id)) {
     dataSetId = id;
   }
-  else if (_.has(state.datasets.slugToId, id)) {
-    dataSetId = state.datasets.slugToId[id];
+  else if (_.has(state.datasets.mdbIdToId, id)) {
+    dataSetId = state.datasets.mdbIdToId[id];
   }
 
   if (_.has(state.structures.byDatasetId, dataSetId)) {

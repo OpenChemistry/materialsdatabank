@@ -110,7 +110,7 @@ class Dataset extends Component {
   render = () => {
     const species = this.props.atomicSpecies.map((an) => symbols[an]).join(', ');
     const authors = this.props.authors.join(' and ');
-    const mdbId = this.props.slug;
+    const mdbId = this.props.mdbId;
     const deposited = this.props.deposited;
     const released = this.props.released;
     const validation = this.props.validation;
@@ -123,7 +123,7 @@ class Dataset extends Component {
 
     let {
       structure, reconstruction, projection, title,
-      isCurator, url, _id, editable, isOwner
+      isCurator, doi, _id, editable, isOwner
     } = this.props;
 
     editable = _.isNil(editable) ? false : editable;
@@ -210,11 +210,11 @@ class Dataset extends Component {
                       DOI
                     </TableCell>
                     <TableCell style={{...tableStyle}}>
-                      {_.isNil(url) ? (
+                      {_.isNil(doi) ? (
                         'N/A'
                       ) : (
-                        <a href={`https://dx.doi.org/${url}`}>
-                          {url}
+                        <a href={`https://dx.doi.org/${doi}`}>
+                          {doi}
                         </a>
                       )}
                     </TableCell>
@@ -447,7 +447,7 @@ Dataset.propTypes = {
   title: PropTypes.string,
   authors: PropTypes.array,
   imageFileId:  PropTypes.string,
-  url:  PropTypes.string,
+  doi:  PropTypes.string,
   isCurator: PropTypes.bool,
   public: PropTypes.bool,
   reconstruction:PropTypes.object,
@@ -461,7 +461,7 @@ Dataset.defaultProps = {
   authors: [],
   imageFileId:  null,
   atomicSpecies: [],
-  url: null,
+  doi: null,
   isCurator: false,
   public: false,
   reconstruction: {},

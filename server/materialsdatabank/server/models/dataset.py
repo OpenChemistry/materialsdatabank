@@ -17,25 +17,25 @@ class Dataset(AccessControlledModel):
 
     def initialize(self):
         self.name = 'mdb.datasets'
-        self.ensureIndices(('authors', 'title', 'atomicSpecies', 'slug'))
+        self.ensureIndices(('authors', 'title', 'atomicSpecies', 'mdbId'))
         self.ensureTextIndex({
             'authors': 1,
             'title': 1
         })
 
         self.exposeFields(level=AccessType.READ, fields=(
-            '_id', 'authors', 'title', 'atomicSpecies', 'url', 'slug'))
+            '_id', 'authors', 'title', 'atomicSpecies', 'url', 'mdbId'))
 
 
     def validate(self, dataset):
-        if 'slug' in dataset and dataset['slug'] is not None:
+        if 'mdbId' in dataset and dataset['mdbId'] is not None:
             # Do we already have it
-            if len(list(self.find(slug=dataset['slug'], force=True))) > 0:
-                raise ValidationException('"%s" has already been taken.' % dataset['slug'], field='slug')
+            if len(list(self.find(mdb_id=dataset['mdbId'], force=True))) > 0:
+                raise ValidationException('"%s" has already been taken.' % dataset['mdbId'], field='mdbId')
 
         return dataset
 
-    def _generate_slug_prefix(self, species):
+    def _generate_mdb_id_prefix(self, species):
         prefix = []
 
         def _chars_left():
@@ -49,19 +49,19 @@ class Dataset(AccessControlledModel):
 
         return ''.join(prefix)
 
-    def _generate_slug_postfix(self, prefix):
+    def _generate_mdb_id_postfix(self, prefix):
         # Search for existing datasets with this prefix
         regex = re.compile('^%s(\d{5})' % prefix)
         query = {
-            'slug': {
+            'mdbId': {
                 '$regex': regex
             }
         }
 
-        cursor = super(Dataset, self).find(query, fields=['slug'])
+        cursor = super(Dataset, self).find(query, fields=['mdbId'])
         postfix = 0
         for d in cursor:
-            match = regex.match(d['slug'])
+            match = regex.match(d['mdbId'])
             p = int(match.group(1))
             if  p > postfix:
                 postfix = p
@@ -70,37 +70,37 @@ class Dataset(AccessControlledModel):
 
         return str(postfix).zfill(5)
 
-    def ensure_slug(self, dataset, species, updates):
+    def ensure_mdb_id(self, dataset, species, updates):
         species = [ELEMENT_SYMBOLS[n] for n in species]
 
-        if 'slug' not in dataset:
-            prefix = self._generate_slug_prefix(species)
+        if 'mbdId' not in dataset:
+            prefix = self._generate_mdb_id_prefix(species)
 
             # Try up to 5 times, in case we have overlapping updates
             retry_count = 5
             while True:
-                postfix = self._generate_slug_postfix(prefix)
-                slug = '%s%s' % (prefix, postfix)
+                postfix = self._generate_mdb_id_postfix(prefix)
+                mdb_id = '%s%s' % (prefix, postfix)
                 # Now update atomically the slugs document
                 try:
-                    Slug().add(slug)
+                    Slug().add(mdb_id)
                     break
                 except SlugUpdateException:
                     if retry_count == 0:
-                        raise Exception('Unable to create new slug after 5 retries.')
+                        raise Exception('Unable to create new mdb id after 5 retries.')
                     retry_count -= 1
 
-            # Now we have allocated the slug add it to the dataset model
-            updates.setdefault('$set', {})['slug'] = slug
+            # Now we have allocated the mdbId add it to the dataset model
+            updates.setdefault('$set', {})['mdbId'] = mdb_id
 
 
-    def create(self, authors, title=None, url=None, microscope=None, image_file_id=None,
+    def create(self, authors, title=None, doi=None, microscope=None, image_file_id=None,
                user=None, public=False):
 
         dataset = {
             'authors': authors,
             'title': title,
-            'url': url,
+            'doi': doi,
             'editable': False,
             'deposited': datetime.datetime.utcnow()
         }
@@ -145,7 +145,7 @@ class Dataset(AccessControlledModel):
             new_atomic_species.update(atomic_species)
             if atomic_species is not None:
                 updates.setdefault('$set', {})['atomicSpecies'] = list(new_atomic_species)
-            self.ensure_slug(dataset, new_atomic_species, updates)
+            self.ensure_mdb_id(dataset, new_atomic_species, updates)
 
         if public is not None:
             updates.setdefault('$set', {})['public'] = public
@@ -190,7 +190,7 @@ class Dataset(AccessControlledModel):
                 })
 
                 filters.append({
-                    'slug': search
+                    'mdbId': search
                 })
 
                 try:
@@ -214,7 +214,7 @@ class Dataset(AccessControlledModel):
                                                 limit=limit, offset=offset):
             yield r
 
-    def find(self, authors=None, title=None, atomic_species=None, slug=None,
+    def find(self, authors=None, title=None, atomic_species=None, mdb_id=None,
              owner=None, offset=0, limit=None, sort=None, user=None, force=False):
         query = {}
 
@@ -252,8 +252,8 @@ class Dataset(AccessControlledModel):
                 '$in': species
             }
 
-        if slug is not None:
-            query['slug'] = slug
+        if mdb_id is not None:
+            query['mdbId'] = mdb_id
 
         if owner is not None:
             if not isinstance(owner, ObjectId):
@@ -280,8 +280,8 @@ class Dataset(AccessControlledModel):
             ObjectId(id)
             return super(Dataset, self).load(id, user=user, level=level, force=force)
         except InvalidId:
-            # Try it as a slug
-            dataset = list(self.find(slug=id, limit=1, user=user))
+            # Try it as a mdb id
+            dataset = list(self.find(mdb_id=id, limit=1, user=user))
             print(dataset)
             if len(dataset) > 0:
                 return dataset[0]

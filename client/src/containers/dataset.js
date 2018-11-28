@@ -42,8 +42,8 @@ function mapStateToProps(state, ownProps) {
   if (!_.isNil(id)) {
     const dataset = selectors.datasets.getDatasetById(state, id);
     if (!_.isNil(dataset)) {
-      // Avoid overriding the id, it could be a slug. TODO be more consistent about
-      // where we use slug vs ids.
+      // Avoid overriding the id, it could be a mdbId. TODO be more consistent about
+      // where we use mdbId vs ids.
       const {_id, ...dataSetProps} = dataset;
       props = {...props, ...dataSetProps}
     }
