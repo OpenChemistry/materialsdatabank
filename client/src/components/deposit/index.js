@@ -39,6 +39,9 @@ const style = (theme) => (
     divider: {
       marginTop:  4 * theme.spacing.unit,
     },
+    dividerLine: {
+      marginBottom: 2 * theme.spacing.unit
+    },
     textField: {
       flexGrow: 1
     },
@@ -71,7 +74,8 @@ class Deposit extends Component {
   updateFieldsFromJson = (values) => {
     const { change } = this.props;
     for (let key of Object.keys(values)) {
-      change(key, JSON.stringify(values[key]));
+      const val = Array.isArray(values[key]) ? JSON.stringify(values[key]) : values[key];
+      change(key, val);
     }
   }
 
@@ -122,20 +126,20 @@ class Deposit extends Component {
           <Card>
             <form onSubmit={handleSubmit(this.deposit)}>
               <CardContent>
-                <Typography variant="subheading" color="textPrimary">
+                <Typography variant="title" color="textPrimary" gutterBottom>
                   General Information
                 </Typography>
-                <Divider/>
+                <Divider className={classes.dividerLine}/>
                 {generalInformationForm}
+                <JsonPopulate onJsonParsed={this.updateFieldsFromJson}/>
 
-                <Typography className={classes.divider} variant="subheading" color="textPrimary">
+                <Typography className={classes.divider} variant="title" color="textPrimary" gutterBottom>
                   Data collection and processing
-                  <JsonPopulate onJsonParsed={this.updateFieldsFromJson}/>
                 </Typography>
-                <Divider/>
+                <Divider className={classes.dividerLine}/>
                 {dataCollectionForm}
 
-                <Typography className={classes.divider} variant="subheading" color="textPrimary">
+                <Typography className={classes.divider} variant="title" color="textPrimary" gutterBottom>
                   Reconstruction and refinement
                 </Typography>
                 <Divider/>

@@ -38,6 +38,21 @@ export function generalInformationFields(create = true) {
     imageFile: {
       label: 'Image file ( Thumbnail for dataset )',
       type: 'file'
+    },
+    structureFile: {
+      label: 'Structure file ( XYZ )',
+      type: 'file',
+      validate: create ? [required] : []
+    },
+    reconstructionFile: {
+      label: 'Reconstruction file ( EMD format )',
+      type: 'file',
+      validate: create ? [required] : []
+    },
+    projectionFile: {
+      label: 'Projection file ( EMD format )',
+      type: 'file',
+      validate: create ? [required] : []
     }
   }
   return fields;
@@ -101,21 +116,6 @@ export function dataCollectionFields(create = true) {
 
 export function reconstructionFields(create = true) {
   const fields = {
-    structureFile: {
-      label: 'Structure file ( XYZ )',
-      type: 'file',
-      validate: create ? [required] : []
-    },
-    reconstructionFile: {
-      label: 'Reconstruction file ( EMD format )',
-      type: 'file',
-      validate: create ? [required] : []
-    },
-    projectionFile: {
-      label: 'Projection file ( EMD format )',
-      type: 'file',
-      validate: create ? [required] : []
-    },
     resolution: {
       label: 'Resolution',
       type: 'text',
