@@ -11,10 +11,23 @@ class Projection(BaseAccessControlledModel):
     def validate(self, projection):
         return projection
 
-    def create(self, dataset, emd_file_id, user=None, public=False):
+    def create(self, dataset, emd_file_id, voltage=None, convergence_semi_angle=None,
+               probe_size=None, detector_inner_angle=None, detector_outer_angle=None,
+               depth_of_focus=None, pixel_size=None, tilt_range=None,
+               electron_dose=None, user=None, public=False):
+
         projection = {
             'datasetId': dataset['_id'],
-            'emdFileId': emd_file_id
+            'emdFileId': emd_file_id,
+            'voltage': voltage,
+            'convergenceSemiAngle': convergence_semi_angle,
+            'probeSize': probe_size,
+            'detectorInnerAngle': detector_inner_angle,
+            'detectorOuterAngle': detector_outer_angle,
+            'depthOfFocus': depth_of_focus,
+            'pixelSize': pixel_size,
+            'tiltRange': tilt_range,
+            'electronDose': electron_dose
         }
 
         self.setPublic(projection, public)

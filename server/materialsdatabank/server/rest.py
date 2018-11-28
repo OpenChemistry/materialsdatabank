@@ -379,8 +379,20 @@ class Dataset(Resource):
         self.requireParams(['emdFileId'], projection)
         emd_file_id = projection.get('emdFileId')
 
+        voltage = projection.get('voltage')
+        convergence_semi_angle = projection.get('convergenceSemiAngle')
+        probe_size = projection.get('probeSize')
+        detector_inner_angle = projection.get('detectorInnerAngle')
+        detector_outer_angle = projection.get('detectorOuterAngle')
+        depth_of_focus = projection.get('depthOfFocus')
+        pixel_size = projection.get('pixelSize')
+        tilt_range = projection.get('tiltRange')
+        electron_dose = projection.get('electronDose')
+
         projection = ProjectionModel().create(
-            dataset, emd_file_id, user=self.getCurrentUser())
+            dataset, emd_file_id, voltage, convergence_semi_angle, probe_size,
+            detector_inner_angle, detector_outer_angle, depth_of_focus, pixel_size,
+            tilt_range, electron_dose, user=self.getCurrentUser())
 
         cherrypy.response.status = 201
         cherrypy.response.headers['Location'] = '/datasets/%s/projections/%s' % (dataset['_id'], projection['_id'])
