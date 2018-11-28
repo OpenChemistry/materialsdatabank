@@ -10,11 +10,7 @@ class PublicationsComponent extends Component {
           <Card style={{marginBottom: '1rem'}} key={i}>
             <CardContent>
               <Typography>
-                <i>{publication.title}</i>
-                &nbsp; - &nbsp;
-                {publication.authors}
-                &nbsp; - &nbsp;
-                <i>{publication.journal}</i>, <b>{publication.volume}</b> ({publication.year})
+                {publication.authors}, <i>{publication.title}</i>, <i>{publication.journal}</i>, <b>{publication.volume}</b>, {publication.page} ({publication.year})
               </Typography>
             </CardContent>
           </Card>
