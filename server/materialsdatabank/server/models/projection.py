@@ -47,11 +47,19 @@ class Projection(BaseAccessControlledModel):
 
         return self.save(projection)
 
-    def update(self, projection, user=None, public=None):
+    def update(self, projection, projection_updates, user=None, public=None ):
         query = {
             '_id': projection['_id']
         }
         updates = {}
+
+        mutable_props = ['voltage', 'convergenceSemiAngle', 'probeSize',
+                         'detectorInnerAngle', 'detectorOuterAngle',
+                         'depthOfFocus', 'pixelSize', 'tiltRange',
+                         'electronDose']
+        for prop in projection_updates:
+            if prop in mutable_props:
+                updates.setdefault('$set', {})[prop] = projection_updates[prop]
 
         if public is not None:
             updates.setdefault('$set', {})['public'] = public

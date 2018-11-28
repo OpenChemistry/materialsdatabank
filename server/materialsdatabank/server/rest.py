@@ -475,7 +475,7 @@ class Dataset(Resource):
         if is_user_curator(self.getCurrentUser()):
             public = updates.get('public', None)
 
-        projection = ProjectionModel().update(projection, user=self.getCurrentUser(),
+        projection = ProjectionModel().update(projection, updates, user=self.getCurrentUser(),
                                               public=public)
 
         return projection

@@ -24,7 +24,7 @@ class Dataset(AccessControlledModel):
         })
 
         self.exposeFields(level=AccessType.READ, fields=(
-            '_id', 'authors', 'title', 'atomicSpecies', 'url', 'mdbId'))
+            '_id', 'authors', 'title', 'atomicSpecies', 'doi', 'mdbId'))
 
 
     def validate(self, dataset):
@@ -134,7 +134,7 @@ class Dataset(AccessControlledModel):
 
         updates = {}
 
-        mutable_props = ['authors', 'title', 'url', 'editable']
+        mutable_props = ['authors', 'title', 'doi', 'editable']
         for prop in dataset_updates:
             if prop in mutable_props:
                 updates.setdefault('$set', {})[prop] = dataset_updates[prop]
