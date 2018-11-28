@@ -148,6 +148,14 @@ class Dataset extends Component {
       projTiffUrl = `${window.location.origin}/api/v1/mdb/datasets/_/projections/${projection._id}/tiff`
     }
 
+    // Prepare report data
+    let jsonReportData = null;
+    if (!_.isNil(projection) && !_.isNil(reconstruction)) {
+      const data = {...projection, ...reconstruction};
+      const jsonReport = encodeURIComponent(JSON.stringify(data,  null, 2));
+      jsonReportData = `text/json;charset=utf-8, ${jsonReport}`;
+    }
+
     return (
       <div>
         <PageHead>
@@ -375,6 +383,18 @@ class Dataset extends Component {
                           <a href={`${structureUrl}/cml`}>CML</a>
                         </MenuItem>
                       </Menu>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell style={{...tableLabelStyle}}>
+                      Full report (MatData)
+                    </TableCell>
+                    <TableCell style={{...tableStyle}}>
+                    <a href={`data:' + ${jsonReportData}`} download={`${mdbId}.json`}>
+                      <IconButton>
+                        <DownloadIcon />
+                      </IconButton>
+                    </a>
                     </TableCell>
                   </TableRow>
                   <TableRow>
