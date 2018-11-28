@@ -461,9 +461,9 @@ class Dataset(Resource):
         .jsonParam('updates', 'Update document', required=True, paramType='body')
     )
     def update_projection(self, id, projection, updates):
-        if 'public' in updates:
-            projection = ProjectionModel().update(projection, user=self.getCurrentUser(),
-                                                          public=updates['public'])
+        public = updates.get('public', None)
+        projection = ProjectionModel().update(projection, updates, user=self.getCurrentUser(),
+                                              public=public)
 
         return projection
 
