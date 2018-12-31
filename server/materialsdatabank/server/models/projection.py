@@ -2,19 +2,29 @@ from .base import BaseAccessControlledModel
 from girder.constants import AccessType
 from girder.models.group import Group
 
-class Projection(BaseAccessControlledModel):
 
+class Projection(BaseAccessControlledModel):
     def initialize(self):
         self.name = 'mdb.projections'
         self.ensureIndices(['datasetId'])
 
-    def validate(self, projection):
-        return projection
+        self.types = {
+            'voltage': float,
+            'convergenceSemiAngle': float,
+            'probeSize': float,
+            'detectorInnerAngle': float,
+            'detectorOuterAngle': float,
+            'depthOfFocus': float,
+            'pixelSize': float,
+            'electronDose': float,
+            'tiltRange': lambda v : self.validate_list(v, float),
+            'nProjections': int
+        }
 
     def create(self, dataset, emd_file_id, voltage=None, convergence_semi_angle=None,
                probe_size=None, detector_inner_angle=None, detector_outer_angle=None,
                depth_of_focus=None, pixel_size=None, tilt_range=None,
-               electron_dose=None, user=None, public=False):
+               electron_dose=None, number_projections=None, user=None, public=False):
 
         projection = {
             'datasetId': dataset['_id'],
@@ -27,7 +37,8 @@ class Projection(BaseAccessControlledModel):
             'depthOfFocus': depth_of_focus,
             'pixelSize': pixel_size,
             'tiltRange': tilt_range,
-            'electronDose': electron_dose
+            'electronDose': electron_dose,
+            'nProjections': number_projections
         }
 
         self.setPublic(projection, public)
@@ -51,12 +62,15 @@ class Projection(BaseAccessControlledModel):
         query = {
             '_id': projection['_id']
         }
+
+        projection_updates = self.validate(projection_updates)
+
         updates = {}
 
         mutable_props = ['voltage', 'convergenceSemiAngle', 'probeSize',
                          'detectorInnerAngle', 'detectorOuterAngle',
                          'depthOfFocus', 'pixelSize', 'tiltRange',
-                         'electronDose']
+                         'electronDose', 'nProjections']
         for prop in projection_updates:
             if prop in mutable_props:
                 updates.setdefault('$set', {})[prop] = projection_updates[prop]

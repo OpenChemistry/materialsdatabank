@@ -398,11 +398,12 @@ class Dataset(Resource):
         pixel_size = projection.get('pixelSize')
         tilt_range = projection.get('tiltRange')
         electron_dose = projection.get('electronDose')
+        number_projections = projection.get('nProjections')
 
         projection = ProjectionModel().create(
             dataset, emd_file_id, voltage, convergence_semi_angle, probe_size,
             detector_inner_angle, detector_outer_angle, depth_of_focus, pixel_size,
-            tilt_range, electron_dose, user=self.getCurrentUser())
+            tilt_range, electron_dose, number_projections, user=self.getCurrentUser())
 
         cherrypy.response.status = 201
         cherrypy.response.headers['Location'] = '/datasets/%s/projections/%s' % (dataset['_id'], projection['_id'])

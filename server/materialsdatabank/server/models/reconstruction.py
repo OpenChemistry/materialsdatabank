@@ -8,8 +8,14 @@ class Reconstruction(BaseAccessControlledModel):
         self.name = 'mdb.reconstructions'
         self.ensureIndices(['datasetId'])
 
-    def validate(self, reconstruction):
-        return reconstruction
+        self.types = {
+            'resolution': float,
+            'cropHalfWidth': int,
+            'zDirection': int,
+            'volumeSize': lambda v : self.validate_list(v, int),
+            'bFactor': lambda v : self.validate_list(v, float),
+            'hFactor': lambda v : self.validate_list(v, float),
+        }
 
     def create(self, dataset, emd_file_id, resolution, crop_half_width,
                 volume_size, z_direction, b_factor, h_factor,
@@ -45,6 +51,8 @@ class Reconstruction(BaseAccessControlledModel):
         query = {
             '_id': reconstruction['_id']
         }
+
+        reconstruction_updates = self.validate(reconstruction_updates)
 
         updates = {}
 
