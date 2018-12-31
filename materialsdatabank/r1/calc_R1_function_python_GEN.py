@@ -280,7 +280,7 @@ def My_create_volProj_from_model_indivFA_python(model, atomtype, Heights, Bfacto
     calcModel = model[:,inInd]
     calcAtomtype = atomtype[:,inInd]
 
-
+    CropHalfWidth = int(CropHalfWidth)
     # initialize projection array
     finalProj_padded = np.zeros( (len(x) + (CropHalfWidth+1)*2, len(y) + (CropHalfWidth+1)*2, len(Heights)))
 
