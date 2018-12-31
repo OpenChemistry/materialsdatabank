@@ -2,9 +2,8 @@ from setuptools import setup, find_packages
 
 setup(
     name='materialsdatabank',
-
-    version='0.0.1',
-
+    use_scm_version=True,
+    setup_requires=['setuptools_scm'],
     description='An Information Portal for 3D atomic electron tomography data',
     long_description='An Information Portal for 3D atomic electron tomography data',
 
