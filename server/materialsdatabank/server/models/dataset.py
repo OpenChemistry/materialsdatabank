@@ -121,7 +121,14 @@ class Dataset(AccessControlledModel):
         else:
             dataset['userId'] = None
 
-        return self.save(dataset)
+        dataset = self.save(dataset)
+
+        events.trigger('mdb.dataset.created', {
+                        'dataset': dataset,
+                        'user': user
+                    })
+
+        return dataset
 
     def update(self, dataset, dataset_updates=None, user=None, atomic_species=None, validation=None,
                public=None):

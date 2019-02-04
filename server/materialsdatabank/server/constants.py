@@ -14,3 +14,5 @@ ELEMENT_SYMBOLS = [
 ]
 
 ELEMENT_SYMBOLS_LOWER = [x.lower() for x in ELEMENT_SYMBOLS]
+
+NOTIFICATION_EMAIL = 'mdb.notification.email'
