@@ -1,13 +1,25 @@
 from girder.api.rest import Prefix, getCurrentUser
 from girder import events
+from girder.utility import mail_utils
+from girder.utility import setting_utilities
 from .rest import Dataset
 
 from girder.models.upload import Upload
 from girder.models.file import File
 from girder.models.assetstore import Assetstore
+from girder.models.setting import Setting
+from girder.models.user import User
 from girder.plugins.materialsdatabank.models.reconstruction import Reconstruction
 from girder.plugins.materialsdatabank.models.structure import Structure
 from girder.plugins.materialsdatabank.models.projection import Projection
+from girder.plugins.materialsdatabank import constants
+
+
+@setting_utilities.validator({
+    constants.NOTIFICATION_EMAIL
+})
+def validateSettings(event):
+    pass
 
 def get_currated_assetstore():
     for assetstore in Assetstore().list():
@@ -42,9 +54,41 @@ def move_to_curated_assetstore(event):
         file = File().load(file_id, force=True)
         Upload().moveFileToAssetstore(file, approver, assetstore)
 
+def send_created(event):
+    dataset = event.info['dataset']
+    print(dataset)
+    user = event.info['user']
+
+    html = mail_utils.renderTemplate('mdb.dataset_created.mako', {
+        'dataset': dataset,
+        'user': user
+    })
+
+    email_address = Setting().get(constants.NOTIFICATION_EMAIL)
+
+    mail_utils.sendEmail(to=email_address, subject='Materials Data Bank: Dataset submitted.', text=html)
+
+def send_approved(event):
+    dataset = event.info['dataset']
+    approver = event.info['approver']
+    user = User().load(dataset['userId'], force=True)
+    html = mail_utils.renderTemplate('mdb.dataset_approved.mako', {
+        'dataset': dataset,
+        'user': user,
+        'approver': approver
+    })
+
+    email_address = user['email']
+
+    mail_utils.sendEmail(to=email_address, subject='Materials Data Bank: Dataset approved.', text=html)
+
+
 def load(info):
     info['apiRoot'].mdb = Prefix()
     info['apiRoot'].mdb.datasets = Dataset()
 
     events.bind('mdb.dataset.approved', 'moveToCuratedAssetStore',
                 move_to_curated_assetstore)
+
+    events.bind('mdb.dataset.created', 'sendCreated', send_created)
+    events.bind('mdb.dataset.approved', 'sendApproved', send_approved)

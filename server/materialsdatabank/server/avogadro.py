@@ -8,6 +8,6 @@ def convert_str(str_data, in_format, out_format):
     conv = FileFormatManager()
     opts = {}
     opts['perceiveBonds'] = False
-    conv.readString(mol, str_data, in_format, json.dumps(opts))
+    conv.read_string(mol, str_data, in_format, json.dumps(opts))
 
-    return conv.writeString(mol, out_format)
+    return conv.write_string(mol, out_format)

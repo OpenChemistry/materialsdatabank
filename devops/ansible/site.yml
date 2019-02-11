@@ -150,6 +150,64 @@
           key: "core.server_root"
           value: "https://www.materialsdatabank.org/"
 
+    - name: Configure MailGun as email server
+      girder:
+        host: "{{girder_host}}"
+        port: "{{girder_port}}"
+        scheme: "{{girder_scheme}}"
+        username: "mdbadmin"
+        password: "{{ mdb_password }}"
+        setting:
+          key: "{{item.key}}"
+          value: "{{item.value}}"
+        state: present
+      with_items:
+        - {
+          "key": "core.smtp_host",
+          "value": "{{smtp_host}}"
+        }
+        - {
+          "key": "core.smtp.encryption",
+          "value": "ssl"
+        }
+        - {
+          "key": "core.smtp.username",
+          "value": "{{smtp_user}}"
+        }
+        - {
+          "key": "core.smtp.password",
+          "value": "{{smtp_password}}"
+        }
+      tags:
+        - email
+
+    - name: Configure Girder email addresses
+      girder:
+        host: "{{girder_host}}"
+        port: "{{girder_port}}"
+        scheme: "{{girder_scheme}}"
+        username: "mdbadmin"
+        password: "{{ mdb_password }}"
+        setting:
+          key: "{{item.key}}"
+          value: "{{item.value}}"
+        state: present
+      with_items:
+        - {
+          "key": "core.email_from_address",
+          "value": "{{core_email_from_address}}"
+        }
+        - {
+          "key": "core.email_host",
+          "value": "{{core_email_host}}"
+        }
+        - {
+          "key": "mdb.notification.email",
+          "value": "{{notification_email}}"
+        }
+      tags:
+        - email
+
     - name: Restart the server
       girder:
         host: "{{girder_host}}"
