@@ -91,4 +91,4 @@ def load(info):
                 move_to_curated_assetstore)
 
     events.bind('mdb.dataset.created', 'sendCreated', send_created)
-    #events.bind('mdb.dataset.approved', 'sendApproved', send_approved)
+    events.bind('mdb.dataset.approved', 'sendApproved', send_approved)
