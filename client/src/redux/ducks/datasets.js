@@ -20,6 +20,11 @@ export const RECEIVE_DATASET   = 'RECEIVE_DATASET';
 export const TOGGLE_EDITABLE = 'TOGGLE_EDITABLE';
 export const REQUEST_TOGGLE_EDITABLE = 'REQUEST_TOGGLE_EDITABLE';
 
+export const DELETE_DATASET   = 'DELETE_DATASET';
+export const REQUEST_DATASET_DELETE   = 'REQUEST_DATASET_DELETE';
+export const DATASET_DELETED   = 'DATASET_DELETED';
+
+
 export const initialState = {
     search: {
       results: [],
@@ -77,7 +82,23 @@ const reducer = handleActions({
     }
 
     return {...state, byId, mdbIdToId};
-  }
+  },
+  [REQUEST_DATASET_DELETE]: (state, action) => {
+    if (action.error) {
+      return {...state, error: action.payload.error};
+    }
+    else {
+      return {...state,  error:null };
+    }
+  },
+  [DATASET_DELETED]: (state, action) => {
+    const id = action.payload.id;
+
+    const byId = {...state.byId};
+    delete byId[id]
+
+    return {...state, byId};
+  },
 }, initialState);
 
 // Action Creators
@@ -104,5 +125,9 @@ export const receiveDataset = createAction(RECEIVE_DATASET, (dataset) => ({ data
 
 export const toggleEditable = createAction(TOGGLE_EDITABLE);
 export const requestToggleEditable = createAction(REQUEST_TOGGLE_EDITABLE);
+
+export const deleteDataset = createAction(DELETE_DATASET, (id, resolve, reject) => ({ id, resolve, reject}));
+export const requestDatasetDelete = createAction(REQUEST_DATASET_DELETE);
+export const datasetDeleted   = createAction(DATASET_DELETED, (id) => ({ id }));
 
 export default reducer;

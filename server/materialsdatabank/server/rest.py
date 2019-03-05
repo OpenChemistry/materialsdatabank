@@ -36,6 +36,7 @@ class Dataset(Resource):
         self.route('GET', (':id','image'), self.fetch_image)
         self.route('PATCH', (':id', ), self.update_dataset)
         self.route('PUT', (':id', 'validate' ), self.validate)
+        self.route('DELETE', (':id', ), self.delete)
 
         self.route('POST', (':id', 'structures',), self.create_structure)
         self.route('GET', (':id', 'structures',), self.fetch_structures)
@@ -581,3 +582,19 @@ class Dataset(Resource):
         dataset = DatasetModel().load(dataset['_id'], user=self.getCurrentUser(), level=AccessType.READ)
 
         return dataset
+
+    @access.user(scope=TokenScope.DATA_WRITE)
+    @autoDescribeRoute(
+        Description('Delete a dataset.')
+        .modelParam('id', 'The dataset id',
+                    model=DatasetModel, destName='dataset',
+                    level=AccessType.WRITE, paramType='path')
+    )
+    def delete(self, dataset):
+        user = self.getCurrentUser()
+        is_curator = is_user_curator(user)
+
+        if not is_curator:
+            raise RestException('Insufficient permissions to delete dataset.')
+
+        DatasetModel().delete(dataset, user)

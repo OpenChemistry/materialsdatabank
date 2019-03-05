@@ -53,3 +53,16 @@ class Slug(Model):
         if update_result.modified_count != 1:
             raise SlugUpdateException()
 
+    def remove(self, slug):
+        query = {
+            '_id': self._singleton['_id']
+        }
+
+        update = {
+            '$pull': {
+                'slugs': slug
+            }
+        }
+
+        self.update(query, update)
+
