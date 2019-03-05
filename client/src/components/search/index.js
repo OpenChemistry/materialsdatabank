@@ -96,28 +96,28 @@ class Search extends Component {
                   name="mdbId"
                   className={classes.field}
                   component={TextField}
-                  label="MDB ID"
+                  label="MDB ID (FePt00001)"
                 />
                 <Field
                   fullWidth
                   name="title"
                   className={classes.field}
                   component={TextField}
-                  label="Name of the structure"
+                  label="Name of the structure (e.g. chemical order)"
                 />
                 <Field
                   fullWidth
                   name="authors"
                   className={classes.field}
                   component={TextField}
-                  label="Author"
+                  label="Author (e.g. John Doe and Jane Doe)"
                 />
                 <Field
                   fullWidth
                   name="atomicSpecies"
                   className={classes.field}
                   component={TextField}
-                  label="Atomic species"
+                  label="Atomic species (e.g. Fe Pt)"
                 />
 
               </CardContent>

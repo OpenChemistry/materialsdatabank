@@ -21,19 +21,37 @@ export function fullFormFields(create = true) {
 export function generalInformationFields(create = true) {
   const fields = {
     title: {
-      label: 'Title',
+      label: 'Name of the Structure',
       type: 'text',
+      placeholder: 'Example: 3D chemical order/disorder of an FePt nanoparticle',
       validate: [required]
     },
     authors: {
-      label: 'Authors ("and" separated)',
+      label: 'Deposition author(s) ("and" separated)',
       type: 'text',
+      placeholder: 'Example: Kim, D and Miao, J.',
       validate: [required]
     },
+    // emailaddress: {
+    //   label: 'Email address',
+    //   type: 'text',
+    //   placeholder: 'Example: materialsdatabank@gmail.com',
+    //   validate: [required]
+    // },
     doi: {
       label: 'DOI',
       type: 'text',
-      validate: [required]
+      placeholder: 'Example: 10.1038/nature21042',
+    },
+    fundingorg: {
+      label: 'Funding Organization(s)',
+      type: 'text',
+      placeholder: 'Example: DOE and NSF',
+    },
+    reconalgorithm: {
+      label: 'Reconstruction Algorithm',
+      type: 'text',
+      placeholder: 'Example: GENFIRE',
     },
     imageFile: {
       label: 'Image file ( Thumbnail for dataset )',
@@ -63,51 +81,61 @@ export function dataCollectionFields(create = true) {
     voltage: {
       label: 'Voltage (kV)',
       type: 'text',
+      placeholder: '300',
       validate: [required, ensureNumber]
     },
     convergenceSemiAngle: {
       label: 'Convergence semi-angle (mrad)',
       type: 'text',
+      placeholder: '30',
       validate: [required, ensureNumber]
     },
     probeSize: {
       label: 'Probe size (Å)',
       type: 'text',
+      placeholder: '0.5',
       validate: [required, ensureNumber]
     },
     detectorInnerAngle: {
       label: 'Detector inner angle (mrad)',
       type: 'text',
+      placeholder: '38',
       validate: [required, ensureNumber]
     },
     detectorOuterAngle: {
       label: 'Detector outer angle (mrad)',
       type: 'text',
+      placeholder: '190',
       validate: [required, ensureNumber]
     },
     depthOfFocus: {
       label: 'Depth of focus (nm)',
       type: 'text',
+      placeholder: '10',
       validate: [required, ensureNumber]
     },
     pixelSize: {
       label: 'Pixel size (Å)',
       type: 'text',
+      placeholder: '0.34',
       validate: [required, ensureNumber]
     },
     nProjections: {
       label: 'Number of projections',
       type: 'text',
+      placeholder: '38',
       validate: [required, ensureNumber]
     },
     tiltRange: {
       label: 'Tilt range (°)',
       type: 'text',
+      placeholder: '[-65, 65]',
       validate: [required, arrayValidation([2])]
     },
     electronDose: {
       label: 'Total electron dose (e/Å^2)',
       type: 'text',
+      placeholder: '6e6',
       validate: [required, ensureNumber]
     }
   }
@@ -120,11 +148,13 @@ export function reconstructionFields(create = true) {
       label: 'Resolution',
       type: 'text',
       tooltip: 'Resolution of the projections. It should have units consistent with the atomic coordinates of the model (Usually px/Angstrom)',
+      placeholder: '0.34',
       validate: [required, ensureNumber]
     },
     cropHalfWidth: {
       label: 'Crop Half Width',
       type: 'text',
+      placeholder: '7',
       tooltip: 'This value should be changed based on the pixel size and B factor.',
       validate: [required, ensureNumber]
     },
@@ -138,18 +168,21 @@ export function reconstructionFields(create = true) {
     zDirection: {
       label: 'Z Direction',
       type: 'text',
+      placeholder: '1',
       tooltip: 'Projection direction during the GENIFRE iteration (integer). 0 = x, 1 = y, 2 = z',
       validate: [required, ensureNumber]
     },
     bFactor: {
       label: 'B’-factor array (Å^2)',
       type: 'text',
+      placeholder:'[5.4855,5.036]',
       tooltip: 'B’ factors array, one value per atomic species. The B factor accounts for the electron probe size (50 pm), the thermal motions, and the reconstruction error for different chemical elements.',
       validate: [required, arrayValidation(null)]
     },
     hFactor: {
       label: 'H-factor array',
       type: 'text',
+      placeholder:'[0.5624, 1.1842]',
       tooltip: 'H factors array, one value per atomic species. The H factor accounts for electron scattering cross sections for different atomic species in the given experimental conditions.',
       validate: [required, arrayValidation(null)]
     },
