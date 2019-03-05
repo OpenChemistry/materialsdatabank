@@ -1,6 +1,8 @@
 from .base import BaseAccessControlledModel
 from girder.constants import AccessType
 from girder.models.group import Group
+from girder.models.item import Item
+from girder.models.file import File
 
 
 class Projection(BaseAccessControlledModel):
@@ -83,3 +85,12 @@ class Projection(BaseAccessControlledModel):
             return self.load(projection['_id'], user=user, level=AccessType.READ)
 
         return projection
+
+    def delete(self, projection, user):
+        if 'emdFileId' in projection:
+            emd_file = File().load(projection['emdFileId'], user=user, level=AccessType.WRITE)
+            item =  Item().load(emd_file['itemId'], user=user, level=AccessType.WRITE)
+            Item().remove(item)
+
+        super(Projection, self).remove(projection)
+

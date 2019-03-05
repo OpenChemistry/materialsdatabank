@@ -1,6 +1,8 @@
 from .base import BaseAccessControlledModel
 from girder.constants import AccessType
 from girder.models.group import Group
+from girder.models.item import Item
+from girder.models.file import File
 
 class Reconstruction(BaseAccessControlledModel):
 
@@ -70,3 +72,11 @@ class Reconstruction(BaseAccessControlledModel):
             return self.load(reconstruction['_id'], user=user, level=AccessType.READ)
 
         return reconstruction
+
+    def delete(self, reconstruction, user):
+        if 'emdFileId' in reconstruction:
+            emd_file = File().load(reconstruction['emdFileId'], user=user, level=AccessType.WRITE)
+            item =  Item().load(emd_file['itemId'], user=user, level=AccessType.WRITE)
+            Item().remove(item)
+
+        super(Reconstruction, self).remove(reconstruction)

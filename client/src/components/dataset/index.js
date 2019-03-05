@@ -15,6 +15,7 @@ import Typography from '@material-ui/core/Typography';
 import EditIcon from '@material-ui/icons/Edit';
 import DoneIcon from '@material-ui/icons/Done';
 import DownloadIcon from '@material-ui/icons/CloudDownload';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 import PropTypes from 'prop-types';
 
@@ -26,6 +27,7 @@ import { symbols } from '../../elements'
 import StructureContainer from '../../containers/structure'
 import { approveDataSet } from '../../redux/ducks/upload';
 import { setProgress } from '../../redux/ducks/app';
+import { deleteDataset } from '../../redux/ducks/datasets';
 
 import PageHead from '../page-head';
 import PageBody from '../page-body';
@@ -87,6 +89,15 @@ class Dataset extends Component {
 
   edit = () => {
     this.props.dispatch(push(`/dataset/${this.props._id}/edit`));
+  }
+
+  remove = () => {
+    new Promise((resolve, reject) => {
+      this.props.dispatch(deleteDataset(this.props.dataset._id, resolve, reject));
+
+    }).then((dataSet) =>{
+      this.props.dispatch(push('/search'));
+    })
   }
 
   componentWillReceiveProps = (nextProps) => {
@@ -419,8 +430,8 @@ class Dataset extends Component {
             </CardContent>
             { (isCurator || isOwner) &&
             <CardActions style={{display: 'flex'}}>
-              <Button
-                style={{marginLeft: 'auto'}}
+              <div style={{marginLeft: 'auto'}}>
+                <Button
                 variant="contained"
                 color="primary"
                 disabled={!editable && !isCurator}
@@ -429,6 +440,17 @@ class Dataset extends Component {
                 <EditIcon/>
                 Edit
               </Button>
+              <Button
+                style={{marginLeft: '0.5rem'}}
+                variant="contained"
+                color="secondary"
+                disabled={!editable && !isCurator}
+                onClick={() => this.remove()}
+              >
+                <DeleteIcon/>
+                Delete
+              </Button>
+              </div>
             </CardActions>
             }
           </Card>
@@ -538,6 +560,9 @@ function mapStateToProps(state, ownProps) {
         props['tiffFileId'] = projection.tiffFileId
       }
     }
+
+    const dataset = selectors.datasets.getDatasetById(state, ownProps._id);
+    props['dataset'] = dataset;
   }
 
   const me = selectors.girder.getMe(state);

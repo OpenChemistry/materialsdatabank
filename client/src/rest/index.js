@@ -36,6 +36,13 @@ export function patch(url, data, config) {
   return request
 }
 
+export function del(url, data, config) {
+  const source = CancelToken.source()
+  const request = _girderClient.delete(url, data, { ...config, cancelToken: source.token })
+  request[CANCEL] = () => source.cancel()
+  return request
+}
+
 export function girderClient() {
   return _girderClient;
 }
@@ -84,6 +91,11 @@ export function fetchProjections(id) {
 
 export function validateDataSet(id) {
   return put(`mdb/datasets/${id}/validate`)
+          .then(response => response.data )
+}
+
+export function deleteDataSet(id) {
+  return del(`mdb/datasets/${id}`)
           .then(response => response.data )
 }
 

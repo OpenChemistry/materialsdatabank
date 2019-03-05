@@ -7,9 +7,9 @@ from girder.models.model_base import ValidationException
 from girder.constants import AccessType
 from girder.models.upload import Upload
 from girder.models.item import Item
+from girder.models.file import File
 from girder.models.group import Group
 
-from girder.plugins.materialsdatabank.models.dataset import Dataset
 
 from .base import BaseAccessControlledModel
 from .. import avogadro
@@ -100,6 +100,8 @@ class Structure(BaseAccessControlledModel):
         structure['cjson'] = cjson
 
         # Update the species at the dataset level
+        # Import here to avoid circular dep issue.
+        from girder.plugins.materialsdatabank.models.dataset import Dataset
         Dataset().update(dataset,
             user=user,atomic_species=species)
 
@@ -133,3 +135,14 @@ class Structure(BaseAccessControlledModel):
             return self.load(structure['_id'], user=user, level=AccessType.READ)
 
         return structure
+
+    def delete(self, structure, user):
+
+        for file_id in ['cjsonFileId', 'xyzFileId', 'cmlFileId']:
+            if file_id in structure:
+                f = File().load(structure[file_id], user=user, level=AccessType.WRITE)
+                item =  Item().load(f['itemId'], user=user, level=AccessType.WRITE)
+                Item().remove(item)
+
+        super(Structure, self).remove(structure)
+

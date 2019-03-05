@@ -9,6 +9,9 @@ from girder.models.group import Group
 from girder import events
 
 from girder.plugins.materialsdatabank.models.slug import Slug, SlugUpdateException
+from girder.plugins.materialsdatabank.models.reconstruction import Reconstruction as ReconstructionModel
+from girder.plugins.materialsdatabank.models.structure import Structure as StructureModel
+from girder.plugins.materialsdatabank.models.projection import Projection as ProjectionModel
 
 from ..constants import ELEMENT_SYMBOLS_LOWER, ELEMENT_SYMBOLS
 
@@ -295,4 +298,19 @@ class Dataset(AccessControlledModel):
 
         return None
 
+    def delete(self, dataset, user):
+        dataset_id = dataset['_id']
+        # Delete reconstruction
+        reconstruction = ReconstructionModel().find(dataset_id).next()
+        ReconstructionModel().delete(reconstruction, user)
+        # Delete structure
+        structure = StructureModel().find(dataset_id).next()
+        StructureModel().delete(structure, user)
+        # Delete projection
+        projection = ProjectionModel().find(dataset_id).next()
+        ProjectionModel().delete(projection, user)
+        # Remove the slug
+        Slug().remove(dataset['mdbId'])
+        # Now delete the dataset
+        super(Dataset, self).remove(dataset)
 

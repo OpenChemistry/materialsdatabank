@@ -11,8 +11,11 @@ import {
   searchDatasetsByFields,
   searchDatasetsByText,
   searchDatasetsByMe,
+  requestDatasetDelete,
+  datasetDeleted,
   LOAD_DATASET_BY_ID,
-  TOGGLE_EDITABLE
+  TOGGLE_EDITABLE,
+  DELETE_DATASET
 } from '../../redux/ducks/datasets.js'
 
 export function* onSearchDatasetsByText(action) {
@@ -90,4 +93,24 @@ function* toggleEditable(action) {
 
 export function* watchToggleEditable() {
   yield takeLatest(TOGGLE_EDITABLE, toggleEditable);
+}
+
+export function* deleteDataset(action) {
+  const {id, reject, resolve} = action.payload;
+
+  try {
+    yield put( requestDatasetDelete() )
+    yield call(rest.deleteDataSet, id)
+    yield put( datasetDeleted(id) )
+    resolve()
+  }
+  catch(error) {
+    yield put( requestDatasetDelete(error) )
+    reject(error)
+  }
+}
+
+
+export function* watchDeleteDataset() {
+  yield takeLatest(DELETE_DATASET, deleteDataset);
 }

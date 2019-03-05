@@ -5,7 +5,8 @@ import {
   watchLoadDatasetById,
   watchSearchDatasetsByFields,
   watchToggleEditable,
-  watchSearchDatasetsByMe
+  watchSearchDatasetsByMe,
+  watchDeleteDataset
 } from './datasets'
 
 import {
@@ -60,4 +61,5 @@ export default function* root() {
   yield fork(watchLoadJob)
   yield fork(watchValidateDataSet)
   yield fork(watchToggleEditable)
+  yield fork(watchDeleteDataset)
 }
