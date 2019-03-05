@@ -88,8 +88,8 @@ class Projection(BaseAccessControlledModel):
 
     def delete(self, projection, user):
         if 'emdFileId' in projection:
-            emd_file = File().load(projection['emdFileId'], user=user, level=AccessType.WRITE)
-            item =  Item().load(emd_file['itemId'], user=user, level=AccessType.WRITE)
+            emd_file = File().load(projection['emdFileId'], force=True)
+            item =  Item().load(emd_file['itemId'], force=True)
             Item().remove(item)
 
         super(Projection, self).remove(projection)

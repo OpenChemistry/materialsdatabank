@@ -140,8 +140,8 @@ class Structure(BaseAccessControlledModel):
 
         for file_id in ['cjsonFileId', 'xyzFileId', 'cmlFileId']:
             if file_id in structure:
-                f = File().load(structure[file_id], user=user, level=AccessType.WRITE)
-                item =  Item().load(f['itemId'], user=user, level=AccessType.WRITE)
+                f = File().load(structure[file_id], force=True)
+                item =  Item().load(f['itemId'], force=True)
                 Item().remove(item)
 
         super(Structure, self).remove(structure)

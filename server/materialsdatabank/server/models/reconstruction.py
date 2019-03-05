@@ -75,8 +75,8 @@ class Reconstruction(BaseAccessControlledModel):
 
     def delete(self, reconstruction, user):
         if 'emdFileId' in reconstruction:
-            emd_file = File().load(reconstruction['emdFileId'], user=user, level=AccessType.WRITE)
-            item =  Item().load(emd_file['itemId'], user=user, level=AccessType.WRITE)
+            emd_file = File().load(reconstruction['emdFileId'], force=True)
+            item =  Item().load(emd_file['itemId'], force=True)
             Item().remove(item)
 
         super(Reconstruction, self).remove(reconstruction)
