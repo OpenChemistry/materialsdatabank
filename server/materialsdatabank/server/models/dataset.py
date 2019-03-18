@@ -301,14 +301,26 @@ class Dataset(AccessControlledModel):
     def delete(self, dataset, user):
         dataset_id = dataset['_id']
         # Delete reconstruction
-        reconstruction = ReconstructionModel().find(dataset_id).next()
-        ReconstructionModel().delete(reconstruction, user)
+        try:
+            reconstruction = ReconstructionModel().find(dataset_id).next()
+            ReconstructionModel().delete(reconstruction, user)
+        except StopIteration:
+            pass
+
         # Delete structure
-        structure = StructureModel().find(dataset_id).next()
-        StructureModel().delete(structure, user)
+        try:
+            structure = StructureModel().find(dataset_id).next()
+            StructureModel().delete(structure, user)
+        except StopIteration:
+            pass
+
         # Delete projection
-        projection = ProjectionModel().find(dataset_id).next()
-        ProjectionModel().delete(projection, user)
+        try:
+            projection = ProjectionModel().find(dataset_id).next()
+            ProjectionModel().delete(projection, user)
+        except StopIteration:
+            pass
+
         # Remove the slug
         Slug().remove(dataset['mdbId'])
         # Now delete the dataset
