@@ -39,15 +39,12 @@ def r1(reconstruction, proj_file, struc_file):
         (positions, atomic_spec, atomic_numbers) = xyz_to_numpy(f)
 
     resolution = reconstruction['resolution']
-    crop_half_width = reconstruction['cropHalfWidth']
-    volume_size = reconstruction['volumeSize']
     z_direction = reconstruction['zDirection']
     b_factor = reconstruction['bFactor']
     h_factor = reconstruction['hFactor']
     axis_convention = reconstruction['axisConvention']
 
     r1 = calculate_r1_factor(proj, angles, positions, atomic_spec, atomic_numbers,
-                                resolution, crop_half_width, volume_size,
-                                z_direction, b_factor, h_factor, axis_convention)
+                                resolution, z_direction, b_factor, h_factor, axis_convention)
 
     return r1
