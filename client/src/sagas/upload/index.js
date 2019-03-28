@@ -81,8 +81,6 @@ function* upload(action) {
 
     // Reconstruction
     resolution,
-    // cropHalfWidth,
-    // volumeSize,
     zDirection,
     bFactor,
     hFactor,
@@ -147,8 +145,6 @@ function* upload(action) {
         let reconstruction = {
           emdFileId,
           resolution,
-          cropHalfWidth: JSON.parse('7'),
-          volumeSize: JSON.parse('[300]'),
           zDirection,
           bFactor: JSON.parse(bFactor),
           hFactor: JSON.parse(hFactor),
@@ -180,8 +176,6 @@ function* upload(action) {
     } else {
       let reconstruction = {
         resolution,
-        cropHalfWidth: JSON.parse('3'),
-        volumeSize: JSON.parse('[300]'),
         zDirection,
         bFactor: JSON.parse(bFactor),
         hFactor: JSON.parse(hFactor),

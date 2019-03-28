@@ -12,22 +12,18 @@ class Reconstruction(BaseAccessControlledModel):
 
         self.types = {
             'resolution': float,
-            'cropHalfWidth': int,
             'zDirection': int,
-            'volumeSize': lambda v : self.validate_list(v, int),
             'bFactor': lambda v : self.validate_list(v, float),
             'hFactor': lambda v : self.validate_list(v, float),
         }
 
-    def create(self, dataset, emd_file_id, resolution, crop_half_width,
-                volume_size, z_direction, b_factor, h_factor,
+    def create(self, dataset, emd_file_id, resolution,
+    z_direction, b_factor, h_factor,
                 axis_convention, user=None, public=False):
         reconstruction = {
             'datasetId': dataset['_id'],
             'emdFileId': emd_file_id,
             'resolution': resolution,
-            'cropHalfWidth': crop_half_width,
-            'volumeSize': volume_size,
             'zDirection': z_direction,
             'bFactor': b_factor,
             'hFactor': h_factor,
@@ -58,8 +54,8 @@ class Reconstruction(BaseAccessControlledModel):
 
         updates = {}
 
-        mutable_props = ['resolution', 'cropHalfWidth', 'bFactor', 'hFactor',
-                         'zDirection', 'volumeSize', 'axisConvention']
+        mutable_props = ['resolution', 'bFactor', 'hFactor',
+                         'zDirection', 'axisConvention']
         for prop in reconstruction_updates:
             if prop in mutable_props:
                 updates.setdefault('$set', {})[prop] = reconstruction_updates[prop]
