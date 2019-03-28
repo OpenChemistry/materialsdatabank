@@ -151,20 +151,20 @@ export function reconstructionFields(create = true) {
       placeholder: '0.34',
       validate: [required, ensureNumber]
     },
-    cropHalfWidth: {
-      label: 'Crop Half Width',
-      type: 'text',
-      placeholder: '7',
-      tooltip: 'This value should be changed based on the pixel size and B factor.',
-      validate: [required, ensureNumber]
-    },
-    volumeSize: {
-      label: 'Number of pixels in each direction',
-      type: 'text',
-      placeholder: 'Example: [256, 256, 256]',
-      tooltip: 'The number of pixels in the reconstructed volume along each direction.',
-      validate: [required, arrayValidation([3])]
-    },
+    // cropHalfWidth: {
+      // label: 'Crop Half Width',
+      // type: 'text',
+      // placeholder: '7',
+      // tooltip: 'This value should be changed based on the pixel size and B factor.',
+      // validate: [required, ensureNumber]
+    // },
+    // volumeSize: {
+      // label: 'Number of pixels in each direction',
+      // type: 'text',
+      // placeholder: 'Example: [256, 256, 256]',
+      // tooltip: 'The number of pixels in the reconstructed volume along each direction.',
+      // validate: [required, arrayValidation([3])]
+    // },
     zDirection: {
       label: 'Z Direction',
       type: 'text',
