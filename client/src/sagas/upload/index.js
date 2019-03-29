@@ -115,7 +115,7 @@ function* upload(action) {
     }
 
     if (!_.isNil(imageFile)) {
-      filesToUpload['imageFileModel'] = call(uploadFile, imageFile, mdbFolder['_id'], imageFileId);
+      filesToUpload['imageFileModel'] = call(uploadFile, imageFile, mdbFolder['_id'], null);
     }
 
     const {
