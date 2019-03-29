@@ -210,6 +210,20 @@ function* upload(action) {
         let projectionModel = projections[0];
         yield call(rest.updateProjection, projectionModel['_id'], projection);
       }
+
+      // If the xyz has been change we need to ensure the other structure files
+      // are regenerated.
+      if (!_.isNil(structureFileModel)) {
+        let structures = yield call(rest.fetchStructures, dataSetId);
+        if (structures.length > 0) {
+          const xyzFileId = structureFileModel['_id'];
+          let structureUpdates = {
+              xyzFileId
+          }
+          let structure = structures[0];
+          yield call(rest.updateStructure, structure['_id'], structureUpdates);
+        }
+      }
     }
 
     yield put( receiveDataset(dataSet) );

@@ -161,7 +161,7 @@ class Dataset(Resource):
         if is_user_curator(self.getCurrentUser()):
             public = updates.get('public')
 
-        structure = StructureModel().update(structure, user=self.getCurrentUser(),
+        structure = StructureModel().update(structure, updates, user=self.getCurrentUser(),
                                             public=public)
 
         return structure
