@@ -121,7 +121,7 @@ class Structure(BaseAccessControlledModel):
 
         return self.save(structure)
 
-    def update(self, structure, user=None, public=None):
+    def update(self, structure, structure_updates, user=None, public=None):
         query = {
             '_id': structure['_id']
         }
@@ -130,8 +130,42 @@ class Structure(BaseAccessControlledModel):
         if public is not None:
             updates.setdefault('$set', {})['public'] = public
 
+        if 'xyzFileId' in structure_updates:
+            xyz_file_id = structure_updates['xyzFileId']
+            file = self.model('file').load(xyz_file_id, user=user)
+            item = Item().load(file['itemId'], user=user)
+            folder_id = item['folderId']
+            with self.model('file').open(file) as fp:
+                input = fp.read().decode()
+            cjson_file = self._generate_file(input, 'xyz', 'cjson',
+                                             '%s.cjson' % file['name'],
+                                            folder_id, user)
+            cjson_file_id = cjson_file['_id']
+            cml_file = self._generate_file(input, 'xyz', 'cml',
+                                           '%s.cml' % file['name'],
+                                           folder_id, user)
+            cml_file_id = cml_file['_id']
+
+            with self.model('file').open(cjson_file) as fp:
+                cjson = json.loads(fp.read().decode())
+
+            updates.setdefault('$set', {
+                'cjsonFileId': cjson_file_id,
+                'cmlFileId': cml_file_id,
+                'xyzFileId': xyz_file_id,
+                'cjson': cjson
+            })
+
         if updates:
             super(Structure, self).update(query, update=updates, multi=False)
+
+            # Now delete the old files
+            for file_id_key in ['cjsonFileId', 'cmlFileId', 'xyzFileId']:
+                if file_id_key in structure:
+                    f = File().load(structure[file_id_key], force=True)
+                    item =  Item().load(f['itemId'], force=True)
+                    Item().remove(item)
+
             return self.load(structure['_id'], user=user, level=AccessType.READ)
 
         return structure

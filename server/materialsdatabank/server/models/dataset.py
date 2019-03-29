@@ -6,6 +6,8 @@ from girder.models.model_base import AccessControlledModel
 from girder.constants import AccessType
 from girder.models.model_base import ValidationException
 from girder.models.group import Group
+from girder.models.item import Item
+from girder.models.file import File
 from girder import events
 
 from girder.plugins.materialsdatabank.models.slug import Slug, SlugUpdateException
@@ -149,6 +151,8 @@ class Dataset(AccessControlledModel):
             if prop in mutable_props:
                 updates.setdefault('$set', {})[prop] = dataset_updates[prop]
 
+        if 'imageFileId' in dataset_updates:
+            updates.setdefault('$set', {})['imageFileId'] = ObjectId(dataset_updates['imageFileId'])
 
         if atomic_species is not None:
             new_atomic_species = set(dataset.get('atomicSpecies', {}))
@@ -171,7 +175,15 @@ class Dataset(AccessControlledModel):
             updates.setdefault('$set', {})['validation'] = validation
 
         if updates:
+            image_file_id = dataset['imageFileId']
             super(Dataset, self).update(query, update=updates, multi=False)
+            # We need to remove the old image if we have added a new one
+            if 'imageFileId' in dataset_updates and \
+                dataset_updates['imageFileId'] != image_file_id:
+                image_file = File().load(image_file_id, force=True)
+                item =  Item().load(image_file['itemId'], force=True)
+                Item().remove(item)
+
             return self.load(dataset['_id'], user=user, level=AccessType.READ)
 
         return dataset
@@ -323,6 +335,13 @@ class Dataset(AccessControlledModel):
 
         # Remove the slug
         Slug().remove(dataset['mdbId'])
+
+        # Remove the image file
+        image_file = File().load(dataset['imageFileId'], force=True)
+        if image_file is not None:
+            item =  Item().load(image_file['itemId'], force=True)
+            Item().remove(item)
+
         # Now delete the dataset
         super(Dataset, self).remove(dataset)
 

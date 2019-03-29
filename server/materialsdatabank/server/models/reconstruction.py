@@ -3,6 +3,7 @@ from girder.constants import AccessType
 from girder.models.group import Group
 from girder.models.item import Item
 from girder.models.file import File
+from bson.objectid import ObjectId
 
 class Reconstruction(BaseAccessControlledModel):
 
@@ -64,11 +65,21 @@ class Reconstruction(BaseAccessControlledModel):
             if prop in mutable_props:
                 updates.setdefault('$set', {})[prop] = reconstruction_updates[prop]
 
+        if 'emdFileId' in reconstruction_updates:
+            updates.setdefault('$set', {})['emdFileId'] = ObjectId(reconstruction_updates['emdFileId'])
+
         if public is not None:
             updates.setdefault('$set', {})['public'] = public
 
         if updates:
+            file_id = reconstruction['emdFileId']
             super(Reconstruction, self).update(query, update=updates, multi=False)
+            if 'emdFileId' in reconstruction_updates and \
+                reconstruction_updates['emdFileId'] != file_id:
+                f = File().load(file_id, force=True)
+                if f is not None:
+                    item =  Item().load(f['itemId'], force=True)
+                    Item().remove(item)
             return self.load(reconstruction['_id'], user=user, level=AccessType.READ)
 
         return reconstruction

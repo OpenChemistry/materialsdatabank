@@ -115,7 +115,7 @@ function* upload(action) {
     }
 
     if (!_.isNil(imageFile)) {
-      filesToUpload['imageFileModel'] = call(uploadFile, imageFile, mdbFolder['_id'], imageFileId);
+      filesToUpload['imageFileModel'] = call(uploadFile, imageFile, mdbFolder['_id'], null);
     }
 
     const {
@@ -187,6 +187,12 @@ function* upload(action) {
         hFactor: JSON.parse(hFactor),
         axisConvention: JSON.parse(axisConvention)
       }
+
+      // Update emd file id if a new file has been uploaded
+      if (!_.isNil(reconstructionFileModel)) {
+        reconstruction.emdFileId = reconstructionFileModel['_id'];
+      }
+
       let reconstructions = yield call(rest.fetchReconstructions, dataSetId);
       if (reconstructions.length > 0) {
         let reconstructionModel = reconstructions[0];
@@ -205,10 +211,30 @@ function* upload(action) {
         tiltRange: JSON.parse(tiltRange),
         electronDose
       }
+
+      // Update emd file id if a new file has been uploaded
+      if (!_.isNil(projectionFileModel)) {
+        projection.emdFileId = projectionFileModel['_id'];
+      }
+
       let projections = yield call(rest.fetchProjections, dataSetId);
       if (projections.length > 0) {
         let projectionModel = projections[0];
         yield call(rest.updateProjection, projectionModel['_id'], projection);
+      }
+
+      // If the xyz has been change we need to ensure the other structure files
+      // are regenerated.
+      if (!_.isNil(structureFileModel)) {
+        let structures = yield call(rest.fetchStructures, dataSetId);
+        if (structures.length > 0) {
+          const xyzFileId = structureFileModel['_id'];
+          let structureUpdates = {
+              xyzFileId
+          }
+          let structure = structures[0];
+          yield call(rest.updateStructure, structure['_id'], structureUpdates);
+        }
       }
     }
 
