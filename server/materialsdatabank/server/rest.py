@@ -512,15 +512,15 @@ class Dataset(Resource):
         .param('title', 'A title search terms', required=False)
         .jsonParam('atomicSpecies', 'A JSON list of atomic species search terms', required=False,
                    requireArray=True)
-        .param('slug', 'The human readable MDB Id', required=False)
+        .param('mdbId', 'The human readable MDB Id', required=False)
         .param('owner', 'The user id of the owner of the dataset', required=False)
         .pagingParams(defaultSort=None)
     )
-    def find_dataset(self, authors=None, title=None, atomicSpecies=None, mdb_id=None, owner=None, offset=0, limit=None,
+    def find_dataset(self, authors=None, title=None, atomicSpecies=None, mdbId=None, owner=None, offset=0, limit=None,
                   sort=None, user=None):
         model = DatasetModel()
         return list(model.find(
-            authors=authors, title=title, atomic_species=atomicSpecies, mdb_id=mdb_id,
+            authors=authors, title=title, atomic_species=atomicSpecies, mdb_id=mdbId,
             owner=owner, offset=offset, limit=limit, sort=sort,
             user=self.getCurrentUser()))
 
