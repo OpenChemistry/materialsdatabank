@@ -187,6 +187,12 @@ function* upload(action) {
         hFactor: JSON.parse(hFactor),
         axisConvention: JSON.parse(axisConvention)
       }
+
+      // Update emd file id if a new file has been uploaded
+      if (!_.isNil(reconstructionFileModel)) {
+        reconstruction.emdFileId = reconstructionFileModel['_id'];
+      }
+
       let reconstructions = yield call(rest.fetchReconstructions, dataSetId);
       if (reconstructions.length > 0) {
         let reconstructionModel = reconstructions[0];
@@ -205,6 +211,12 @@ function* upload(action) {
         tiltRange: JSON.parse(tiltRange),
         electronDose
       }
+
+      // Update emd file id if a new file has been uploaded
+      if (!_.isNil(projectionFileModel)) {
+        projection.emdFileId = projectionFileModel['_id'];
+      }
+
       let projections = yield call(rest.fetchProjections, dataSetId);
       if (projections.length > 0) {
         let projectionModel = projections[0];

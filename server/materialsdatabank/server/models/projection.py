@@ -3,6 +3,7 @@ from girder.constants import AccessType
 from girder.models.group import Group
 from girder.models.item import Item
 from girder.models.file import File
+from bson.objectid import ObjectId
 
 
 class Projection(BaseAccessControlledModel):
@@ -77,11 +78,22 @@ class Projection(BaseAccessControlledModel):
             if prop in mutable_props:
                 updates.setdefault('$set', {})[prop] = projection_updates[prop]
 
+        if 'emdFileId' in projection_updates:
+            updates.setdefault('$set', {})['emdFileId'] = ObjectId(projection_updates['emdFileId'])
+
         if public is not None:
             updates.setdefault('$set', {})['public'] = public
 
         if updates:
+            file_id = projection['emdFileId']
             super(Projection, self).update(query, update=updates, multi=False)
+            if 'emdFileId' in projection_updates and \
+                projection_updates['emdFileId'] != projection['emdFileId']:
+                f = File().load(file_id, force=True)
+                if f is not None:
+                    item =  Item().load(f['itemId'], force=True)
+                    Item().remove(item)
+
             return self.load(projection['_id'], user=user, level=AccessType.READ)
 
         return projection
