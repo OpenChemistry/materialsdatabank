@@ -323,6 +323,13 @@ class Dataset(AccessControlledModel):
 
         # Remove the slug
         Slug().remove(dataset['mdbId'])
+
+        # Remove the image file
+        image_file = File().load(dataset['imageFileId'], force=True)
+        if image_file is not None:
+            item =  Item().load(image_file['itemId'], force=True)
+            Item().remove(item)
+
         # Now delete the dataset
         super(Dataset, self).remove(dataset)
 
