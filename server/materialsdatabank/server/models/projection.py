@@ -88,7 +88,7 @@ class Projection(BaseAccessControlledModel):
             file_id = projection['emdFileId']
             super(Projection, self).update(query, update=updates, multi=False)
             if 'emdFileId' in projection_updates and \
-                projection_updates['emdFileId'] != projection['emdFileId']:
+                projection_updates['emdFileId'] != file_id:
                 f = File().load(file_id, force=True)
                 if f is not None:
                     item =  Item().load(f['itemId'], force=True)

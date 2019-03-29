@@ -75,7 +75,7 @@ class Reconstruction(BaseAccessControlledModel):
             file_id = reconstruction['emdFileId']
             super(Reconstruction, self).update(query, update=updates, multi=False)
             if 'emdFileId' in reconstruction_updates and \
-                reconstruction_updates['emdFileId'] != reconstruction['emdFileId']:
+                reconstruction_updates['emdFileId'] != file_id:
                 f = File().load(file_id, force=True)
                 if f is not None:
                     item =  Item().load(f['itemId'], force=True)

@@ -179,7 +179,7 @@ class Dataset(AccessControlledModel):
             super(Dataset, self).update(query, update=updates, multi=False)
             # We need to remove the old image if we have added a new one
             if 'imageFileId' in dataset_updates and \
-                dataset_updates['imageFileId'] != dataset['imageFileId']:
+                dataset_updates['imageFileId'] != image_file_id:
                 image_file = File().load(image_file_id, force=True)
                 item =  Item().load(image_file['itemId'], force=True)
                 Item().remove(item)
