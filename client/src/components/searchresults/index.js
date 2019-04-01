@@ -42,6 +42,7 @@ class SearchResults extends Component {
                   authors={dataset.authors}
                   imageFileId={dataset.imageFileId}
                   atomicSpecies={dataset.atomicSpecies}
+                  updated={dataset.updated}
                 />
               </GridListTile>
             ))}

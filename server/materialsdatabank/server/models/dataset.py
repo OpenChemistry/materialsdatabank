@@ -107,7 +107,8 @@ class Dataset(AccessControlledModel):
             'title': title,
             'doi': doi,
             'editable': False,
-            'deposited': datetime.datetime.utcnow()
+            'deposited': datetime.datetime.utcnow(),
+            'updated': datetime.datetime.utcnow()
         }
 
         if image_file_id is not None:
@@ -151,8 +152,6 @@ class Dataset(AccessControlledModel):
             if prop in mutable_props:
                 updates.setdefault('$set', {})[prop] = dataset_updates[prop]
 
-        if 'imageFileId' in dataset_updates:
-            updates.setdefault('$set', {})['imageFileId'] = ObjectId(dataset_updates['imageFileId'])
 
         if atomic_species is not None:
             new_atomic_species = set(dataset.get('atomicSpecies', {}))
@@ -175,15 +174,8 @@ class Dataset(AccessControlledModel):
             updates.setdefault('$set', {})['validation'] = validation
 
         if updates:
-            image_file_id = dataset['imageFileId']
+            updates.setdefault('$set', {})['updated'] = datetime.datetime.utcnow()
             super(Dataset, self).update(query, update=updates, multi=False)
-            # We need to remove the old image if we have added a new one
-            if 'imageFileId' in dataset_updates and \
-                dataset_updates['imageFileId'] != image_file_id:
-                image_file = File().load(image_file_id, force=True)
-                item =  Item().load(image_file['itemId'], force=True)
-                Item().remove(item)
-
             return self.load(dataset['_id'], user=user, level=AccessType.READ)
 
         return dataset

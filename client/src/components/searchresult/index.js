@@ -68,7 +68,7 @@ class SearchResult extends Component {
     let imageUrl = null;
     const { classes } = this.props;
     if (!_.isNil(this.props.imageFileId)) {
-      imageUrl = `${window.location.origin}/api/v1/file/${this.props.imageFileId}/download`;
+      imageUrl = `${window.location.origin}/api/v1/mdb/datasets/${this.props._id}/image?updated=${this.props.updated}`;
     }
     const species = this.props.atomicSpecies.map((an) => symbols[an]).join(', ');
     const speciesText = `Atomic Species: ${species}`;

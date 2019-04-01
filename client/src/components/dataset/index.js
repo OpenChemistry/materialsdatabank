@@ -153,15 +153,15 @@ class Dataset extends Component {
     let reconEmdUrl = '';
     let reconTiffUrl = '';
     if (!_.isNil(reconstruction)) {
-      reconEmdUrl = `${window.location.origin}/api/v1/mdb/datasets/_/reconstructions/${reconstruction._id}/emd`
-      reconTiffUrl = `${window.location.origin}/api/v1/mdb/datasets/_/reconstructions/${reconstruction._id}/tiff`
+      reconEmdUrl = `${window.location.origin}/api/v1/mdb/datasets/_/reconstructions/${reconstruction._id}/emd?updated=${this.props.updated}`
+      reconTiffUrl = `${window.location.origin}/api/v1/mdb/datasets/_/reconstructions/${reconstruction._id}/tiff?updated=${this.props.updated}`
     }
 
     let projEmdUrl = '';
     let projTiffUrl = '';
     if (!_.isNil(projection)) {
-      projEmdUrl = `${window.location.origin}/api/v1/mdb/datasets/_/projections/${projection._id}/emd`
-      projTiffUrl = `${window.location.origin}/api/v1/mdb/datasets/_/projections/${projection._id}/tiff`
+      projEmdUrl = `${window.location.origin}/api/v1/mdb/datasets/_/projections/${projection._id}/emd?updated=${this.props.updated}`
+      projTiffUrl = `${window.location.origin}/api/v1/mdb/datasets/_/projections/${projection._id}/tiff?updated=${this.props.updated}`
     }
 
     // Prepare report data
@@ -390,19 +390,19 @@ class Dataset extends Component {
                           value="xyz"
                           onClick={this.handleClose}
                         >
-                          <a href={`${structureUrl}/xyz`}>XYZ</a>
+                          <a href={`${structureUrl}/xyz?updated=${this.props.updated}`}>XYZ</a>
                         </MenuItem>
                         <MenuItem
                           value="cjson"
                           onClick={this.handleClose}
                         >
-                          <a href={`${structureUrl}/cjson`}>CJSON</a>
+                          <a href={`${structureUrl}/cjson?updated=${this.props.updated}`}>CJSON</a>
                         </MenuItem>
                         <MenuItem
                           value="cml"
                           onClick={this.handleClose}
                         >
-                          <a href={`${structureUrl}/cml`}>CML</a>
+                          <a href={`${structureUrl}/cml?updated=${this.props.updated}`}>CML</a>
                         </MenuItem>
                       </Menu>
                     </TableCell>
