@@ -535,9 +535,6 @@ class Dataset(Resource):
         .errorResponse('Read permission denied on the item.', 403)
     )
     def fetch_image(self, id):
-        """
-         :deprecated: Use the file endpoint directly!
-        """
         dataset = DatasetModel().load(id, user=self.getCurrentUser(), level=AccessType.READ)
         if 'imageFileId' in dataset:
             file_model = File()
