@@ -131,13 +131,10 @@ def _deposit(ctx, username, password, api_key, api_url, bibtex_file=None,
 
     # Upload reconstructions
     recon_file = gc.uploadFileToFolder(folder['_id'], recon_file)
-    (resolution, crop_half_width, volume_size,
-    z_direction, b_factor, h_factor, axis_convention) = json_to_reconstruction_params(json_file)
+    (resolution, z_direction, b_factor, h_factor, axis_convention) = json_to_reconstruction_params(json_file)
     recon = {
         'emdFileId': recon_file['_id'],
         'resolution': resolution,
-        'cropHalfWidth': crop_half_width,
-        'volumeSize': volume_size,
         'zDirection': z_direction,
         'bFactor': b_factor,
         'hFactor': h_factor,
@@ -180,12 +177,10 @@ def _r1(proj_file, struc_file, json_file):
 
     (currProjs, currAngles) = proj_to_numpy(proj_file)
     (currPos, currAtom, AtomicNumbers) = xyz_to_numpy(struc_file)
-    (resolution, crop_half_width, volume_size,
-    z_direction, b_factor, h_factor, axis_convention) = json_to_reconstruction_params(json_file)
+    (resolution, z_direction, b_factor, h_factor, axis_convention) = json_to_reconstruction_params(json_file)
 
     r1 = calculate_r1_factor(currProjs, currAngles, currPos, currAtom, AtomicNumbers,
-                             resolution, crop_half_width, volume_size,
-                             z_direction, b_factor, h_factor, axis_convention)
+                             resolution, z_direction, b_factor, h_factor, axis_convention)
 
     click.echo('R1 factor: %s' % r1)
 

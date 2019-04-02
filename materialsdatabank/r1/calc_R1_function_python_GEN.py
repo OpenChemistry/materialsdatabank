@@ -67,16 +67,16 @@ def calc_R1_function_python(atomPos,atomType,Projections,Angles,Resolution,CropH
 
 
 # main function for calculating R1 factor using individual atomic scattering factor
-def calc_R1_function_indivFA_python(atomPos,atomType,Projections,Angles,Resolution,
-    CropHalfWidth,VolSize,BF_Array,HTFact_Array,Axis_array,AtomicNumbers, zDir):
+def calc_R1_function_indivFA_python(atomPos,atomType,Projections,Angles,Resolution,BF_Array,HTFact_Array,Axis_array,AtomicNumbers, zDir):
 
     # rename variables
     currPos = atomPos
     currAtom = atomType
     currProjs = Projections
     currAngles =Angles
-    volsize = VolSize
-
+    # volsize = VolSize
+    volsize = [int(np.max(np.shape(currProjs)) + 10)]
+    CropHalfWidth = int(np.round(np.sqrt(np.average(BF_Array)/8)/np.pi/Resolution*3)+1)
     # initialize array
     calcProjs = np.zeros(np.shape(currProjs))
 
@@ -120,7 +120,7 @@ def calc_R1_function_indivFA_python(atomPos,atomType,Projections,Angles,Resoluti
 
     # calculate R factor
     Rfac = calcR_norm_YY_python(currProjs,calcProjs)
-
+    Rfac = np.round(100*Rfac,decimals=1)
     return [calcProjs,Rfac]
 
 
