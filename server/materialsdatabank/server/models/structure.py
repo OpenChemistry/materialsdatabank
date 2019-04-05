@@ -130,6 +130,7 @@ class Structure(BaseAccessControlledModel):
         if public is not None:
             updates.setdefault('$set', {})['public'] = public
 
+        files_to_delete = []
         if 'xyzFileId' in structure_updates:
             xyz_file_id = structure_updates['xyzFileId']
             file = self.model('file').load(xyz_file_id, user=user)
@@ -156,15 +157,19 @@ class Structure(BaseAccessControlledModel):
                 'cjson': cjson
             })
 
+            # Save the old file ids, so we can delete them
+            for file_id_key in ['cjsonFileId', 'cmlFileId', 'xyzFileId']:
+                if file_id_key in structure:
+                    files_to_delete.append(structure[file_id_key])
+
         if updates:
             super(Structure, self).update(query, update=updates, multi=False)
 
             # Now delete the old files
-            for file_id_key in ['cjsonFileId', 'cmlFileId', 'xyzFileId']:
-                if file_id_key in structure:
-                    f = File().load(structure[file_id_key], force=True)
-                    item =  Item().load(f['itemId'], force=True)
-                    Item().remove(item)
+            for file_id in files_to_delete:
+                f = File().load(structure[file_id], force=True)
+                item =  Item().load(f['itemId'], force=True)
+                Item().remove(item)
 
             return self.load(structure['_id'], user=user, level=AccessType.READ)
 
