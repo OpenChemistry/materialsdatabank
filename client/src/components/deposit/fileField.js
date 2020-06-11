@@ -12,7 +12,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import { getUploadByFile } from  '../../redux/selectors/upload'
 
 import filesize from 'filesize';
-import uuid4 from 'uuid/v4';
+import uuid4 from 'uuid4';
 
 const style = (theme) => (
   {
