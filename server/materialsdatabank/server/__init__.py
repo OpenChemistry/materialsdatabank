@@ -66,7 +66,7 @@ def send_created(event):
 
     email_address = Setting().get(constants.NOTIFICATION_EMAIL)
 
-    mail_utils.sendEmail(to=email_address, subject='Materials Data Bank: Dataset submitted.', text=html)
+    mail_utils.sendMail('Materials Data Bank: Dataset submitted.', html, [email_address])
 
 def send_approved(event):
     dataset = event.info['dataset']
@@ -80,7 +80,7 @@ def send_approved(event):
 
     email_address = user['email']
 
-    mail_utils.sendEmail(to=email_address, subject='Materials Data Bank: Dataset approved.', text=html)
+    mail_utils.sendMail('Materials Data Bank: Dataset approved.', html, [email_address])
 
 
 def load(info):
