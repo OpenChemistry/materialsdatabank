@@ -18,7 +18,7 @@ import GroupIcon from '@material-ui/icons/GroupWork';
 
 import { has } from 'lodash-es';
 
-import { TwitterTimelineEmbed } from 'react-twitter-embed';
+// import { TwitterTimelineEmbed } from 'react-twitter-embed';
 
 import { wc } from '../../utils/webcomponent';
 
@@ -118,7 +118,7 @@ class Welcome extends Component {
       this.setState({...this.state, [key]: { ...this.state[key], rotate: false}});
     }
   }
-  
+
   render = () => {
     const { classes } = this.props;
     const { molecule0, molecule1 } = this.state;
@@ -232,11 +232,11 @@ class Welcome extends Component {
                   </Typography>
                 </div>
                 <Paper>
-                  <TwitterTimelineEmbed
+                  {/* <TwitterTimelineEmbed
                     sourceType="profile"
                     screenName="materdatabank"
                     options={{height: 800}}
-                  />
+                  /> */}
                 </Paper>
               </Grid>
               <Grid item xs={12} md={4} className={classes.evenColumns}>

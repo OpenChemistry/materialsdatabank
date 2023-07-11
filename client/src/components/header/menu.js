@@ -52,7 +52,7 @@ class Menu extends Component {
             {me ? me.login : 'user' }
             <DropDownIcon />
           </Button>
-          <Popover
+          {/* <Popover
             open={this.state.open}
             anchorEl={this.state.anchorEl}
             anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
@@ -65,7 +65,7 @@ class Menu extends Component {
                 Sign out
               </MenuItem>
             </MenuList>
-          </Popover>
+          </Popover> */}
         </div>
 
     );
