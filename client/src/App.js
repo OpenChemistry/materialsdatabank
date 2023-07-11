@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 
 import { ConnectedRouter } from 'connected-react-router'
 import { Route, Switch } from 'react-router'
+// import { Routes, Route } from 'react-router'
 import { history } from './store/configureStore';
 
 import Drawer from '@material-ui/core/Drawer';
@@ -112,6 +113,7 @@ class App extends Component {
             <div className={classes.contentContainer}>
               <div className={classes.content}>
                 <Switch>
+                {/* <Routes> */}
                   <Route exact path='/' component={Welcome}/>
                   <PrivateRoute exact path='/my-datasets' component={MyDataSetsComponent}/>
                   <Route exact path='/dataset/:id' component={DatasetContainer}/>
@@ -129,6 +131,8 @@ class App extends Component {
                   <Route exact path='/tutorials' component={Tutorials}/>
                   <Route exact path='/download' component={Download}/>
                   <Route exact path='/validation' component={Validation}/>
+                {/* </Routes> */}
+
                 </Switch>
               </div>
               <div className={classes.footer}>
